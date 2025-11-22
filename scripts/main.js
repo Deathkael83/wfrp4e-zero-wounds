@@ -86,62 +86,77 @@ function makeConditionTag(condKey) {
 /* --------------------------------------------- */
 
 Hooks.on("preUpdateActor", async function (actor, changes, options, userId) {
-  if (!game.settings.get(MODULE_ID, "enableModule")) return;
+  try {
+    if (!game.settings.get(MODULE_ID, "enableModule")) return;
 
-  // Qui gestiamo SOLO i PG (character). PNG/mostri non linkati li trattiamo in preUpdateToken.
-  if (actor.type !== "character") return;
+    // Qui gestiamo SOLO i PG (character). PNG/mostri non linkati li trattiamo in preUpdateToken.
+    if (actor.type !== "character") return;
 
-  const newWounds = foundry.utils.getProperty(changes, "system.status.wounds.value");
-  if (newWounds === undefined) return;
+    const newWounds = foundry.utils.getProperty(changes, "system.status.wounds.value");
+    if (newWounds === undefined) return;
 
-  const oldWounds = foundry.utils.getProperty(actor, "system.status.wounds.value") ?? 0;
-  const tokenDoc = resolveTokenDocument(actor, options);
+    const oldWounds = foundry.utils.getProperty(actor, "system.status.wounds.value") ?? 0;
+    const tokenDoc = resolveTokenDocument(actor, options);
 
-  // >0 → <=0
-  if (oldWounds > 0 && newWounds <= 0) {
-    await onZeroWounds(actor, tokenDoc);
-    await startUnconsciousTimer(actor, tokenDoc);
-  }
+    // >0 → <=0
+    if (oldWounds > 0 && newWounds <= 0) {
+      await onZeroWounds(actor, tokenDoc);
+      await startUnconsciousTimer(actor, tokenDoc);
+    }
 
-  // <=0 → >=1
-  if (oldWounds <= 0 && newWounds >= 1) {
-    await clearUnconsciousTimer(actor);
+    // <=0 → >=1
+    if (oldWounds <= 0 && newWounds >= 1) {
+      await clearUnconsciousTimer(actor);
+    }
+  } catch (err) {
+    console.error(`[${MODULE_ID}] preUpdateActor error:`, err);
   }
 });
 
 /* --------------------------------------------- */
-/* PREUPDATE TOKEN – USATO PER PNG / MOSTRI NON LINKATI */
+/* PREUPDATE TOKEN – PER PNG / MOSTRI NON LINKATI */
 /* --------------------------------------------- */
 
 Hooks.on("preUpdateToken", async function (tokenDoc, changes, options, userId) {
-  if (!game.settings.get(MODULE_ID, "enableModule")) return;
+  try {
+    if (!game.settings.get(MODULE_ID, "enableModule")) return;
 
-  const actor = tokenDoc.actor;
-  if (!actor) return;
+    const actor = tokenDoc.actor;
+    if (!actor) return;
 
-  // Gestiamo solo token NON linkati (actorLink = false)
-  if (tokenDoc.actorLink) return;
+    // gestiamo qui solo token NON linkati
+    if (tokenDoc.actorLink) return;
 
-  // Per i PNG/mostri: qualsiasi tipo ≠ "character" lo consideriamo "creatura"
-  const isPC = actor.type === "character";
-  const isNPC = !isPC;
-  if (!isNPC) return; // i PG non li trattiamo qui
+    // PG li gestiamo via preUpdateActor; qui ci concentriamo sui PNG/mostri
+    const isPC = actor.type === "character";
+    const isNPC = !isPC;
+    if (!isNPC) return;
 
-  // Nuovo valore Ferite nei dati del token
-  const newWounds = foundry.utils.getProperty(changes, "actorData.system.status.wounds.value");
-  if (newWounds === undefined) return;
+    // Prova a leggere le Ferite dal delta del token
+    let newWounds =
+      foundry.utils.getProperty(changes, "actorData.system.status.wounds.value");
 
-  const oldWounds = foundry.utils.getProperty(actor, "system.status.wounds.value") ?? 0;
+    // In alcune configurazioni/patch potrebbe arrivare diretto su system
+    if (newWounds === undefined) {
+      newWounds = foundry.utils.getProperty(changes, "system.status.wounds.value");
+    }
 
-  // >0 → <=0
-  if (oldWounds > 0 && newWounds <= 0) {
-    await onZeroWounds(actor, tokenDoc);
-    await startUnconsciousTimer(actor, tokenDoc);
-  }
+    if (newWounds === undefined) return;
 
-  // <=0 → >=1
-  if (oldWounds <= 0 && newWounds >= 1) {
-    await clearUnconsciousTimer(actor);
+    const oldWounds = foundry.utils.getProperty(actor, "system.status.wounds.value") ?? 0;
+
+    // >0 → <=0
+    if (oldWounds > 0 && newWounds <= 0) {
+      await onZeroWounds(actor, tokenDoc);
+      await startUnconsciousTimer(actor, tokenDoc);
+    }
+
+    // <=0 → >=1
+    if (oldWounds <= 0 && newWounds >= 1) {
+      await clearUnconsciousTimer(actor);
+    }
+  } catch (err) {
+    console.error(`[${MODULE_ID}] preUpdateToken error:`, err);
   }
 });
 
@@ -210,21 +225,29 @@ async function sendProneAuto(actor, tokenDoc, whisper) {
 /* --------------------------------------------- */
 
 async function startUnconsciousTimer(actor, tokenDoc) {
-  if (!tokenDoc) return;
-  if (game.settings.get(MODULE_ID, "unconsciousMode") === "disabled") return;
-  if (!game.combat) return;
+  try {
+    if (!tokenDoc) return;
+    if (game.settings.get(MODULE_ID, "unconsciousMode") === "disabled") return;
+    if (!game.combat) return;
 
-  await tokenDoc.setFlag(MODULE_ID, "zeroWoundsInfo", {
-    combatId: game.combat.id,
-    round: game.combat.round,
-    tokenId: tokenDoc.id
-  });
+    await tokenDoc.setFlag(MODULE_ID, "zeroWoundsInfo", {
+      combatId: game.combat.id,
+      round: game.combat.round,
+      tokenId: tokenDoc.id
+    });
+  } catch (err) {
+    console.error(`[${MODULE_ID}] startUnconsciousTimer error:`, err);
+  }
 }
 
 async function clearUnconsciousTimer(actor) {
-  const tokens = actor.getActiveTokens(true, true);
-  for (const t of tokens) {
-    await t.document.unsetFlag(MODULE_ID, "zeroWoundsInfo").catch(() => {});
+  try {
+    const tokens = actor.getActiveTokens(true, true);
+    for (const t of tokens) {
+      await t.document.unsetFlag(MODULE_ID, "zeroWoundsInfo").catch(() => {});
+    }
+  } catch (err) {
+    console.error(`[${MODULE_ID}] clearUnconsciousTimer error:`, err);
   }
 }
 
@@ -233,35 +256,39 @@ async function clearUnconsciousTimer(actor) {
 /* --------------------------------------------- */
 
 Hooks.on("updateCombat", async function (combat, changed, options, userId) {
-  if (!game.settings.get(MODULE_ID, "enableModule")) return;
-  if (game.settings.get(MODULE_ID, "unconsciousMode") === "disabled") return;
-  if (changed.round === undefined) return;
+  try {
+    if (!game.settings.get(MODULE_ID, "enableModule")) return;
+    if (game.settings.get(MODULE_ID, "unconsciousMode") === "disabled") return;
+    if (changed.round === undefined) return;
 
-  const currentRound = combat.round;
+    const currentRound = combat.round;
 
-  for (const c of combat.combatants) {
-    const actor = c.actor;
-    const tokenDoc = c.token;
-    if (!actor || !tokenDoc) continue;
+    for (const c of combat.combatants) {
+      const actor = c.actor;
+      const tokenDoc = c.token;
+      if (!actor || !tokenDoc) continue;
 
-    const info = await tokenDoc.getFlag(MODULE_ID, "zeroWoundsInfo");
-    if (!info) continue;
-    if (info.combatId !== combat.id) continue;
-    if (info.tokenId !== tokenDoc.id) continue;
+      const info = await tokenDoc.getFlag(MODULE_ID, "zeroWoundsInfo");
+      if (!info) continue;
+      if (info.combatId !== combat.id) continue;
+      if (info.tokenId !== tokenDoc.id) continue;
 
-    const delta = currentRound - info.round;
-    const tb = actor.system.characteristics.t.bonus;
-    const wounds = actor.system.status.wounds.value;
+      const delta = currentRound - info.round;
+      const tb = actor.system.characteristics.t.bonus;
+      const wounds = actor.system.status.wounds.value;
 
-    if (wounds >= 1 || tb <= 0) {
-      await tokenDoc.unsetFlag(MODULE_ID, "zeroWoundsInfo").catch(() => {});
-      continue;
+      if (wounds >= 1 || tb <= 0) {
+        await tokenDoc.unsetFlag(MODULE_ID, "zeroWoundsInfo").catch(() => {});
+        continue;
+      }
+
+      if (delta >= tb) {
+        await onUnconscious(actor, tokenDoc, tb);
+        await tokenDoc.unsetFlag(MODULE_ID, "zeroWoundsInfo").catch(() => {});
+      }
     }
-
-    if (delta >= tb) {
-      await onUnconscious(actor, tokenDoc, tb);
-      await tokenDoc.unsetFlag(MODULE_ID, "zeroWoundsInfo").catch(() => {});
-    }
+  } catch (err) {
+    console.error(`[${MODULE_ID}] updateCombat error:`, err);
   }
 });
 
@@ -329,23 +356,27 @@ async function sendUnconsciousAuto(actor, tokenDoc, whisper, tb) {
 /* --------------------------------------------- */
 
 async function sendMessage(actor, tokenDoc, content, whisper) {
-  const speaker = ChatMessage.getSpeaker({ token: tokenDoc, actor });
+  try {
+    const speaker = ChatMessage.getSpeaker({ token: tokenDoc, actor });
 
-  const data = {
-    user: game.user.id,
-    speaker,
-    content,
-    type: CONST.CHAT_MESSAGE_TYPES.OTHER,
-    flags: {
-      [MODULE_ID]: {
-        actorUuid: actor.uuid,
-        tokenUuid: tokenDoc?.uuid ?? null
+    const data = {
+      user: game.user.id,
+      speaker,
+      content,
+      type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+      flags: {
+        [MODULE_ID]: {
+          actorUuid: actor.uuid,
+          tokenUuid: tokenDoc?.uuid ?? null
+        }
       }
-    }
-  };
+    };
 
-  if (whisper) data.whisper = whisper;
-  await ChatMessage.create(data);
+    if (whisper) data.whisper = whisper;
+    await ChatMessage.create(data);
+  } catch (err) {
+    console.error(`[${MODULE_ID}] sendMessage error:`, err);
+  }
 }
 
 /* --------------------------------------------- */
@@ -353,29 +384,33 @@ async function sendMessage(actor, tokenDoc, content, whisper) {
 /* --------------------------------------------- */
 
 Hooks.on("renderChatMessage", async function (message, html, data) {
-  const flags = message.flags?.[MODULE_ID];
-  if (!flags) return;
+  try {
+    const flags = message.flags?.[MODULE_ID];
+    if (!flags) return;
 
-  const { actorUuid, tokenUuid } = flags;
+    const { actorUuid, tokenUuid } = flags;
 
-  html.find(".apply-prone-zero-wounds").on("click", async evt => {
-    evt.preventDefault();
-    const token = tokenUuid ? await fromUuid(tokenUuid) : null;
-    const actor = token?.actor ?? (await fromUuid(actorUuid));
-    if (actor) await applyProne(actor);
-  });
+    html.find(".apply-prone-zero-wounds").on("click", async evt => {
+      evt.preventDefault();
+      const token = tokenUuid ? await fromUuid(tokenUuid) : null;
+      const actor = token?.actor ?? (await fromUuid(actorUuid));
+      if (actor) await applyProne(actor);
+    });
 
-  html.find(".apply-unconscious-zero-wounds").on("click", async evt => {
-    evt.preventDefault();
-    const token = tokenUuid ? await fromUuid(tokenUuid) : null;
-    const actor = token?.actor ?? (await fromUuid(actorUuid));
-    if (actor) await applyUnconscious(actor);
-  });
+    html.find(".apply-unconscious-zero-wounds").on("click", async evt => {
+      evt.preventDefault();
+      const token = tokenUuid ? await fromUuid(tokenUuid) : null;
+      const actor = token?.actor ?? (await fromUuid(actorUuid));
+      if (actor) await applyUnconscious(actor);
+    });
 
-  html.find(".condition-chat").on("click", evt => {
-    const cond = evt.currentTarget.dataset.cond;
-    if (game.wfrp4e?.utility?.postCondition && cond) {
-      game.wfrp4e.utility.postCondition(cond);
-    }
-  });
+    html.find(".condition-chat").on("click", evt => {
+      const cond = evt.currentTarget.dataset.cond;
+      if (game.wfrp4e?.utility?.postCondition && cond) {
+        game.wfrp4e.utility.postCondition(cond);
+      }
+    });
+  } catch (err) {
+    console.error(`[${MODULE_ID}] renderChatMessage error:`, err);
+  }
 });
