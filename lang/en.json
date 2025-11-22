@@ -37,10 +37,13 @@
   "wfrp4e-zero-wounds-prone.mode.chat": "Chat button",
   "wfrp4e-zero-wounds-prone.mode.auto": "Automatic",
 
+  "wfrp4e-zero-wounds-prone.condition.prone": "Prone",
+  "wfrp4e-zero-wounds-prone.condition.unconscious": "Unconscious",
+
   "wfrp4e-zero-wounds-prone.chat.message": "{actorName} has been reduced to 0 Wounds.",
   "wfrp4e-zero-wounds-prone.chat.button": "Apply Prone condition",
 
-  "wfrp4e-zero-wounds-prone.chat.unconscious": "{actorName} has remained at 0 Wounds for too long and falls Unconscious.",
+  "wfrp4e-zero-wounds-prone.chat.unconscious": "{actorName} has remained at 0 Wounds for too long (TB {tb}) and falls Unconscious.",
   "wfrp4e-zero-wounds-prone.chat.unconsciousButton": "Apply Unconscious condition",
 
   "wfrp4e-zero-wounds-prone.notifications.actorNotFound": "Unable to find the Actor to apply the condition.",
