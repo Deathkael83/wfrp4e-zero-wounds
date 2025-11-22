@@ -37,10 +37,13 @@
   "wfrp4e-zero-wounds-prone.mode.chat": "Pulsante in chat",
   "wfrp4e-zero-wounds-prone.mode.auto": "Automatico",
 
+  "wfrp4e-zero-wounds-prone.condition.prone": "Prono",
+  "wfrp4e-zero-wounds-prone.condition.unconscious": "Privo di sensi",
+
   "wfrp4e-zero-wounds-prone.chat.message": "{actorName} è sceso a 0 Ferite.",
   "wfrp4e-zero-wounds-prone.chat.button": "Applica condizione Prono",
 
-  "wfrp4e-zero-wounds-prone.chat.unconscious": "{actorName} è rimasto troppo a lungo a 0 Ferite e cade Privo di sensi.",
+  "wfrp4e-zero-wounds-prone.chat.unconscious": "{actorName} è rimasto troppo a lungo a 0 Ferite (BR {tb}) e cade Privo di sensi.",
   "wfrp4e-zero-wounds-prone.chat.unconsciousButton": "Applica condizione Privo di sensi",
 
   "wfrp4e-zero-wounds-prone.notifications.actorNotFound": "Impossibile trovare l’attore per applicare la condizione.",
