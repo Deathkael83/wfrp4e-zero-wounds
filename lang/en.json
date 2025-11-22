@@ -20,8 +20,14 @@
   "wfrp4e-zero-wounds-prone.settings.proneMode.name": "Prone at 0 Wounds",
   "wfrp4e-zero-wounds-prone.settings.proneMode.hint": "Choose whether applying Prone at 0 Wounds is disabled, requires a chat button, or is applied automatically.",
 
+  "wfrp4e-zero-wounds-prone.settings.proneAutoNotify.name": "Chat notification for automatic Prone",
+  "wfrp4e-zero-wounds-prone.settings.proneAutoNotify.hint": "If enabled, when Prone is applied automatically, a chat message is sent to the same recipients that would receive the chat button.",
+
   "wfrp4e-zero-wounds-prone.settings.unconsciousMode.name": "Unconscious after Toughness Bonus rounds",
   "wfrp4e-zero-wounds-prone.settings.unconsciousMode.hint": "Choose whether falling Unconscious after remaining at 0 Wounds for a number of combat rounds equal to Toughness Bonus is disabled, requires a chat button, or is applied automatically.",
+
+  "wfrp4e-zero-wounds-prone.settings.unconsciousAutoNotify.name": "Chat notification for automatic Unconscious",
+  "wfrp4e-zero-wounds-prone.settings.unconsciousAutoNotify.hint": "If enabled, when Unconscious is applied automatically, a chat message is sent to the same recipients that would receive the chat button.",
 
   "wfrp4e-zero-wounds-prone.recipients.gmOnly": "GM only",
   "wfrp4e-zero-wounds-prone.recipients.owners": "Owners + GM",
