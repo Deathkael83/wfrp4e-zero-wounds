@@ -1,0 +1,29 @@
+{
+  "wfrp4e-zero-wounds-prone.title": "WFRP4e - Prone at Zero Wounds",
+
+  "wfrp4e-zero-wounds-prone.settings.enableModule.name": "Enable message at 0 Wounds",
+  "wfrp4e-zero-wounds-prone.settings.enableModule.hint": "If disabled, the module will do nothing when an Actor reaches 0 Wounds.",
+
+  "wfrp4e-zero-wounds-prone.settings.enablePC.name": "Enable for Player Characters",
+  "wfrp4e-zero-wounds-prone.settings.enablePC.hint": "Show the message when a Player Character is reduced to 0 Wounds.",
+
+  "wfrp4e-zero-wounds-prone.settings.pcRecipients.name": "Recipients for Player Characters",
+  "wfrp4e-zero-wounds-prone.settings.pcRecipients.hint": "Who should receive the chat message when a Player Character reaches 0 Wounds?",
+
+  "wfrp4e-zero-wounds-prone.settings.enableNPC.name": "Enable for NPCs / Creatures",
+  "wfrp4e-zero-wounds-prone.settings.enableNPC.hint": "Show the message when an NPC or creature is reduced to 0 Wounds.",
+
+  "wfrp4e-zero-wounds-prone.settings.npcRecipients.name": "Recipients for NPCs / Creatures",
+  "wfrp4e-zero-wounds-prone.settings.npcRecipients.hint": "Who should receive the chat message when an NPC or creature reaches 0 Wounds?",
+
+  "wfrp4e-zero-wounds-prone.recipients.gmOnly": "GM only",
+  "wfrp4e-zero-wounds-prone.recipients.owners": "Owners + GM",
+  "wfrp4e-zero-wounds-prone.recipients.everyone": "All players",
+
+  "wfrp4e-zero-wounds-prone.chat.message": "{actorName} has been reduced to 0 Wounds.",
+  "wfrp4e-zero-wounds-prone.chat.button": "Apply Prone condition",
+
+  "wfrp4e-zero-wounds-prone.notifications.actorNotFound": "Unable to find the Actor to apply the Prone condition.",
+  "wfrp4e-zero-wounds-prone.notifications.noAddCondition": "actor.addCondition was not found. Please check your WFRP4e system version.",
+  "wfrp4e-zero-wounds-prone.notifications.errorApplying": "Error while applying the Prone condition. Check the console."
+}
