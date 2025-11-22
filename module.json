@@ -1,7 +1,7 @@
 {
   "id": "wfrp4e-zero-wounds-prone",
-  "title": "WFRP4e - Zero Wounds Prone",
-  "description": "Quando un attore scende a 0 Ferite, invia un messaggio in chat con pulsante per applicare Prono.",
+  "title": "wfrp4e-zero-wounds-prone.title",
+  "description": "wfrp4e-zero-wounds-prone.description",
   "version": "1.0.0",
   "compatibility": {
     "minimum": "12",
