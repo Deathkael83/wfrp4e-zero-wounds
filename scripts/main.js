@@ -11,8 +11,8 @@ Hooks.on("preUpdateActor", async function (actor, changes, options, userId) {
 
     const oldWounds = foundry.utils.getProperty(actor, "system.status.wounds.value") ?? 0;
 
-    // Determina un token "primario" associato all'attore
-    const tokenDoc = getPrimaryTokenDocument(actor);
+    // Risolvi il token specifico, se possibile
+    const tokenDoc = resolveTokenDocument(actor, options);
 
     // Da >0 a <=0 → caduto a 0 Ferite
     if (oldWounds > 0 && newWounds <= 0) {
@@ -133,7 +133,7 @@ async function applyProne(actor) {
 }
 
 // Flag per gestire il conteggio dei Round a 0 Ferite (Privo di sensi)
-// → ora salvato sul TOKEN, non sull'attore, così funziona anche per PNG/mostri non linkati
+// → salvato sul TOKEN, così funziona per PNG/mostri e per token multipli
 async function markZeroWoundsRound(actor, tokenDoc) {
   const mode = game.settings.get(MODULE_ID, "unconsciousMode");
   if (mode === "disabled") return;
@@ -341,6 +341,30 @@ function getRecipients(actor, mode) {
   return gmIds;
 }
 
+// Risolve il token corretto a partire dall'update (options) o dall'attore
+function resolveTokenDocument(actor, options) {
+  // 1) Se c'è un tokenId esplicito
+  if (options?.tokenId && canvas?.tokens) {
+    const t = canvas.tokens.get(options.tokenId);
+    if (t) return t.document ?? t;
+  }
+
+  // 2) Se l'update arriva da un TokenDocument come parent
+  if (options?.parent && options.parent.documentName === "Token") {
+    return options.parent;
+  }
+
+  // 3) Se è stato passato direttamente un token in options
+  if (options?.token) {
+    const tok = options.token;
+    if (tok.document) return tok.document;
+    return tok;
+  }
+
+  // 4) Fallback: token "primario" dell'attore
+  return getPrimaryTokenDocument(actor);
+}
+
 // Token helper: token primario per un attore
 function getPrimaryTokenDocument(actor) {
   // Preferisci un token nel combattimento attivo
@@ -416,7 +440,7 @@ Hooks.on("renderChatMessage", function (message, html, data) {
     });
   }
 
-  // Tag della condizione cliccabile: posta la condizione in chat
+  // Tag della condizione cliccabile: posta la condizione in chat (se supportato)
   html.find(".wfrp4e-condition-tag").on("click", (event) => {
     const key = event.currentTarget.dataset.condition;
     if (game.wfrp4e?.utility?.postCondition) {
