@@ -58,7 +58,8 @@ async function handleZeroWounds(actor, tokenDoc) {
 async function sendPronePrompt(actor, tokenDoc, whisper) {
   const displayName = getDisplayName(actor, tokenDoc);
   const baseText = game.i18n.format(`${LOCAL}.chat.message`, { actorName: displayName });
-  const condTag = getConditionTag("prone");
+  // WFRP4e riconosce [Prone] come tag condizione
+  const condTag = "[Prone]";
   const msgText = `${baseText} ${condTag}`;
 
   const content = `
@@ -94,7 +95,7 @@ async function sendPronePrompt(actor, tokenDoc, whisper) {
 async function sendProneAutoMessage(actor, tokenDoc, whisper) {
   const displayName = getDisplayName(actor, tokenDoc);
   const baseText = game.i18n.format(`${LOCAL}.chat.message`, { actorName: displayName });
-  const condTag = getConditionTag("prone");
+  const condTag = "[Prone]";
   const msgText = `${baseText} ${condTag}`;
 
   const content = `
@@ -235,7 +236,8 @@ async function sendUnconsciousPrompt(actor, tokenDoc, whisper, tb) {
     actorName: displayName,
     tb
   });
-  const condTag = getConditionTag("unconscious");
+  // WFRP4e riconosce [Unconscious]
+  const condTag = "[Unconscious]";
   const msgText = `${baseText} ${condTag}`;
 
   const content = `
@@ -274,7 +276,7 @@ async function sendUnconsciousAutoMessage(actor, tokenDoc, whisper, tb) {
     actorName: displayName,
     tb
   });
-  const condTag = getConditionTag("unconscious");
+  const condTag = "[Unconscious]";
   const msgText = `${baseText} ${condTag}`;
 
   const content = `
@@ -386,65 +388,49 @@ function getDisplayName(actor, tokenDoc) {
   return actor.name;
 }
 
-// Genera il "tag condizione" cliccabile / tooltip
-function getConditionTag(key) {
-  const label = game.i18n.localize(`${LOCAL}.condition.${key}`);
-  const escape = foundry.utils?.escapeHTML ?? (s => s);
-  const safeLabel = escape(label);
-  return `<span class="wfrp4e-condition-tag" data-condition="${key}" title="${safeLabel}">[${safeLabel}]</span>`;
-}
-
-// Listener per i bottoni in chat + tag condizione
+// Listener per i bottoni in chat
 Hooks.on("renderChatMessage", function (message, html, data) {
-  if (message.flags?.[MODULE_ID]?.actorUuid) {
-    const uuid = message.flags[MODULE_ID].actorUuid;
+  if (!message.flags?.[MODULE_ID]?.actorUuid) return;
 
-    // Bottone: Applica Prono
-    html.find(".apply-prone-zero-wounds").on("click", async (event) => {
-      event.preventDefault();
-      try {
-        const doc = await fromUuid(uuid);
-        const actor = doc instanceof Actor ? doc : doc?.actor;
+  const uuid = message.flags[MODULE_ID].actorUuid;
 
-        if (!actor) {
-          ui.notifications.error(game.i18n.localize(`${LOCAL}.notifications.actorNotFound`));
-          return;
-        }
+  // Bottone: Applica Prono
+  html.find(".apply-prone-zero-wounds").on("click", async (event) => {
+    event.preventDefault();
+    try {
+      const doc = await fromUuid(uuid);
+      const actor = doc instanceof Actor ? doc : doc?.actor;
 
-        await applyProne(actor);
-
-      } catch (err) {
-        console.error(`[${MODULE_ID}] Error applying Prone from chat:`, err);
-        ui.notifications.error(game.i18n.localize(`${LOCAL}.notifications.errorApplying`));
+      if (!actor) {
+        ui.notifications.error(game.i18n.localize(`${LOCAL}.notifications.actorNotFound`));
+        return;
       }
-    });
 
-    // Bottone: Applica Privo di sensi
-    html.find(".apply-unconscious-zero-wounds").on("click", async (event) => {
-      event.preventDefault();
-      try {
-        const doc = await fromUuid(uuid);
-        const actor = doc instanceof Actor ? doc : doc?.actor;
+      await applyProne(actor);
 
-        if (!actor) {
-          ui.notifications.error(game.i18n.localize(`${LOCAL}.notifications.actorNotFound`));
-          return;
-        }
+    } catch (err) {
+      console.error(`[${MODULE_ID}] Error applying Prone from chat:`, err);
+      ui.notifications.error(game.i18n.localize(`${LOCAL}.notifications.errorApplying`));
+    }
+  });
 
-        await applyUnconscious(actor);
+  // Bottone: Applica Privo di sensi
+  html.find(".apply-unconscious-zero-wounds").on("click", async (event) => {
+    event.preventDefault();
+    try {
+      const doc = await fromUuid(uuid);
+      const actor = doc instanceof Actor ? doc : doc?.actor;
 
-      } catch (err) {
-        console.error(`[${MODULE_ID}] Error applying Unconscious from chat:`, err);
-        ui.notifications.error(game.i18n.localize(`${LOCAL}.notifications.errorApplying`));
+      if (!actor) {
+        ui.notifications.error(game.i18n.localize(`${LOCAL}.notifications.actorNotFound`));
+        return;
       }
-    });
-  }
 
-  // Tag della condizione cliccabile: posta la condizione in chat (se supportato)
-  html.find(".wfrp4e-condition-tag").on("click", (event) => {
-    const key = event.currentTarget.dataset.condition;
-    if (game.wfrp4e?.utility?.postCondition) {
-      game.wfrp4e.utility.postCondition(key);
+      await applyUnconscious(actor);
+
+    } catch (err) {
+      console.error(`[${MODULE_ID}] Error applying Unconscious from chat:`, err);
+      ui.notifications.error(game.i18n.localize(`${LOCAL}.notifications.errorApplying`));
     }
   });
 });
