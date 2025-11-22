@@ -169,11 +169,11 @@ Hooks.on("renderChatMessage", function (message, html, data) {
         return;
       }
 
-      // WFRP4e: applica condizione "Prone"
-      if (game.wfrp4e?.utility?.applyCondition) {
-        await game.wfrp4e.utility.applyCondition("prone", actor);
+      // WFRP4e: applica condizione "Prone" usando l'API attuale
+      if (typeof actor.addCondition === "function") {
+        await actor.addCondition("prone");
       } else {
-        ui.notifications.warn("Funzione per applicare condizioni WFRP4e non trovata. Controlla la versione del sistema.");
+        ui.notifications.warn("Metodo actor.addCondition non trovato. Controlla la versione del sistema WFRP4e.");
       }
 
     } catch (err) {
@@ -182,3 +182,4 @@ Hooks.on("renderChatMessage", function (message, html, data) {
     }
   });
 });
+
