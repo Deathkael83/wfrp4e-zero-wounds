@@ -11,7 +11,7 @@ function getDisplayName(actor, tokenDoc) {
   return actor.name;
 }
 
-// Recupera TokenDocument “migliore” per un attore (usato per PG)
+// Recupera TokenDocument per questo actor
 function resolveTokenDocument(actor, options) {
   // 1) tokenId esplicito nelle options
   if (options?.tokenId && canvas?.tokens) {
@@ -19,14 +19,6 @@ function resolveTokenDocument(actor, options) {
     if (t) return t.document ?? t;
   }
 
-  Hooks.on("preUpdateToken", (tokenDoc, changes, options, userId) => {
-  console.log("=== DEBUG preUpdateToken ===");
-  console.log("TOKEN:", tokenDoc);
-  console.log("CHANGES:", changes);
-  console.log("OPTIONS:", options);
-  console.log("OLD WOUNDS:", tokenDoc.actor?.system?.status?.wounds?.value);
-  console.log("============================");
-});
   // 2) parent è un TokenDocument
   if (options?.parent && options.parent.documentName === "Token") {
     return options.parent;
@@ -38,7 +30,13 @@ function resolveTokenDocument(actor, options) {
     return tok.document ?? tok;
   }
 
-  // 4) se in combattimento, cerca combatant con questo actor
+  // 4) token con actor *identico* (fondamentale per token non linkati)
+  if (canvas?.tokens) {
+    const placeable = canvas.tokens.placeables.find(t => t.actor === actor);
+    if (placeable) return placeable.document ?? placeable;
+  }
+
+  // 5) se in combattimento, prova via combatant (fallback)
   if (game.combat) {
     const combatant = game.combat.combatants.find(c => {
       if (!c.actor) return false;
@@ -50,11 +48,11 @@ function resolveTokenDocument(actor, options) {
     if (combatant?.token) return combatant.token;
   }
 
-  // 5) token attivi per questo actor
+  // 6) token attivi per questo actor (ultimo fallback)
   const tokens = actor.getActiveTokens(true, true);
   if (tokens.length) return tokens[0].document ?? tokens[0];
 
-  // 6) nulla trovato
+  // 7) nulla trovato
   return null;
 }
 
@@ -90,15 +88,12 @@ function makeConditionTag(condKey) {
 }
 
 /* --------------------------------------------- */
-/* PREUPDATE ACTOR – USATO SOLO PER I PG         */
+/* PREUPDATE ACTOR – unico punto di ingresso     */
 /* --------------------------------------------- */
 
 Hooks.on("preUpdateActor", async function (actor, changes, options, userId) {
   try {
     if (!game.settings.get(MODULE_ID, "enableModule")) return;
-
-    // Qui gestiamo SOLO i PG (character). PNG/mostri non linkati li trattiamo in preUpdateToken.
-    if (actor.type !== "character") return;
 
     const newWounds = foundry.utils.getProperty(changes, "system.status.wounds.value");
     if (newWounds === undefined) return;
@@ -118,53 +113,6 @@ Hooks.on("preUpdateActor", async function (actor, changes, options, userId) {
     }
   } catch (err) {
     console.error(`[${MODULE_ID}] preUpdateActor error:`, err);
-  }
-});
-
-/* --------------------------------------------- */
-/* PREUPDATE TOKEN – PER PNG / MOSTRI NON LINKATI */
-/* --------------------------------------------- */
-
-Hooks.on("preUpdateToken", async function (tokenDoc, changes, options, userId) {
-  try {
-    if (!game.settings.get(MODULE_ID, "enableModule")) return;
-
-    const actor = tokenDoc.actor;
-    if (!actor) return;
-
-    // gestiamo qui solo token NON linkati
-    if (tokenDoc.actorLink) return;
-
-    // PG li gestiamo via preUpdateActor; qui ci concentriamo sui PNG/mostri
-    const isPC = actor.type === "character";
-    const isNPC = !isPC;
-    if (!isNPC) return;
-
-    // Prova a leggere le Ferite dal delta del token
-    let newWounds =
-      foundry.utils.getProperty(changes, "actorData.system.status.wounds.value");
-
-    // In alcune configurazioni/patch potrebbe arrivare diretto su system
-    if (newWounds === undefined) {
-      newWounds = foundry.utils.getProperty(changes, "system.status.wounds.value");
-    }
-
-    if (newWounds === undefined) return;
-
-    const oldWounds = foundry.utils.getProperty(actor, "system.status.wounds.value") ?? 0;
-
-    // >0 → <=0
-    if (oldWounds > 0 && newWounds <= 0) {
-      await onZeroWounds(actor, tokenDoc);
-      await startUnconsciousTimer(actor, tokenDoc);
-    }
-
-    // <=0 → >=1
-    if (oldWounds <= 0 && newWounds >= 1) {
-      await clearUnconsciousTimer(actor);
-    }
-  } catch (err) {
-    console.error(`[${MODULE_ID}] preUpdateToken error:`, err);
   }
 });
 
