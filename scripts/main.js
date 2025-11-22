@@ -13,23 +13,40 @@ function getDisplayName(actor, tokenDoc) {
 
 // Recupera TokenDocument affidabile
 function resolveTokenDocument(actor, options) {
+  // 1) tokenId esplicito nelle options
   if (options?.tokenId && canvas?.tokens) {
     const t = canvas.tokens.get(options.tokenId);
     if (t) return t.document ?? t;
   }
+
+  // 2) parent è un TokenDocument
   if (options?.parent && options.parent.documentName === "Token") {
     return options.parent;
   }
+
+  // 3) options.token
   if (options?.token) {
     const tok = options.token;
     return tok.document ?? tok;
   }
+
+  // 4) in combattimento: cerca il combatant che usa *questo* actor
   if (game.combat) {
-    const c = game.combat.combatants.find(x => x.actor?.id === actor.id && x.token);
-    if (c?.token) return c.token;
+    const combatant = game.combat.combatants.find(c => {
+      if (!c.actor) return false;
+      if (c.actor === actor) return true; // stesso oggetto
+      if (c.actor.uuid && actor.uuid && c.actor.uuid === actor.uuid) return true;
+      if (c.actor.id === actor.id) return true;
+      return false;
+    });
+    if (combatant?.token) return combatant.token;
   }
+
+  // 5) fallback: token attivi per questo actor
   const tokens = actor.getActiveTokens(true, true);
   if (tokens.length) return tokens[0].document ?? tokens[0];
+
+  // 6) nulla trovato
   return null;
 }
 
@@ -52,14 +69,13 @@ function getRecipients(actor, mode) {
   return gmIds;
 }
 
-// Tag condizione stile WFRP4e (condKey minuscolo)
+// Tag condizione stile WFRP4e (condKey minuscolo: "prone", "unconscious")
 function makeConditionTag(condKey) {
   const cfg = CONFIG.WFRP4E;
   if (!cfg?.conditions || !cfg?.conditionNames) return `[${condKey}]`;
 
   const id = cfg.conditions[condKey];       // "prone"
-  const name = cfg.conditionNames[condKey]; // "Prono"
-
+  const name = cfg.conditionNames[condKey]; // "Prono" / "Privo di sensi"
   if (!id) return `[${condKey}]`;
 
   return `<a class="condition-chat" data-cond="${id}">${name}</a>`;
@@ -78,11 +94,13 @@ Hooks.on("preUpdateActor", async function (actor, changes, options, userId) {
   const oldWounds = actor.system.status.wounds.value;
   const tokenDoc = resolveTokenDocument(actor, options);
 
+  // >0 → <=0
   if (oldWounds > 0 && newWounds <= 0) {
     await onZeroWounds(actor, tokenDoc);
     await startUnconsciousTimer(actor, tokenDoc);
   }
 
+  // <=0 → >=1
   if (oldWounds <= 0 && newWounds >= 1) {
     await clearUnconsciousTimer(actor);
   }
@@ -117,7 +135,7 @@ async function applyProne(actor) {
   try {
     await actor.addCondition("prone");
   } catch (err) {
-    console.error(err);
+    console.error(`[${MODULE_ID}] applyProne error:`, err);
   }
 }
 
@@ -130,7 +148,9 @@ async function sendPronePrompt(actor, tokenDoc, whisper) {
   const content = `
   <div>
     <p>${msg}</p>
-    <button class="apply-prone-zero-wounds">${game.i18n.localize(`${LOCAL}.chat.button`)}</button>
+    <button class="apply-prone-zero-wounds">
+      ${game.i18n.localize(`${LOCAL}.chat.button`)}
+    </button>
   </div>`;
 
   await sendMessage(actor, tokenDoc, content, whisper);
@@ -163,7 +183,8 @@ async function startUnconsciousTimer(actor, tokenDoc) {
 }
 
 async function clearUnconsciousTimer(actor) {
-  for (const t of actor.getActiveTokens(true, true)) {
+  const tokens = actor.getActiveTokens(true, true);
+  for (const t of tokens) {
     await t.document.unsetFlag(MODULE_ID, "zeroWoundsInfo").catch(() => {});
   }
 }
@@ -233,7 +254,7 @@ async function applyUnconscious(actor) {
   try {
     await actor.addCondition("unconscious");
   } catch (err) {
-    console.error(err);
+    console.error(`[${MODULE_ID}] applyUnconscious error:`, err);
   }
 }
 
@@ -246,7 +267,9 @@ async function sendUnconsciousPrompt(actor, tokenDoc, whisper, tb) {
   const content = `
   <div>
     <p>${msg}</p>
-    <button class="apply-unconscious-zero-wounds">${game.i18n.localize(`${LOCAL}.chat.unconsciousButton`)}</button>
+    <button class="apply-unconscious-zero-wounds">
+      ${game.i18n.localize(`${LOCAL}.chat.unconsciousButton`)}
+    </button>
   </div>`;
 
   await sendMessage(actor, tokenDoc, content, whisper);
