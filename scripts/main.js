@@ -1,12 +1,13 @@
 const MODULE_ID = "wfrp4e-zero-wounds-prone";
+const LOCAL = MODULE_ID; // per comodità
 
 Hooks.once("init", function () {
   console.log(`[${MODULE_ID}] Init`);
 
   // Abilita / disabilita completamente la funzione
   game.settings.register(MODULE_ID, "enableModule", {
-    name: "Abilita messaggio a 0 Ferite",
-    hint: "Se disattivato, il modulo non farà nulla quando un attore arriva a 0 Ferite.",
+    name: game.i18n.localize(`${LOCAL}.settings.enableModule.name`),
+    hint: game.i18n.localize(`${LOCAL}.settings.enableModule.hint`),
     scope: "world",
     config: true,
     type: Boolean,
@@ -15,8 +16,8 @@ Hooks.once("init", function () {
 
   // Impostazioni PG
   game.settings.register(MODULE_ID, "enablePC", {
-    name: "Abilita per Personaggi Giocanti (PG)",
-    hint: "Mostra il messaggio quando un PG scende a 0 Ferite.",
+    name: game.i18n.localize(`${LOCAL}.settings.enablePC.name`),
+    hint: game.i18n.localize(`${LOCAL}.settings.enablePC.hint`),
     scope: "world",
     config: true,
     type: Boolean,
@@ -24,23 +25,23 @@ Hooks.once("init", function () {
   });
 
   game.settings.register(MODULE_ID, "pcRecipients", {
-    name: "Destinatari messaggio PG",
-    hint: "A chi deve arrivare il messaggio quando un PG scende a 0 Ferite.",
+    name: game.i18n.localize(`${LOCAL}.settings.pcRecipients.name`),
+    hint: game.i18n.localize(`${LOCAL}.settings.pcRecipients.hint`),
     scope: "world",
     config: true,
     type: String,
     choices: {
-      "gmOnly": "Solo GM",
-      "owners": "Proprietari del PG + GM",
-      "everyone": "Tutti i giocatori"
+      "gmOnly": game.i18n.localize(`${LOCAL}.recipients.gmOnly`),
+      "owners": game.i18n.localize(`${LOCAL}.recipients.owners`),
+      "everyone": game.i18n.localize(`${LOCAL}.recipients.everyone`)
     },
     default: "owners"
   });
 
   // Impostazioni PNG / Mostri
   game.settings.register(MODULE_ID, "enableNPC", {
-    name: "Abilita per PNG / Mostri",
-    hint: "Mostra il messaggio quando un PNG o mostro scende a 0 Ferite.",
+    name: game.i18n.localize(`${LOCAL}.settings.enableNPC.name`),
+    hint: game.i18n.localize(`${LOCAL}.settings.enableNPC.hint`),
     scope: "world",
     config: true,
     type: Boolean,
@@ -48,17 +49,17 @@ Hooks.once("init", function () {
   });
 
   game.settings.register(MODULE_ID, "npcRecipients", {
-    name: "Destinatari messaggio PNG / Mostri",
-    hint: "A chi deve arrivare il messaggio quando un PNG o mostro scende a 0 Ferite.",
+    name: game.i18n.localize(`${LOCAL}.settings.npcRecipients.name`),
+    hint: game.i18n.localize(`${LOCAL}.settings.npcRecipients.hint`),
     scope: "world",
     config: true,
     type: String,
     choices: {
-      "gmOnly": "Solo GM",
-      "owners": "Proprietari dell'attore (se esistono) + GM",
-      "everyone": "Tutti i giocatori"
+      "gmOnly": game.i18n.localize(`${LOCAL}.recipients.gmOnly`),
+      "owners": game.i18n.localize(`${LOCAL}.recipients.owners`),
+      "everyone": game.i18n.localize(`${LOCAL}.recipients.everyone`)
     },
-    // Default che rispetta quello che hai chiesto: per PNG/mostri solo GM
+    // Default: per PNG/mostri solo GM
     default: "gmOnly"
   });
 });
@@ -79,7 +80,7 @@ Hooks.on("preUpdateActor", async function (actor, changes, options, userId) {
       handleZeroWounds(actor);
     }
   } catch (err) {
-    console.error(`[${MODULE_ID}] Errore in preUpdateActor:`, err);
+    console.error(`[${MODULE_ID}] Error in preUpdateActor:`, err);
   }
 });
 
@@ -96,11 +97,14 @@ async function handleZeroWounds(actor) {
   const whisper = getRecipients(actor, recipientMode);
 
   const actorName = actor.name;
+  const msgText = game.i18n.format(`${LOCAL}.chat.message`, { actorName });
+  const btnText = game.i18n.localize(`${LOCAL}.chat.button`);
+
   const content = `
   <div class="wfrp4e-zero-wounds-prone">
-    <p><b>${actorName}</b> è sceso a <b>0 Ferite</b>.</p>
+    <p>${msgText}</p>
     <button type="button" class="apply-prone-zero-wounds">
-      Applica condizione <b>Prono</b>
+      ${btnText}
     </button>
   </div>
   `;
@@ -148,7 +152,7 @@ function getRecipients(actor, mode) {
     return Array.from(all);
   }
 
-  // Fallback paranoico
+  // Fallback
   return gmIds;
 }
 
@@ -165,7 +169,7 @@ Hooks.on("renderChatMessage", function (message, html, data) {
       const actor = doc instanceof Actor ? doc : doc?.actor;
 
       if (!actor) {
-        ui.notifications.error("Impossibile trovare l'attore per applicare Prono.");
+        ui.notifications.error(game.i18n.localize(`${LOCAL}.notifications.actorNotFound`));
         return;
       }
 
@@ -173,13 +177,12 @@ Hooks.on("renderChatMessage", function (message, html, data) {
       if (typeof actor.addCondition === "function") {
         await actor.addCondition("prone");
       } else {
-        ui.notifications.warn("Metodo actor.addCondition non trovato. Controlla la versione del sistema WFRP4e.");
+        ui.notifications.warn(game.i18n.localize(`${LOCAL}.notifications.noAddCondition`));
       }
 
     } catch (err) {
-      console.error(`[${MODULE_ID}] Errore applicando Prono:`, err);
-      ui.notifications.error("Errore applicando la condizione Prono. Controlla la console.");
+      console.error(`[${MODULE_ID}] Error applying Prone:`, err);
+      ui.notifications.error(game.i18n.localize(`${LOCAL}.notifications.errorApplying`));
     }
   });
 });
-
