@@ -19,6 +19,14 @@ function resolveTokenDocument(actor, options) {
     if (t) return t.document ?? t;
   }
 
+  Hooks.on("preUpdateToken", (tokenDoc, changes, options, userId) => {
+  console.log("=== DEBUG preUpdateToken ===");
+  console.log("TOKEN:", tokenDoc);
+  console.log("CHANGES:", changes);
+  console.log("OPTIONS:", options);
+  console.log("OLD WOUNDS:", tokenDoc.actor?.system?.status?.wounds?.value);
+  console.log("============================");
+});
   // 2) parent è un TokenDocument
   if (options?.parent && options.parent.documentName === "Token") {
     return options.parent;
