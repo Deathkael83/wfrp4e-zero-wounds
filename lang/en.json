@@ -1,5 +1,6 @@
 {
   "wfrp4e-zero-wounds-prone.title": "WFRP4e - Prone at Zero Wounds",
+  "wfrp4e-zero-wounds-prone.description": "Automatically shows a chat button to apply the Prone condition when an Actor reaches 0 Wounds."
 
   "wfrp4e-zero-wounds-prone.settings.enableModule.name": "Enable message at 0 Wounds",
   "wfrp4e-zero-wounds-prone.settings.enableModule.hint": "If disabled, the module will do nothing when an Actor reaches 0 Wounds.",
