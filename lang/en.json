@@ -1,30 +1,43 @@
 {
   "wfrp4e-zero-wounds-prone.title": "WFRP4e - Prone at Zero Wounds",
-  "wfrp4e-zero-wounds-prone.description": "Automatically shows a chat button to apply the Prone condition when an Actor reaches 0 Wounds.",
+  "wfrp4e-zero-wounds-prone.description": "Automatically handles Prone at 0 Wounds and Unconscious after Toughness Bonus rounds, with options for chat buttons or automatic application.",
 
-  "wfrp4e-zero-wounds-prone.settings.enableModule.name": "Enable message at 0 Wounds",
-  "wfrp4e-zero-wounds-prone.settings.enableModule.hint": "If disabled, the module will do nothing when an Actor reaches 0 Wounds.",
+  "wfrp4e-zero-wounds-prone.settings.enableModule.name": "Enable module",
+  "wfrp4e-zero-wounds-prone.settings.enableModule.hint": "If disabled, this module will not react when Actors reach 0 Wounds.",
 
   "wfrp4e-zero-wounds-prone.settings.enablePC.name": "Enable for Player Characters",
-  "wfrp4e-zero-wounds-prone.settings.enablePC.hint": "Show the message when a Player Character is reduced to 0 Wounds.",
+  "wfrp4e-zero-wounds-prone.settings.enablePC.hint": "If enabled, the module will react when Player Characters reach 0 Wounds.",
 
   "wfrp4e-zero-wounds-prone.settings.pcRecipients.name": "Recipients for Player Characters",
-  "wfrp4e-zero-wounds-prone.settings.pcRecipients.hint": "Who should receive the chat message when a Player Character reaches 0 Wounds?",
+  "wfrp4e-zero-wounds-prone.settings.pcRecipients.hint": "Who should receive chat messages related to Player Characters reaching 0 Wounds or falling Unconscious?",
 
   "wfrp4e-zero-wounds-prone.settings.enableNPC.name": "Enable for NPCs / Creatures",
-  "wfrp4e-zero-wounds-prone.settings.enableNPC.hint": "Show the message when an NPC or creature is reduced to 0 Wounds.",
+  "wfrp4e-zero-wounds-prone.settings.enableNPC.hint": "If enabled, the module will react when NPCs or creatures reach 0 Wounds.",
 
   "wfrp4e-zero-wounds-prone.settings.npcRecipients.name": "Recipients for NPCs / Creatures",
-  "wfrp4e-zero-wounds-prone.settings.npcRecipients.hint": "Who should receive the chat message when an NPC or creature reaches 0 Wounds?",
+  "wfrp4e-zero-wounds-prone.settings.npcRecipients.hint": "Who should receive chat messages related to NPCs or creatures reaching 0 Wounds or falling Unconscious?",
+
+  "wfrp4e-zero-wounds-prone.settings.proneMode.name": "Prone at 0 Wounds",
+  "wfrp4e-zero-wounds-prone.settings.proneMode.hint": "Choose whether applying Prone at 0 Wounds is disabled, requires a chat button, or is applied automatically.",
+
+  "wfrp4e-zero-wounds-prone.settings.unconsciousMode.name": "Unconscious after Toughness Bonus rounds",
+  "wfrp4e-zero-wounds-prone.settings.unconsciousMode.hint": "Choose whether falling Unconscious after remaining at 0 Wounds for a number of combat rounds equal to Toughness Bonus is disabled, requires a chat button, or is applied automatically.",
 
   "wfrp4e-zero-wounds-prone.recipients.gmOnly": "GM only",
   "wfrp4e-zero-wounds-prone.recipients.owners": "Owners + GM",
   "wfrp4e-zero-wounds-prone.recipients.everyone": "All players",
 
+  "wfrp4e-zero-wounds-prone.mode.disabled": "Disabled",
+  "wfrp4e-zero-wounds-prone.mode.chat": "Chat button",
+  "wfrp4e-zero-wounds-prone.mode.auto": "Automatic",
+
   "wfrp4e-zero-wounds-prone.chat.message": "{actorName} has been reduced to 0 Wounds.",
   "wfrp4e-zero-wounds-prone.chat.button": "Apply Prone condition",
 
-  "wfrp4e-zero-wounds-prone.notifications.actorNotFound": "Unable to find the Actor to apply the Prone condition.",
+  "wfrp4e-zero-wounds-prone.chat.unconscious": "{actorName} has remained at 0 Wounds for too long and falls Unconscious.",
+  "wfrp4e-zero-wounds-prone.chat.unconsciousButton": "Apply Unconscious condition",
+
+  "wfrp4e-zero-wounds-prone.notifications.actorNotFound": "Unable to find the Actor to apply the condition.",
   "wfrp4e-zero-wounds-prone.notifications.noAddCondition": "actor.addCondition was not found. Please check your WFRP4e system version.",
-  "wfrp4e-zero-wounds-prone.notifications.errorApplying": "Error while applying the Prone condition. Check the console."
+  "wfrp4e-zero-wounds-prone.notifications.errorApplying": "Error while applying the condition. Check the console."
 }
