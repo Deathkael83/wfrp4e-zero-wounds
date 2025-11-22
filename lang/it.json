@@ -1,30 +1,43 @@
 {
   "wfrp4e-zero-wounds-prone.title": "WFRP4e - Prono a 0 Ferite",
-  "wfrp4e-zero-wounds-prone.description": "Mostra automaticamente un pulsante in chat per applicare la condizione Prono quando un attore scende a 0 Ferite.",
+  "wfrp4e-zero-wounds-prone.description": "Gestisce automaticamente Prono a 0 Ferite e Privo di sensi dopo un numero di Round pari al Bonus Resistenza, con opzioni per pulsante in chat o applicazione automatica.",
 
-  "wfrp4e-zero-wounds-prone.settings.enableModule.name": "Abilita messaggio a 0 Ferite",
-  "wfrp4e-zero-wounds-prone.settings.enableModule.hint": "Se disattivato, il modulo non farà nulla quando un attore raggiunge 0 Ferite.",
+  "wfrp4e-zero-wounds-prone.settings.enableModule.name": "Abilita modulo",
+  "wfrp4e-zero-wounds-prone.settings.enableModule.hint": "Se disattivato, questo modulo non reagirà quando gli attori raggiungono 0 Ferite.",
 
   "wfrp4e-zero-wounds-prone.settings.enablePC.name": "Abilita per Personaggi Giocanti",
-  "wfrp4e-zero-wounds-prone.settings.enablePC.hint": "Mostra il messaggio quando un Personaggio Giocante viene ridotto a 0 Ferite.",
+  "wfrp4e-zero-wounds-prone.settings.enablePC.hint": "Se attivato, il modulo reagirà quando i Personaggi Giocanti raggiungono 0 Ferite.",
 
   "wfrp4e-zero-wounds-prone.settings.pcRecipients.name": "Destinatari per Personaggi Giocanti",
-  "wfrp4e-zero-wounds-prone.settings.pcRecipients.hint": "A chi deve arrivare il messaggio quando un Personaggio Giocante raggiunge 0 Ferite?",
+  "wfrp4e-zero-wounds-prone.settings.pcRecipients.hint": "A chi devono arrivare i messaggi in chat relativi a PG che raggiungono 0 Ferite o cadono Privi di sensi?",
 
   "wfrp4e-zero-wounds-prone.settings.enableNPC.name": "Abilita per PNG / Creature",
-  "wfrp4e-zero-wounds-prone.settings.enableNPC.hint": "Mostra il messaggio quando un PNG o una creatura viene ridotto/a a 0 Ferite.",
+  "wfrp4e-zero-wounds-prone.settings.enableNPC.hint": "Se attivato, il modulo reagirà quando PNG o creature raggiungono 0 Ferite.",
 
   "wfrp4e-zero-wounds-prone.settings.npcRecipients.name": "Destinatari per PNG / Creature",
-  "wfrp4e-zero-wounds-prone.settings.npcRecipients.hint": "A chi deve arrivare il messaggio quando un PNG o una creatura raggiunge 0 Ferite?",
+  "wfrp4e-zero-wounds-prone.settings.npcRecipients.hint": "A chi devono arrivare i messaggi in chat relativi a PNG o creature che raggiungono 0 Ferite o cadono Privi di sensi?",
+
+  "wfrp4e-zero-wounds-prone.settings.proneMode.name": "Prono a 0 Ferite",
+  "wfrp4e-zero-wounds-prone.settings.proneMode.hint": "Scegli se l’applicazione di Prono a 0 Ferite è disattivata, richiede un pulsante in chat o è automatica.",
+
+  "wfrp4e-zero-wounds-prone.settings.unconsciousMode.name": "Privo di sensi dopo BR Round",
+  "wfrp4e-zero-wounds-prone.settings.unconsciousMode.hint": "Scegli se la caduta Privo di sensi dopo essere rimasti a 0 Ferite per un numero di Round pari al Bonus Resistenza è disattivata, richiede un pulsante in chat o è automatica.",
 
   "wfrp4e-zero-wounds-prone.recipients.gmOnly": "Solo GM",
   "wfrp4e-zero-wounds-prone.recipients.owners": "Proprietari + GM",
   "wfrp4e-zero-wounds-prone.recipients.everyone": "Tutti i giocatori",
 
+  "wfrp4e-zero-wounds-prone.mode.disabled": "Disattivato",
+  "wfrp4e-zero-wounds-prone.mode.chat": "Pulsante in chat",
+  "wfrp4e-zero-wounds-prone.mode.auto": "Automatico",
+
   "wfrp4e-zero-wounds-prone.chat.message": "{actorName} è sceso a 0 Ferite.",
   "wfrp4e-zero-wounds-prone.chat.button": "Applica condizione Prono",
 
-  "wfrp4e-zero-wounds-prone.notifications.actorNotFound": "Impossibile trovare l’attore per applicare la condizione Prono.",
+  "wfrp4e-zero-wounds-prone.chat.unconscious": "{actorName} è rimasto troppo a lungo a 0 Ferite e cade Privo di sensi.",
+  "wfrp4e-zero-wounds-prone.chat.unconsciousButton": "Applica condizione Privo di sensi",
+
+  "wfrp4e-zero-wounds-prone.notifications.actorNotFound": "Impossibile trovare l’attore per applicare la condizione.",
   "wfrp4e-zero-wounds-prone.notifications.noAddCondition": "Il metodo actor.addCondition non è stato trovato. Controlla la versione del sistema WFRP4e.",
-  "wfrp4e-zero-wounds-prone.notifications.errorApplying": "Errore durante l’applicazione della condizione Prono. Controlla la console."
+  "wfrp4e-zero-wounds-prone.notifications.errorApplying": "Errore durante l’applicazione della condizione. Controlla la console."
 }
