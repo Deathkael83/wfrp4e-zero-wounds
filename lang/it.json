@@ -1,6 +1,6 @@
 {
   "wfrp4e-zero-wounds-prone.title": "WFRP4e - Prono a 0 Ferite",
-  "wfrp4e-zero-wounds-prone.description": "Mostra automaticamente un pulsante in chat per applicare la condizione Prono quando un attore scende a 0 Ferite."
+  "wfrp4e-zero-wounds-prone.description": "Mostra automaticamente un pulsante in chat per applicare la condizione Prono quando un attore scende a 0 Ferite.",
 
   "wfrp4e-zero-wounds-prone.settings.enableModule.name": "Abilita messaggio a 0 Ferite",
   "wfrp4e-zero-wounds-prone.settings.enableModule.hint": "Se disattivato, il modulo non farà nulla quando un attore raggiunge 0 Ferite.",
