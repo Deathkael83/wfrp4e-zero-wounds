@@ -20,8 +20,14 @@
   "wfrp4e-zero-wounds-prone.settings.proneMode.name": "Prono a 0 Ferite",
   "wfrp4e-zero-wounds-prone.settings.proneMode.hint": "Scegli se l’applicazione di Prono a 0 Ferite è disattivata, richiede un pulsante in chat o è automatica.",
 
+  "wfrp4e-zero-wounds-prone.settings.proneAutoNotify.name": "Notifica in chat per Prono automatico",
+  "wfrp4e-zero-wounds-prone.settings.proneAutoNotify.hint": "Se attivato, quando Prono viene applicato automaticamente viene inviato un messaggio in chat agli stessi destinatari che riceverebbero il pulsante in chat.",
+
   "wfrp4e-zero-wounds-prone.settings.unconsciousMode.name": "Privo di sensi dopo BR Round",
   "wfrp4e-zero-wounds-prone.settings.unconsciousMode.hint": "Scegli se la caduta Privo di sensi dopo essere rimasti a 0 Ferite per un numero di Round pari al Bonus Resistenza è disattivata, richiede un pulsante in chat o è automatica.",
+
+  "wfrp4e-zero-wounds-prone.settings.unconsciousAutoNotify.name": "Notifica in chat per Privo di sensi automatico",
+  "wfrp4e-zero-wounds-prone.settings.unconsciousAutoNotify.hint": "Se attivato, quando Privo di sensi viene applicato automaticamente viene inviato un messaggio in chat agli stessi destinatari che riceverebbero il pulsante in chat.",
 
   "wfrp4e-zero-wounds-prone.recipients.gmOnly": "Solo GM",
   "wfrp4e-zero-wounds-prone.recipients.owners": "Proprietari + GM",
