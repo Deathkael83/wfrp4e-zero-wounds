@@ -11,7 +11,7 @@ function getDisplayName(actor, tokenDoc) {
   return actor.name;
 }
 
-// Recupera TokenDocument affidabile
+// Recupera TokenDocument “migliore” per un attore (usato per PG)
 function resolveTokenDocument(actor, options) {
   // 1) tokenId esplicito nelle options
   if (options?.tokenId && canvas?.tokens) {
@@ -30,11 +30,11 @@ function resolveTokenDocument(actor, options) {
     return tok.document ?? tok;
   }
 
-  // 4) in combattimento: cerca il combatant che usa *questo* actor
+  // 4) se in combattimento, cerca combatant con questo actor
   if (game.combat) {
     const combatant = game.combat.combatants.find(c => {
       if (!c.actor) return false;
-      if (c.actor === actor) return true; // stesso oggetto
+      if (c.actor === actor) return true;
       if (c.actor.uuid && actor.uuid && c.actor.uuid === actor.uuid) return true;
       if (c.actor.id === actor.id) return true;
       return false;
@@ -42,7 +42,7 @@ function resolveTokenDocument(actor, options) {
     if (combatant?.token) return combatant.token;
   }
 
-  // 5) fallback: token attivi per questo actor
+  // 5) token attivi per questo actor
   const tokens = actor.getActiveTokens(true, true);
   if (tokens.length) return tokens[0].document ?? tokens[0];
 
@@ -82,17 +82,56 @@ function makeConditionTag(condKey) {
 }
 
 /* --------------------------------------------- */
-/* PREUPDATE ACTOR                               */
+/* PREUPDATE ACTOR – USATO SOLO PER I PG         */
 /* --------------------------------------------- */
 
 Hooks.on("preUpdateActor", async function (actor, changes, options, userId) {
   if (!game.settings.get(MODULE_ID, "enableModule")) return;
 
+  // Qui gestiamo SOLO i PG (character). PNG/mostri non linkati li trattiamo in preUpdateToken.
+  if (actor.type !== "character") return;
+
   const newWounds = foundry.utils.getProperty(changes, "system.status.wounds.value");
   if (newWounds === undefined) return;
 
-  const oldWounds = actor.system.status.wounds.value;
+  const oldWounds = foundry.utils.getProperty(actor, "system.status.wounds.value") ?? 0;
   const tokenDoc = resolveTokenDocument(actor, options);
+
+  // >0 → <=0
+  if (oldWounds > 0 && newWounds <= 0) {
+    await onZeroWounds(actor, tokenDoc);
+    await startUnconsciousTimer(actor, tokenDoc);
+  }
+
+  // <=0 → >=1
+  if (oldWounds <= 0 && newWounds >= 1) {
+    await clearUnconsciousTimer(actor);
+  }
+});
+
+/* --------------------------------------------- */
+/* PREUPDATE TOKEN – USATO PER PNG / MOSTRI NON LINKATI */
+/* --------------------------------------------- */
+
+Hooks.on("preUpdateToken", async function (tokenDoc, changes, options, userId) {
+  if (!game.settings.get(MODULE_ID, "enableModule")) return;
+
+  const actor = tokenDoc.actor;
+  if (!actor) return;
+
+  // Gestiamo solo token NON linkati (actorLink = false)
+  if (tokenDoc.actorLink) return;
+
+  // Per i PNG/mostri: qualsiasi tipo ≠ "character" lo consideriamo "creatura"
+  const isPC = actor.type === "character";
+  const isNPC = !isPC;
+  if (!isNPC) return; // i PG non li trattiamo qui
+
+  // Nuovo valore Ferite nei dati del token
+  const newWounds = foundry.utils.getProperty(changes, "actorData.system.status.wounds.value");
+  if (newWounds === undefined) return;
+
+  const oldWounds = foundry.utils.getProperty(actor, "system.status.wounds.value") ?? 0;
 
   // >0 → <=0
   if (oldWounds > 0 && newWounds <= 0) {
