@@ -2,139 +2,140 @@ const MODULE_ID = "wfrp4e-zero-wounds-prone";
 const LOCAL = MODULE_ID;
 
 Hooks.once("init", function () {
-  console.log(`[${MODULE_ID}] Init settings`);
 
-  // Abilita / disabilita completamente la funzione
+  // Abilitazione modulo
   game.settings.register(MODULE_ID, "enableModule", {
-    name: game.i18n.localize(`${LOCAL}.settings.enableModule.name`),
-    hint: game.i18n.localize(`${LOCAL}.settings.enableModule.hint`),
+    name: `${LOCAL}.settings.enableModule.name`,
+    hint: `${LOCAL}.settings.enableModule.hint`,
     scope: "world",
     config: true,
     type: Boolean,
     default: true
   });
 
-  // Impostazioni PG
+  // Abilitazione per PG
   game.settings.register(MODULE_ID, "enablePC", {
-    name: game.i18n.localize(`${LOCAL}.settings.enablePC.name`),
-    hint: game.i18n.localize(`${LOCAL}.settings.enablePC.hint`),
+    name: `${LOCAL}.settings.enablePC.name`,
+    hint: `${LOCAL}.settings.enablePC.hint`,
     scope: "world",
     config: true,
     type: Boolean,
     default: true
   });
 
-  game.settings.register(MODULE_ID, "pcRecipients", {
-    name: game.i18n.localize(`${LOCAL}.settings.pcRecipients.name`),
-    hint: game.i18n.localize(`${LOCAL}.settings.pcRecipients.hint`),
-    scope: "world",
-    config: true,
-    type: String,
-    choices: {
-      "gmOnly": game.i18n.localize(`${LOCAL}.recipients.gmOnly`),
-      "owners": game.i18n.localize(`${LOCAL}.recipients.owners`),
-      "everyone": game.i18n.localize(`${LOCAL}.recipients.everyone`)
-    },
-    default: "owners"
-  });
-
-  // Impostazioni PNG / Mostri
+  // Abilitazione per PNG / Mostri
   game.settings.register(MODULE_ID, "enableNPC", {
-    name: game.i18n.localize(`${LOCAL}.settings.enableNPC.name`),
-    hint: game.i18n.localize(`${LOCAL}.settings.enableNPC.hint`),
+    name: `${LOCAL}.settings.enableNPC.name`,
+    hint: `${LOCAL}.settings.enableNPC.hint`,
     scope: "world",
     config: true,
     type: Boolean,
     default: true
   });
 
-  game.settings.register(MODULE_ID, "npcRecipients", {
-    name: game.i18n.localize(`${LOCAL}.settings.npcRecipients.name`),
-    hint: game.i18n.localize(`${LOCAL}.settings.npcRecipients.hint`),
+  // Modalità messaggi / auto per Prono a 0 Ferite
+  game.settings.register(MODULE_ID, "proneMode", {
+    name: `${LOCAL}.settings.proneMode.name`,
+    hint: `${LOCAL}.settings.proneMode.hint`,
     scope: "world",
     config: true,
     type: String,
     choices: {
-      "gmOnly": game.i18n.localize(`${LOCAL}.recipients.gmOnly`),
-      "owners": game.i18n.localize(`${LOCAL}.recipients.owners`),
-      "everyone": game.i18n.localize(`${LOCAL}.recipients.everyone`)
+      disabled: `${LOCAL}.settings.mode.disabled`,
+      chat: `${LOCAL}.settings.mode.chat`,
+      auto: `${LOCAL}.settings.mode.auto`
     },
-    // default: PNG/mostri solo GM
+    default: "chat"
+  });
+
+  // Notifica in modalità auto per Prono
+  game.settings.register(MODULE_ID, "proneAutoNotify", {
+    name: `${LOCAL}.settings.proneAutoNotify.name`,
+    hint: `${LOCAL}.settings.proneAutoNotify.hint`,
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: true
+  });
+
+  // Modalità messaggi / auto per Privo di sensi
+  game.settings.register(MODULE_ID, "unconsciousMode", {
+    name: `${LOCAL}.settings.unconsciousMode.name`,
+    hint: `${LOCAL}.settings.unconsciousMode.hint`,
+    scope: "world",
+    config: true,
+    type: String,
+    choices: {
+      disabled: `${LOCAL}.settings.mode.disabled`,
+      chat: `${LOCAL}.settings.mode.chat`,
+      auto: `${LOCAL}.settings.mode.auto`
+    },
+    default: "chat"
+  });
+
+  // Notifica in modalità auto per Privo di sensi
+  game.settings.register(MODULE_ID, "unconsciousAutoNotify", {
+    name: `${LOCAL}.settings.unconsciousAutoNotify.name`,
+    hint: `${LOCAL}.settings.unconsciousAutoNotify.hint`,
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: true
+  });
+
+  // Modalità messaggi / auto per RISVEGLIO da Privo di sensi
+  game.settings.register(MODULE_ID, "wakeMode", {
+    name: `${LOCAL}.settings.wakeMode.name`,
+    hint: `${LOCAL}.settings.wakeMode.hint`,
+    scope: "world",
+    config: true,
+    type: String,
+    choices: {
+      disabled: `${LOCAL}.settings.mode.disabled`,
+      chat: `${LOCAL}.settings.mode.chat`,
+      auto: `${LOCAL}.settings.mode.auto`
+    },
+    default: "chat"
+  });
+
+  // Notifica in modalità auto per RISVEGLIO
+  game.settings.register(MODULE_ID, "wakeAutoNotify", {
+    name: `${LOCAL}.settings.wakeAutoNotify.name`,
+    hint: `${LOCAL}.settings.wakeAutoNotify.hint`,
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: true
+  });
+
+  // Destinatari messaggi per PG
+  game.settings.register(MODULE_ID, "pcRecipients", {
+    name: `${LOCAL}.settings.pcRecipients.name`,
+    hint: `${LOCAL}.settings.pcRecipients.hint`,
+    scope: "world",
+    config: true,
+    type: String,
+    choices: {
+      gmOnly: `${LOCAL}.settings.recipients.gmOnly`,
+      owners: `${LOCAL}.settings.recipients.owners`,
+      everyone: `${LOCAL}.settings.recipients.everyone`
+    },
     default: "gmOnly"
   });
 
-  // Modalità per Prono a 0 Ferite: disattivato / chat / automatico
-  game.settings.register(MODULE_ID, "proneMode", {
-    name: game.i18n.localize(`${LOCAL}.settings.proneMode.name`),
-    hint: game.i18n.localize(`${LOCAL}.settings.proneMode.hint`),
+  // Destinatari messaggi per PNG / Mostri
+  game.settings.register(MODULE_ID, "npcRecipients", {
+    name: `${LOCAL}.settings.npcRecipients.name`,
+    hint: `${LOCAL}.settings.npcRecipients.hint`,
     scope: "world",
     config: true,
     type: String,
     choices: {
-      "disabled": game.i18n.localize(`${LOCAL}.mode.disabled`),
-      "chat": game.i18n.localize(`${LOCAL}.mode.chat`),
-      "auto": game.i18n.localize(`${LOCAL}.mode.auto`)
+      gmOnly: `${LOCAL}.settings.recipients.gmOnly`,
+      owners: `${LOCAL}.settings.recipients.owners`,
+      everyone: `${LOCAL}.settings.recipients.everyone`
     },
-    default: "chat"
+    default: "gmOnly"
   });
 
-  // Notifica in chat per Prono automatico
-  game.settings.register(MODULE_ID, "proneAutoNotify", {
-    name: game.i18n.localize(`${LOCAL}.settings.proneAutoNotify.name`),
-    hint: game.i18n.localize(`${LOCAL}.settings.proneAutoNotify.hint`),
-    scope: "world",
-    config: true,
-    type: Boolean,
-    default: true
-  });
-
-  // Modalità per Privo di sensi dopo BR Round: disattivato / chat / automatico
-  game.settings.register(MODULE_ID, "unconsciousMode", {
-    name: game.i18n.localize(`${LOCAL}.settings.unconsciousMode.name`),
-    hint: game.i18n.localize(`${LOCAL}.settings.unconsciousMode.hint`),
-    scope: "world",
-    config: true,
-    type: String,
-    choices: {
-      "disabled": game.i18n.localize(`${LOCAL}.mode.disabled`),
-      "chat": game.i18n.localize(`${LOCAL}.mode.chat`),
-      "auto": game.i18n.localize(`${LOCAL}.mode.auto`)
-    },
-    default: "chat"
-  });
-
-  // Notifica in chat per Privo di sensi automatico
-  game.settings.register(MODULE_ID, "unconsciousAutoNotify", {
-    name: game.i18n.localize(`${LOCAL}.settings.unconsciousAutoNotify.name`),
-    hint: game.i18n.localize(`${LOCAL}.settings.unconsciousAutoNotify.hint`),
-    scope: "world",
-    config: true,
-    type: Boolean,
-    default: true
-  });
-  
-// Modalità risveglio (rimozione Privo di sensi quando le Ferite tornano ≥ 1)
-game.settings.register(MODULE_ID, "wakeMode", {
-  name: `${LOCAL}.settings.wakeMode.name`,
-  hint: `${LOCAL}.settings.wakeMode.hint`,
-  scope: "world",
-  config: true,
-  type: String,
-  choices: {
-    disabled: `${LOCAL}.settings.mode.disabled`,
-    chat: `${LOCAL}.settings.mode.chat`,
-    auto: `${LOCAL}.settings.mode.auto`
-  },
-  default: "chat"
-  });
-
-// Notifica in chat anche in modalità auto
-game.settings.register(MODULE_ID, "wakeAutoNotify", {
-  name: `${LOCAL}.settings.wakeAutoNotify.name`,
-  hint: `${LOCAL}.settings.wakeAutoNotify.hint`,
-  scope: "world",
-  config: true,
-  type: Boolean,
-  default: true
-  });
 });
