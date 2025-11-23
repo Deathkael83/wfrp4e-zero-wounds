@@ -1,0 +1,71 @@
+/* ================================
+ *  SETTINGS HEADERS (SEPARATORI)
+ * ================================ */
+
+#client-settings section.settings-list .form-group[data-setting-id="wfrp4e-zero-wounds-prone.headerGeneral"],
+#client-settings section.settings-list .form-group[data-setting-id="wfrp4e-zero-wounds-prone.headerPC"],
+#client-settings section.settings-list .form-group[data-setting-id="wfrp4e-zero-wounds-prone.headerNPC"],
+#client-settings section.settings-list .form-group[data-setting-id="wfrp4e-zero-wounds-prone.headerRecipients"] {
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  margin-top: 0.75rem;
+  padding-top: 0.5rem;
+}
+
+/* Nasconde il campo input dei “header” e lascia solo l’etichetta */
+#client-settings section.settings-list .form-group[data-setting-id="wfrp4e-zero-wounds-prone.headerGeneral"] input,
+#client-settings section.settings-list .form-group[data-setting-id="wfrp4e-zero-wounds-prone.headerPC"] input,
+#client-settings section.settings-list .form-group[data-setting-id="wfrp4e-zero-wounds-prone.headerNPC"] input,
+#client-settings section.settings-list .form-group[data-setting-id="wfrp4e-zero-wounds-prone.headerRecipients"] input {
+  display: none;
+}
+
+#client-settings section.settings-list .form-group[data-setting-id="wfrp4e-zero-wounds-prone.headerGeneral"] label,
+#client-settings section.settings-list .form-group[data-setting-id="wfrp4e-zero-wounds-prone.headerPC"] label,
+#client-settings section.settings-list .form-group[data-setting-id="wfrp4e-zero-wounds-prone.headerNPC"] label,
+#client-settings section.settings-list .form-group[data-setting-id="wfrp4e-zero-wounds-prone.headerRecipients"] label {
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* ================================
+ *  CHAT BUTTONS
+ * ================================ */
+
+.chat-message .apply-prone-zero-wounds,
+.chat-message .apply-unconscious-zero-wounds,
+.chat-message .remove-unconscious-zero-wounds {
+  display: block;
+  width: 100%;
+  margin-top: 0.3rem;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.85rem;
+  text-align: center;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 215, 128, 0.85);
+  background: linear-gradient(180deg, #5c3b1d, #3a2412);
+  color: #f5e2c2;
+  cursor: pointer;
+}
+
+.chat-message .apply-prone-zero-wounds:hover,
+.chat-message .apply-unconscious-zero-wounds:hover,
+.chat-message .remove-unconscious-zero-wounds:hover {
+  filter: brightness(1.1);
+  box-shadow: 0 0 4px rgba(255, 215, 128, 0.6);
+}
+
+.chat-message .apply-prone-zero-wounds:active,
+.chat-message .apply-unconscious-zero-wounds:active,
+.chat-message .remove-unconscious-zero-wounds:active {
+  filter: brightness(0.95);
+}
+
+/* Margine leggero tra testo e pulsanti */
+.chat-message .apply-prone-zero-wounds,
+.chat-message .apply-unconscious-zero-wounds,
+.chat-message .remove-unconscious-zero-wounds {
+  margin-bottom: 0.1rem;
+}
