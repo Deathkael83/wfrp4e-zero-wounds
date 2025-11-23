@@ -43,14 +43,14 @@
   "wfrp4e-zero-wounds-prone.chat.message": "{actorName} è sceso a 0 Ferite.",
   "wfrp4e-zero-wounds-prone.chat.button": "Applica condizione Prono",
 
-  "wfrp4e-zero-wounds-prone.chat.unconscious": "{actorName} è rimasto troppo a lungo a 0 Ferite (BR {tb}) e cade Privo di sensi.",
+  "wfrp4e-zero-wounds-prone.chat.unconscious": "{actorName} è rimasto troppo a lungo a 0 Ferite (BR {tb}) e cade ",
   "wfrp4e-zero-wounds-prone.chat.unconsciousButton": "Applica condizione Privo di sensi",
 
   "wfrp4e-zero-wounds-prone.notifications.actorNotFound": "Impossibile trovare l’attore per applicare la condizione.",
   "wfrp4e-zero-wounds-prone.notifications.noAddCondition": "Il metodo actor.addCondition non è stato trovato. Controlla la versione del sistema WFRP4e.",
   "wfrp4e-zero-wounds-prone.notifications.errorApplying": "Errore durante l’applicazione della condizione. Controlla la console.",
 
-  "wfrp4e-zero-wounds-prone.chat.wake": "{actorName} non è più a 0 Ferite e può perdere {condition}.",
+  "wfrp4e-zero-wounds-prone.chat.wake": "{actorName} non è più a 0 Ferite e può perdere ",
   "wfrp4e-zero-wounds-prone.chat.wakeButton": "Rimuovi Privo di sensi",
   "wfrp4e-zero-wounds-prone.settings.wakeMode.name": "Risveglio da Privo di sensi",
   "wfrp4e-zero-wounds-prone.settings.wakeMode.hint": "Quando un personaggio a 0 Ferite e Privo di sensi viene curato ad almeno 1 Ferita, scegli come gestire la rimozione della condizione Privo di sensi.",
