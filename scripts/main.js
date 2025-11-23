@@ -86,7 +86,7 @@ function makeConditionTag(condKey) {
     conditionNames[condKey.charAt(0).toUpperCase() + condKey.slice(1)] ||
     condKey;
 
-  return `@Condition(${name})`;
+  return `@Condition[${name}]`;
 }
 
 /* --------------------------------------------- */
