@@ -88,7 +88,7 @@ function makeConditionTag(condKey) {
     condKey;
 
   // Lasciamo che sia WFRP4e a trasformare questa stringa in pulsante
-  return `@Condition(${name})`;
+  return `@Condition[${name}]`;
 }
 
 
