@@ -76,21 +76,18 @@ function getRecipients(actor, mode) {
 }
 
 // Tag condizione stile WFRP4e usando @Condition(<nome localizzato>)
+// condKey minuscolo: "prone", "unconscious"
 function makeConditionTag(condKey) {
-  // condKey è minuscolo: "prone", "unconscious"
   const cfg = CONFIG.WFRP4E || {};
-
-  // prova prima il nuovo schema, poi eventuali alias vecchi per sicurezza
   const conditionNames = cfg.conditionNames || cfg.ConditionName || {};
+
   const name =
     conditionNames[condKey] ||
     conditionNames[condKey.charAt(0).toUpperCase() + condKey.slice(1)] ||
     condKey;
 
-  // Lasciamo che sia WFRP4e a trasformare questa stringa in pulsante
-  return `@Condition[${name}]`;
+  return `@Condition(${name})`;
 }
-
 
 /* --------------------------------------------- */
 /* PREUPDATE ACTOR – unico punto di ingresso     */
@@ -106,14 +103,15 @@ Hooks.on("preUpdateActor", async function (actor, changes, options, userId) {
     const oldWounds = foundry.utils.getProperty(actor, "system.status.wounds.value") ?? 0;
     const tokenDoc = resolveTokenDocument(actor, options);
 
-    // >0 → <=0
+    // >0 → <=0 (cade a 0 Ferite)
     if (oldWounds > 0 && newWounds <= 0) {
       await onZeroWounds(actor, tokenDoc);
       await startUnconsciousTimer(actor, tokenDoc);
     }
 
-    // <=0 → >=1
+    // <=0 → >=1 (risale ad almeno 1 Ferita)
     if (oldWounds <= 0 && newWounds >= 1) {
+      await onRegainConscious(actor, tokenDoc);
       await clearUnconsciousTimer(actor);
     }
   } catch (err) {
@@ -207,21 +205,15 @@ async function clearUnconsciousTimer(actor) {
     if (!tokens || !tokens.length) return;
 
     for (const t of tokens) {
-      if (!t) continue; // token fantasma, skip
-
-      // token può essere Token o TokenDocument
+      if (!t) continue;
       const doc = t.document ?? t;
-
-      // controlla che esista davvero e che abbia unsetFlag
       if (!doc || typeof doc.unsetFlag !== "function") continue;
-
       await doc.unsetFlag(MODULE_ID, "zeroWoundsInfo").catch(() => {});
     }
   } catch (err) {
     console.error(`[${MODULE_ID}] clearUnconsciousTimer error:`, err);
   }
 }
-
 
 /* --------------------------------------------- */
 /* UPDATE COMBAT – controlla svenimento          */
@@ -324,6 +316,71 @@ async function sendUnconsciousAuto(actor, tokenDoc, whisper, tb) {
 }
 
 /* --------------------------------------------- */
+/* RISVEGLIO DA PRIVO DI SENSI                   */
+/* --------------------------------------------- */
+
+async function onRegainConscious(actor, tokenDoc) {
+  // Serve avere davvero la condizione
+  if (!actor.hasCondition || !actor.hasCondition("unconscious")) return;
+
+  const isPC = actor.type === "character";
+  if (isPC && !game.settings.get(MODULE_ID, "enablePC")) return;
+  if (!isPC && !game.settings.get(MODULE_ID, "enableNPC")) return;
+
+  const mode = game.settings.get(MODULE_ID, "wakeMode");
+  if (mode === "disabled") return;
+
+  const settingKey = isPC ? "pcRecipients" : "npcRecipients";
+  const whisper = getRecipients(actor, game.settings.get(MODULE_ID, settingKey));
+
+  if (mode === "chat") {
+    await sendWakePrompt(actor, tokenDoc, whisper);
+  } else if (mode === "auto") {
+    await removeUnconscious(actor);
+    if (game.settings.get(MODULE_ID, "wakeAutoNotify")) {
+      await sendWakeAuto(actor, tokenDoc, whisper);
+    }
+  }
+}
+
+async function removeUnconscious(actor) {
+  try {
+    if (actor.hasCondition && actor.hasCondition("unconscious")) {
+      await actor.removeCondition("unconscious");
+    }
+  } catch (err) {
+    console.error(`[${MODULE_ID}] removeUnconscious error:`, err);
+  }
+}
+
+async function sendWakePrompt(actor, tokenDoc, whisper) {
+  const displayName = getDisplayName(actor, tokenDoc);
+  const baseMsg = game.i18n.format(`${LOCAL}.chat.wake`, { actorName: displayName });
+  const condTag = makeConditionTag("unconscious");
+  const msg = `${baseMsg} ${condTag}`;
+
+  const content = `
+  <div>
+    <p>${msg}</p>
+    <button class="remove-unconscious-zero-wounds">
+      ${game.i18n.localize(`${LOCAL}.chat.wakeButton`)}
+    </button>
+  </div>`;
+
+  await sendMessage(actor, tokenDoc, content, whisper);
+}
+
+async function sendWakeAuto(actor, tokenDoc, whisper) {
+  const displayName = getDisplayName(actor, tokenDoc);
+  const baseMsg = game.i18n.format(`${LOCAL}.chat.wake`, { actorName: displayName });
+  const condTag = makeConditionTag("unconscious");
+  const msg = `${baseMsg} ${condTag}`;
+
+  const content = `<div><p>${msg}</p></div>`;
+  await sendMessage(actor, tokenDoc, content, whisper);
+}
+
+/* --------------------------------------------- */
 /* INVIO MESSAGGI                                */
 /* --------------------------------------------- */
 
@@ -376,11 +433,11 @@ Hooks.on("renderChatMessage", async function (message, html, data) {
       if (actor) await applyUnconscious(actor);
     });
 
-    html.find(".condition-chat").on("click", evt => {
-      const cond = evt.currentTarget.dataset.cond;
-      if (game.wfrp4e?.utility?.postCondition && cond) {
-        game.wfrp4e.utility.postCondition(cond);
-      }
+    html.find(".remove-unconscious-zero-wounds").on("click", async evt => {
+      evt.preventDefault();
+      const token = tokenUuid ? await fromUuid(tokenUuid) : null;
+      const actor = token?.actor ?? (await fromUuid(actorUuid));
+      if (actor) await removeUnconscious(actor);
     });
   } catch (err) {
     console.error(`[${MODULE_ID}] renderChatMessage error:`, err);
