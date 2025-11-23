@@ -75,27 +75,23 @@ function getRecipients(actor, mode) {
   return gmIds;
 }
 
-// Crea un tag @Condition[...] usando il NOME localizzato della condizione,
-// così il sistema mostra il testo nella lingua corrente e, al click,
-// posta la descrizione in chat senza aggiungere pulsanti di "Apply".
+// Crea un link cliccabile alla condizione, senza usare @Condition[…]
+// condKey: "prone", "unconscious", ecc.
 function makeConditionTag(condKey) {
-  // condKey: "prone" | "unconscious"
   const capKey = condKey.charAt(0).toUpperCase() + condKey.slice(1);
-
-  // chiave di traduzione ufficiale
   const i18nKey = `WFRP4E.ConditionName.${capKey}`;
 
-  // ottieni la traduzione effettiva
   let localized = game.i18n.localize(i18nKey);
 
-  // se la traduzione non esiste, fallback
+  // Se la traduzione non esiste, fallback decente
   if (!localized || localized === i18nKey) {
-    localized = capKey; // almeno capitalizzato
+    localized = capKey;
   }
 
-  // genera tag in lingua corretta
-  return `@Condition[${localized}]`;
+  // Link semplice, NESSUN bottone di apply automatico
+  return `<a class="zero-wounds-condition-tag" data-cond="${condKey}">${localized}</a>`;
 }
+
 
 /* --------------------------------------------- */
 /* PREUPDATE ACTOR – unico punto di ingresso     */
