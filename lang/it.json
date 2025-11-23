@@ -2,9 +2,9 @@
   "wfrp4e-zero-wounds-prone.title": "WFRP4e – Gestione Prono e Privo di Sensi",
   "wfrp4e-zero-wounds-prone.description": "Gestisce gli effetti di Prono, Privo di Sensi e Risveglio per PG e PNG quando le ferite scendono o risalgono da zero. Include modalità automatiche, prompt in chat e configurazione destinatari.",
 
-  // --------------------------------------------- */
-  // CHAT MESSAGES                                 */
-  // --------------------------------------------- */
+  // --------------------------------------------- 
+  // CHAT MESSAGES                                 
+  // --------------------------------------------- 
 
   "wfrp4e-zero-wounds-prone.chat.message": "{actorName} è stato ridotto a 0 Ferite. Cade",
   "wfrp4e-zero-wounds-prone.chat.button": "Applica Prono",
