@@ -95,6 +95,7 @@ function makeConditionTag(condKey) {
 
   // genera tag in lingua corretta
   return `@Condition[${localized}]`;
+}
 
 /* --------------------------------------------- */
 /* PREUPDATE ACTOR – unico punto di ingresso     */
