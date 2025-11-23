@@ -48,5 +48,16 @@
 
   "wfrp4e-zero-wounds-prone.notifications.actorNotFound": "Unable to find the Actor to apply the condition.",
   "wfrp4e-zero-wounds-prone.notifications.noAddCondition": "actor.addCondition was not found. Please check your WFRP4e system version.",
-  "wfrp4e-zero-wounds-prone.notifications.errorApplying": "Error while applying the condition. Check the console."
+  "wfrp4e-zero-wounds-prone.notifications.errorApplying": "Error while applying the condition. Check the console.",
+
+  "wfrp4e-zero-wounds-prone.chat.wake": "{actorName} is no longer at 0 Wounds and can lose {condition}.",
+  "wfrp4e-zero-wounds-prone.chat.wakeButton": "Remove Unconscious",
+  "wfrp4e-zero-wounds-prone.settings.wakeMode.name": "Wake up from Unconscious",
+  "wfrp4e-zero-wounds-prone.settings.wakeMode.hint": "When a character at 0 Wounds and Unconscious is healed to at least 1 Wound, choose how to handle the removal of the Unconscious condition.",
+  "wfrp4e-zero-wounds-prone.settings.wakeAutoNotify.name": "Notify on automatic wake up",
+  "wfrp4e-zero-wounds-prone.settings.wakeAutoNotify.hint": "If enabled, a chat message is sent when Unconscious is removed automatically.",
+  "wfrp4e-zero-wounds-prone.settings.mode.disabled": "Disabled",
+  "wfrp4e-zero-wounds-prone.settings.mode.chat": "Chat prompt",
+  "wfrp4e-zero-wounds-prone.settings.mode.auto": "Automatic"
+
 }
