@@ -13,30 +13,25 @@ function getDisplayName(actor, tokenDoc) {
 
 // Recupera TokenDocument per questo actor
 function resolveTokenDocument(actor, options) {
-  // 1) tokenId esplicito nelle options
   if (options?.tokenId && canvas?.tokens) {
     const t = canvas.tokens.get(options.tokenId);
     if (t) return t.document ?? t;
   }
 
-  // 2) parent è un TokenDocument
   if (options?.parent && options.parent.documentName === "Token") {
     return options.parent;
   }
 
-  // 3) options.token
   if (options?.token) {
     const tok = options.token;
     return tok.document ?? tok;
   }
 
-  // 4) token con actor *identico* (fondamentale per token non linkati)
   if (canvas?.tokens) {
     const placeable = canvas.tokens.placeables.find(t => t.actor === actor);
     if (placeable) return placeable.document ?? placeable;
   }
 
-  // 5) se in combattimento, prova via combatant (fallback)
   if (game.combat) {
     const combatant = game.combat.combatants.find(c => {
       if (!c.actor) return false;
@@ -48,11 +43,9 @@ function resolveTokenDocument(actor, options) {
     if (combatant?.token) return combatant.token;
   }
 
-  // 6) token attivi per questo actor (ultimo fallback)
   const tokens = actor.getActiveTokens(true, true);
   if (tokens.length) return tokens[0].document ?? tokens[0];
 
-  // 7) nulla trovato
   return null;
 }
 
@@ -75,28 +68,34 @@ function getRecipients(actor, mode) {
   return gmIds;
 }
 
-// Tag condizione cliccabile, indipendente da @Condition e dai pulsanti automatici
-// condKey: "prone", "unconscious", ecc.
-function makeConditionTag(condKey) {
+/* --------------------------------------------- */
+/* TAG CONDIZIONE – VERSIONE DEFINITIVA NO APPLY */
+/* --------------------------------------------- */
+
+// Restituisce HTML arricchito della condizione, senza il pulsante Apply
+async function makeConditionTagHTML(condKey) {
   const capKey = condKey.charAt(0).toUpperCase() + condKey.slice(1);
   const i18nKey = `WFRP4E.ConditionName.${capKey}`;
 
-  // nome localizzato della condizione ("Prone", "Prono", ecc.)
   let localized = game.i18n.localize(i18nKey);
-  if (!localized || localized === i18nKey) {
-    localized = capKey;
-  }
+  if (!localized || localized === i18nKey) localized = capKey;
 
-  // span semplice, stilizzato come link
-  return `<span class="zero-wounds-condition-tag"
-                data-cond="${condKey}"
-                style="text-decoration: underline; cursor: pointer;">
-            ${localized}
-          </span>`;
+  const enriched = await TextEditor.enrichHTML(`@Condition[${localized}]`, {
+    async: true,
+    secrets: false
+  });
+
+  const div = document.createElement("div");
+  div.innerHTML = enriched;
+
+  const btn = div.querySelector("button");
+  if (btn) btn.remove();
+
+  return div.innerHTML.trim();
 }
 
 /* --------------------------------------------- */
-/* PREUPDATE ACTOR – unico punto di ingresso     */
+/* PREUPDATE ACTOR                               */
 /* --------------------------------------------- */
 
 Hooks.on("preUpdateActor", async function (actor, changes, options, userId) {
@@ -109,13 +108,11 @@ Hooks.on("preUpdateActor", async function (actor, changes, options, userId) {
     const oldWounds = foundry.utils.getProperty(actor, "system.status.wounds.value") ?? 0;
     const tokenDoc = resolveTokenDocument(actor, options);
 
-    // >0 → <=0 (cade a 0 Ferite)
     if (oldWounds > 0 && newWounds <= 0) {
       await onZeroWounds(actor, tokenDoc);
       await startUnconsciousTimer(actor, tokenDoc);
     }
 
-    // <=0 → >=1 (risale ad almeno 1 Ferita)
     if (oldWounds <= 0 && newWounds >= 1) {
       await onRegainConscious(actor, tokenDoc);
       await clearUnconsciousTimer(actor);
@@ -126,7 +123,7 @@ Hooks.on("preUpdateActor", async function (actor, changes, options, userId) {
 });
 
 /* --------------------------------------------- */
-/* PRONE A 0 FERITE                              */
+/* PRONE A 0 FERITE                               */
 /* --------------------------------------------- */
 
 async function onZeroWounds(actor, tokenDoc) {
@@ -161,15 +158,12 @@ async function applyProne(actor) {
 async function sendPronePrompt(actor, tokenDoc, whisper) {
   const displayName = getDisplayName(actor, tokenDoc);
   const baseMsg = game.i18n.format(`${LOCAL}.chat.message`, { actorName: displayName });
-  const condTag = makeConditionTag("prone");
-  const msg = `${baseMsg} ${condTag}`;
+  const tag = await makeConditionTagHTML("prone");
 
   const content = `
   <div>
-    <p>${msg}</p>
-    <button class="apply-prone-zero-wounds">
-      ${game.i18n.localize(`${LOCAL}.chat.button`)}
-    </button>
+    <p>${baseMsg} ${tag}</p>
+    <button class="apply-prone-zero-wounds">${game.i18n.localize(`${LOCAL}.chat.button`)}</button>
   </div>`;
 
   await sendMessage(actor, tokenDoc, content, whisper);
@@ -178,15 +172,13 @@ async function sendPronePrompt(actor, tokenDoc, whisper) {
 async function sendProneAuto(actor, tokenDoc, whisper) {
   const displayName = getDisplayName(actor, tokenDoc);
   const baseMsg = game.i18n.format(`${LOCAL}.chat.message`, { actorName: displayName });
-  const condTag = makeConditionTag("prone");
-  const msg = `${baseMsg} ${condTag}`;
-
-  const content = `<div><p>${msg}</p></div>`;
+  const tag = await makeConditionTagHTML("prone");
+  const content = `<div><p>${baseMsg} ${tag}</p></div>`;
   await sendMessage(actor, tokenDoc, content, whisper);
 }
 
 /* --------------------------------------------- */
-/* TIMER PRIVO DI SENSI                          */
+/* TIMER PRIVO DI SENSI                           */
 /* --------------------------------------------- */
 
 async function startUnconsciousTimer(actor, tokenDoc) {
@@ -222,7 +214,7 @@ async function clearUnconsciousTimer(actor) {
 }
 
 /* --------------------------------------------- */
-/* UPDATE COMBAT – controlla svenimento          */
+/* UPDATE COMBAT – PRIVO DI SENSI                 */
 /* --------------------------------------------- */
 
 Hooks.on("updateCombat", async function (combat, changed, options, userId) {
@@ -263,7 +255,7 @@ Hooks.on("updateCombat", async function (combat, changed, options, userId) {
 });
 
 /* --------------------------------------------- */
-/* PRIVO DI SENSI                                */
+/* PRIVO DI SENSI                                 */
 /* --------------------------------------------- */
 
 async function onUnconscious(actor, tokenDoc, tb) {
@@ -272,7 +264,6 @@ async function onUnconscious(actor, tokenDoc, tb) {
   if (!isPC && !game.settings.get(MODULE_ID, "enableNPC")) return;
 
   const mode = game.settings.get(MODULE_ID, "unconsciousMode");
-
   const settingKey = isPC ? "pcRecipients" : "npcRecipients";
   const whisper = getRecipients(actor, game.settings.get(MODULE_ID, settingKey));
 
@@ -297,12 +288,11 @@ async function applyUnconscious(actor) {
 async function sendUnconsciousPrompt(actor, tokenDoc, whisper, tb) {
   const displayName = getDisplayName(actor, tokenDoc);
   const baseMsg = game.i18n.format(`${LOCAL}.chat.unconscious`, { actorName: displayName, tb });
-  const condTag = makeConditionTag("unconscious");
-  const msg = `${baseMsg} ${condTag}`;
+  const tag = await makeConditionTagHTML("unconscious");
 
   const content = `
   <div>
-    <p>${msg}</p>
+    <p>${baseMsg} ${tag}</p>
     <button class="apply-unconscious-zero-wounds">
       ${game.i18n.localize(`${LOCAL}.chat.unconsciousButton`)}
     </button>
@@ -314,19 +304,17 @@ async function sendUnconsciousPrompt(actor, tokenDoc, whisper, tb) {
 async function sendUnconsciousAuto(actor, tokenDoc, whisper, tb) {
   const displayName = getDisplayName(actor, tokenDoc);
   const baseMsg = game.i18n.format(`${LOCAL}.chat.unconscious`, { actorName: displayName, tb });
-  const condTag = makeConditionTag("unconscious");
-  const msg = `${baseMsg} ${condTag}`;
+  const tag = await makeConditionTagHTML("unconscious");
 
-  const content = `<div><p>${msg}</p></div>`;
+  const content = `<div><p>${baseMsg} ${tag}</p></div>`;
   await sendMessage(actor, tokenDoc, content, whisper);
 }
 
 /* --------------------------------------------- */
-/* RISVEGLIO DA PRIVO DI SENSI                   */
+/* RISVEGLIO DA PRIVO DI SENSI                    */
 /* --------------------------------------------- */
 
 async function onRegainConscious(actor, tokenDoc) {
-  // Serve avere davvero la condizione
   if (!actor.hasCondition || !actor.hasCondition("unconscious")) return;
 
   const isPC = actor.type === "character";
@@ -362,12 +350,11 @@ async function removeUnconscious(actor) {
 async function sendWakePrompt(actor, tokenDoc, whisper) {
   const displayName = getDisplayName(actor, tokenDoc);
   const baseMsg = game.i18n.format(`${LOCAL}.chat.wake`, { actorName: displayName });
-  const condTag = makeConditionTag("unconscious");
-  const msg = `${baseMsg} ${condTag}`;
+  const tag = await makeConditionTagHTML("unconscious");
 
   const content = `
   <div>
-    <p>${msg}</p>
+    <p>${baseMsg} ${tag}</p>
     <button class="remove-unconscious-zero-wounds">
       ${game.i18n.localize(`${LOCAL}.chat.wakeButton`)}
     </button>
@@ -379,12 +366,12 @@ async function sendWakePrompt(actor, tokenDoc, whisper) {
 async function sendWakeAuto(actor, tokenDoc, whisper) {
   const displayName = getDisplayName(actor, tokenDoc);
   const baseMsg = game.i18n.format(`${LOCAL}.chat.wake`, { actorName: displayName });
-  const condTag = makeConditionTag("unconscious");
-  const msg = `${baseMsg} ${condTag}`;
+  const tag = await makeConditionTagHTML("unconscious");
 
-  const content = `<div><p>${msg}</p></div>`;
+  const content = `<div><p>${baseMsg} ${tag}</p></div>`;
   await sendMessage(actor, tokenDoc, content, whisper);
 }
+
 
 /* --------------------------------------------- */
 /* INVIO MESSAGGI                                */
@@ -415,50 +402,38 @@ async function sendMessage(actor, tokenDoc, content, whisper) {
 }
 
 /* --------------------------------------------- */
-/* CHAT HANDLERS                                 */
+/* CHAT BUTTON HANDLERS                          */
 /* --------------------------------------------- */
 
 Hooks.on("renderChatMessage", async function (message, html, data) {
   try {
     const flags = message.flags?.[MODULE_ID];
+    if (!flags) return;
 
-    // Gestione dei bottoni del nostro modulo SOLO se il messaggio ha i nostri flag
-    if (flags) {
-      const { actorUuid, tokenUuid } = flags;
+    const { actorUuid, tokenUuid } = flags;
 
-      html.find(".apply-prone-zero-wounds").on("click", async evt => {
-        evt.preventDefault();
-        const token = tokenUuid ? await fromUuid(tokenUuid) : null;
-        const actor = token?.actor ?? (await fromUuid(actorUuid));
-        if (actor) await applyProne(actor);
-      });
-
-      html.find(".apply-unconscious-zero-wounds").on("click", async evt => {
-        evt.preventDefault();
-        const token = tokenUuid ? await fromUuid(tokenUuid) : null;
-        const actor = token?.actor ?? (await fromUuid(actorUuid));
-        if (actor) await applyUnconscious(actor);
-      });
-
-      html.find(".remove-unconscious-zero-wounds").on("click", async evt => {
-        evt.preventDefault();
-        const token = tokenUuid ? await fromUuid(tokenUuid) : null;
-        const actor = token?.actor ?? (await fromUuid(actorUuid));
-        if (actor) await removeUnconscious(actor);
-      });
-    }
-
-    // Listener DELEGATO per i tag condizione: funziona anche se il DOM viene ri-enrichito
-    html.on("click", ".zero-wounds-condition-tag", evt => {
+    html.find(".apply-prone-zero-wounds").on("click", async evt => {
       evt.preventDefault();
-      const condKey = evt.currentTarget.dataset.cond;
-      if (game.wfrp4e?.utility?.postCondition && condKey) {
-        game.wfrp4e.utility.postCondition(condKey);
-      }
+      const token = tokenUuid ? await fromUuid(tokenUuid) : null;
+      const actor = token?.actor ?? (await fromUuid(actorUuid));
+      if (actor) await applyProne(actor);
+    });
+
+    html.find(".apply-unconscious-zero-wounds").on("click", async evt => {
+      evt.preventDefault();
+      const token = tokenUuid ? await fromUuid(tokenUuid) : null;
+      const actor = token?.actor ?? (await fromUuid(actorUuid));
+      if (actor) await applyUnconscious(actor);
+    });
+
+    html.find(".remove-unconscious-zero-wounds").on("click", async evt => {
+      evt.preventDefault();
+      const token = tokenUuid ? await fromUuid(tokenUuid) : null;
+      const actor = token?.actor ?? (await fromUuid(actorUuid));
+      if (actor) await removeUnconscious(actor);
     });
 
   } catch (err) {
     console.error(`[${MODULE_ID}] renderChatMessage error:`, err);
   }
 });
-
