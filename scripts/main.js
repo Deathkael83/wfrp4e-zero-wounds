@@ -443,6 +443,16 @@ Hooks.on("renderChatMessage", async function (message, html, data) {
       const actor = token?.actor ?? (await fromUuid(actorUuid));
       if (actor) await removeUnconscious(actor);
     });
+    
+    // Click sul tag condizione personalizzato → posta la condizione in chat
+    html.find(".zero-wounds-condition-tag").on("click", evt => {
+      evt.preventDefault();
+      const condKey = evt.currentTarget.dataset.cond;
+      if (game.wfrp4e?.utility?.postCondition && condKey) {
+        game.wfrp4e.utility.postCondition(condKey);
+      }
+    });
+
   } catch (err) {
     console.error(`[${MODULE_ID}] renderChatMessage error:`, err);
   }
