@@ -75,23 +75,25 @@ function getRecipients(actor, mode) {
   return gmIds;
 }
 
-// Crea un link cliccabile alla condizione, senza usare @Condition[…]
+// Tag condizione cliccabile, indipendente da @Condition e dai pulsanti automatici
 // condKey: "prone", "unconscious", ecc.
 function makeConditionTag(condKey) {
   const capKey = condKey.charAt(0).toUpperCase() + condKey.slice(1);
   const i18nKey = `WFRP4E.ConditionName.${capKey}`;
 
+  // nome localizzato della condizione ("Prone", "Prono", ecc.)
   let localized = game.i18n.localize(i18nKey);
-
-  // Se la traduzione non esiste, fallback decente
   if (!localized || localized === i18nKey) {
     localized = capKey;
   }
 
-  // Link semplice, NESSUN bottone di apply automatico
-  return `<a class="zero-wounds-condition-tag" data-cond="${condKey}">${localized}</a>`;
+  // span semplice, stilizzato come link
+  return `<span class="zero-wounds-condition-tag"
+                data-cond="${condKey}"
+                style="text-decoration: underline; cursor: pointer;">
+            ${localized}
+          </span>`;
 }
-
 
 /* --------------------------------------------- */
 /* PREUPDATE ACTOR – unico punto di ingresso     */
@@ -443,8 +445,8 @@ Hooks.on("renderChatMessage", async function (message, html, data) {
       const actor = token?.actor ?? (await fromUuid(actorUuid));
       if (actor) await removeUnconscious(actor);
     });
-    
-    // Click sul tag condizione personalizzato → posta la condizione in chat
+
+    // NUOVO: click sul "tag" della condizione
     html.find(".zero-wounds-condition-tag").on("click", evt => {
       evt.preventDefault();
       const condKey = evt.currentTarget.dataset.cond;
