@@ -421,33 +421,35 @@ async function sendMessage(actor, tokenDoc, content, whisper) {
 Hooks.on("renderChatMessage", async function (message, html, data) {
   try {
     const flags = message.flags?.[MODULE_ID];
-    if (!flags) return;
 
-    const { actorUuid, tokenUuid } = flags;
+    // Gestione dei bottoni del nostro modulo SOLO se il messaggio ha i nostri flag
+    if (flags) {
+      const { actorUuid, tokenUuid } = flags;
 
-    html.find(".apply-prone-zero-wounds").on("click", async evt => {
-      evt.preventDefault();
-      const token = tokenUuid ? await fromUuid(tokenUuid) : null;
-      const actor = token?.actor ?? (await fromUuid(actorUuid));
-      if (actor) await applyProne(actor);
-    });
+      html.find(".apply-prone-zero-wounds").on("click", async evt => {
+        evt.preventDefault();
+        const token = tokenUuid ? await fromUuid(tokenUuid) : null;
+        const actor = token?.actor ?? (await fromUuid(actorUuid));
+        if (actor) await applyProne(actor);
+      });
 
-    html.find(".apply-unconscious-zero-wounds").on("click", async evt => {
-      evt.preventDefault();
-      const token = tokenUuid ? await fromUuid(tokenUuid) : null;
-      const actor = token?.actor ?? (await fromUuid(actorUuid));
-      if (actor) await applyUnconscious(actor);
-    });
+      html.find(".apply-unconscious-zero-wounds").on("click", async evt => {
+        evt.preventDefault();
+        const token = tokenUuid ? await fromUuid(tokenUuid) : null;
+        const actor = token?.actor ?? (await fromUuid(actorUuid));
+        if (actor) await applyUnconscious(actor);
+      });
 
-    html.find(".remove-unconscious-zero-wounds").on("click", async evt => {
-      evt.preventDefault();
-      const token = tokenUuid ? await fromUuid(tokenUuid) : null;
-      const actor = token?.actor ?? (await fromUuid(actorUuid));
-      if (actor) await removeUnconscious(actor);
-    });
+      html.find(".remove-unconscious-zero-wounds").on("click", async evt => {
+        evt.preventDefault();
+        const token = tokenUuid ? await fromUuid(tokenUuid) : null;
+        const actor = token?.actor ?? (await fromUuid(actorUuid));
+        if (actor) await removeUnconscious(actor);
+      });
+    }
 
-    // NUOVO: click sul "tag" della condizione
-    html.find(".zero-wounds-condition-tag").on("click", evt => {
+    // Listener DELEGATO per i tag condizione: funziona anche se il DOM viene ri-enrichito
+    html.on("click", ".zero-wounds-condition-tag", evt => {
       evt.preventDefault();
       const condKey = evt.currentTarget.dataset.cond;
       if (game.wfrp4e?.utility?.postCondition && condKey) {
@@ -459,3 +461,4 @@ Hooks.on("renderChatMessage", async function (message, html, data) {
     console.error(`[${MODULE_ID}] renderChatMessage error:`, err);
   }
 });
+
