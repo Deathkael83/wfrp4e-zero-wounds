@@ -79,39 +79,22 @@ function getRecipients(actor, mode) {
 // così il sistema mostra il testo nella lingua corrente e, al click,
 // posta la descrizione in chat senza aggiungere pulsanti di "Apply".
 function makeConditionTag(condKey) {
-  // condKey: "prone", "unconscious", ecc. (sempre minuscolo)
-  let name = condKey;
+  // condKey: "prone" | "unconscious"
+  const capKey = condKey.charAt(0).toUpperCase() + condKey.slice(1);
 
-  // Prova prima dal namespace globale WFRP4E (dove spesso c'è ConditionName)
-  if (typeof WFRP4E !== "undefined") {
-    const capKey = condKey.charAt(0).toUpperCase() + condKey.slice(1); // "Prone"
-    if (WFRP4E.ConditionName && WFRP4E.ConditionName[capKey]) {
-      name = WFRP4E.ConditionName[capKey];
-    }
+  // chiave di traduzione ufficiale
+  const i18nKey = `WFRP4E.ConditionName.${capKey}`;
+
+  // ottieni la traduzione effettiva
+  let localized = game.i18n.localize(i18nKey);
+
+  // se la traduzione non esiste, fallback
+  if (!localized || localized === i18nKey) {
+    localized = capKey; // almeno capitalizzato
   }
 
-  // Fallback: prova da CONFIG.WFRP4E (alcune versioni usano conditionNames)
-  const cfg = CONFIG.WFRP4E || {};
-  const names = cfg.conditionNames || cfg.ConditionName || {};
-  if (names[condKey]) {
-    name = names[condKey];
-  } else {
-    const capKey = condKey.charAt(0).toUpperCase() + condKey.slice(1);
-    if (names[capKey]) {
-      name = names[capKey];
-    }
-  }
-
-  // Ultimo fallback: capitalizza la chiave (giusto per non mostrare tutto minuscolo)
-  if (!name || name === condKey) {
-    name = condKey.charAt(0).toUpperCase() + condKey.slice(1);
-  }
-
-  // Questo formato produce esattamente il comportamento che hai descritto:
-  // tag localizzato, niente pulsante "Apply", click = descrizione in chat.
-  return `@Condition[${name}]`;
-}
-
+  // genera tag in lingua corretta
+  return `@Condition[${localized}]`;
 
 /* --------------------------------------------- */
 /* PREUPDATE ACTOR – unico punto di ingresso     */
