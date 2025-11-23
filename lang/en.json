@@ -1,63 +1,74 @@
 {
-  "wfrp4e-zero-wounds-prone.title": "WFRP4e - Prone at Zero Wounds",
-  "wfrp4e-zero-wounds-prone.description": "Automatically handles Prone at 0 Wounds and Unconscious after Toughness Bonus rounds, with options for chat buttons or automatic application.",
+  "wfrp4e-zero-wounds-prone.title": "WFRP4e – Zero Wounds: Prone & Unconscious",
+  "wfrp4e-zero-wounds-prone.description": "Handles Prone, Unconscious, and Wake Up effects for PCs and NPCs when Wounds drop to or rise from zero. Includes automatic modes, chat prompts, and configurable recipients.",
 
-  "wfrp4e-zero-wounds-prone.settings.enableModule.name": "Enable module",
-  "wfrp4e-zero-wounds-prone.settings.enableModule.hint": "If disabled, this module will not react when Actors reach 0 Wounds.",
+  "wfrp4e-zero-wounds-prone.settings.headerGeneral": "────────  General Settings  ────────",
+  "wfrp4e-zero-wounds-prone.settings.headerPC": "────────  Player Characters (PCs)  ────────",
+  "wfrp4e-zero-wounds-prone.settings.headerNPC": "────────  NPCs / Creatures  ────────",
+  "wfrp4e-zero-wounds-prone.settings.headerRecipients": "────────  Message Recipients  ────────",
 
-  "wfrp4e-zero-wounds-prone.settings.enablePC.name": "Enable for Player Characters",
-  "wfrp4e-zero-wounds-prone.settings.enablePC.hint": "If enabled, the module will react when Player Characters reach 0 Wounds.",
+  "wfrp4e-zero-wounds-prone.settings.enableModule.name": "Enable Module",
+  "wfrp4e-zero-wounds-prone.settings.enableModule.hint": "Enable or disable all features of this module.",
 
-  "wfrp4e-zero-wounds-prone.settings.pcRecipients.name": "Recipients for Player Characters",
-  "wfrp4e-zero-wounds-prone.settings.pcRecipients.hint": "Who should receive chat messages related to Player Characters reaching 0 Wounds or falling Unconscious?",
+  "wfrp4e-zero-wounds-prone.settings.enablePC.name": "Enable for PCs",
+  "wfrp4e-zero-wounds-prone.settings.enablePC.hint": "Apply these rules to all player characters.",
+
+  "wfrp4e-zero-wounds-prone.settings.pcProneMode.name": "PCs: Prone Mode",
+  "wfrp4e-zero-wounds-prone.settings.pcProneMode.hint": "How to handle Prone when a PC is reduced to 0 Wounds.",
+  "wfrp4e-zero-wounds-prone.settings.pcProneAutoNotify.name": "PCs: Auto notification (Prone)",
+  "wfrp4e-zero-wounds-prone.settings.pcProneAutoNotify.hint": "If enabled, sends a chat message when Prone is applied automatically to PCs.",
+
+  "wfrp4e-zero-wounds-prone.settings.pcUnconsciousMode.name": "PCs: Unconscious Mode",
+  "wfrp4e-zero-wounds-prone.settings.pcUnconsciousMode.hint": "How to handle Unconscious when a PC stays at 0 Wounds for the required number of Rounds.",
+  "wfrp4e-zero-wounds-prone.settings.pcUnconsciousAutoNotify.name": "PCs: Auto notification (Unconscious)",
+  "wfrp4e-zero-wounds-prone.settings.pcUnconsciousAutoNotify.hint": "If enabled, sends a chat message when the condition is applied automatically.",
+
+  "wfrp4e-zero-wounds-prone.settings.pcWakeMode.name": "PCs: Wake Up Mode",
+  "wfrp4e-zero-wounds-prone.settings.pcWakeMode.hint": "How to handle removal of Unconscious when a PC regains Wounds.",
+  "wfrp4e-zero-wounds-prone.settings.pcWakeAutoNotify.name": "PCs: Auto notification (Wake Up)",
+  "wfrp4e-zero-wounds-prone.settings.pcWakeAutoNotify.hint": "If enabled, sends a chat message when the condition is removed automatically.",
 
   "wfrp4e-zero-wounds-prone.settings.enableNPC.name": "Enable for NPCs / Creatures",
-  "wfrp4e-zero-wounds-prone.settings.enableNPC.hint": "If enabled, the module will react when NPCs or creatures reach 0 Wounds.",
+  "wfrp4e-zero-wounds-prone.settings.enableNPC.hint": "Apply these rules to all non-player characters and creatures.",
 
-  "wfrp4e-zero-wounds-prone.settings.npcRecipients.name": "Recipients for NPCs / Creatures",
-  "wfrp4e-zero-wounds-prone.settings.npcRecipients.hint": "Who should receive chat messages related to NPCs or creatures reaching 0 Wounds or falling Unconscious?",
+  "wfrp4e-zero-wounds-prone.settings.npcProneMode.name": "NPCs: Prone Mode",
+  "wfrp4e-zero-wounds-prone.settings.npcProneMode.hint": "How to handle Prone when an NPC is reduced to 0 Wounds.",
+  "wfrp4e-zero-wounds-prone.settings.npcProneAutoNotify.name": "NPCs: Auto notification (Prone)",
+  "wfrp4e-zero-wounds-prone.settings.npcProneAutoNotify.hint": "Sends a chat message if Prone is applied automatically to NPCs.",
 
-  "wfrp4e-zero-wounds-prone.settings.proneMode.name": "Prone at 0 Wounds",
-  "wfrp4e-zero-wounds-prone.settings.proneMode.hint": "Choose whether applying Prone at 0 Wounds is disabled, requires a chat button, or is applied automatically.",
+  "wfrp4e-zero-wounds-prone.settings.npcUnconsciousMode.name": "NPCs: Unconscious Mode",
+  "wfrp4e-zero-wounds-prone.settings.npcUnconsciousMode.hint": "How to handle Unconscious after the required number of Rounds.",
+  "wfrp4e-zero-wounds-prone.settings.npcUnconsciousAutoNotify.name": "NPCs: Auto notification (Unconscious)",
+  "wfrp4e-zero-wounds-prone.settings.npcUnconsciousAutoNotify.hint": "Sends a chat message if the condition is applied automatically.",
 
-  "wfrp4e-zero-wounds-prone.settings.proneAutoNotify.name": "Chat notification for automatic Prone",
-  "wfrp4e-zero-wounds-prone.settings.proneAutoNotify.hint": "If enabled, when Prone is applied automatically, a chat message is sent to the same recipients that would receive the chat button.",
+  "wfrp4e-zero-wounds-prone.settings.npcWakeMode.name": "NPCs: Wake Up Mode",
+  "wfrp4e-zero-wounds-prone.settings.npcWakeMode.hint": "How to handle removal of Unconscious when an NPC regains Wounds.",
+  "wfrp4e-zero-wounds-prone.settings.npcWakeAutoNotify.name": "NPCs: Auto notification (Wake Up)",
+  "wfrp4e-zero-wounds-prone.settings.npcWakeAutoNotify.hint": "Sends a chat message if the condition is removed automatically.",
 
-  "wfrp4e-zero-wounds-prone.settings.unconsciousMode.name": "Unconscious after Toughness Bonus rounds",
-  "wfrp4e-zero-wounds-prone.settings.unconsciousMode.hint": "Choose whether falling Unconscious after remaining at 0 Wounds for a number of combat rounds equal to Toughness Bonus is disabled, requires a chat button, or is applied automatically.",
+  "wfrp4e-zero-wounds-prone.settings.pcRecipientsMain.name": "PCs: Recipients for Prone / Unconscious",
+  "wfrp4e-zero-wounds-prone.settings.pcRecipientsMain.hint": "Who should receive messages related to Prone and Unconscious on PCs.",
 
-  "wfrp4e-zero-wounds-prone.settings.unconsciousAutoNotify.name": "Chat notification for automatic Unconscious",
-  "wfrp4e-zero-wounds-prone.settings.unconsciousAutoNotify.hint": "If enabled, when Unconscious is applied automatically, a chat message is sent to the same recipients that would receive the chat button.",
+  "wfrp4e-zero-wounds-prone.settings.pcRecipientsWake.name": "PCs: Recipients for Wake Up",
+  "wfrp4e-zero-wounds-prone.settings.pcRecipientsWake.hint": "Who should be notified when PCs regain consciousness.",
 
-  "wfrp4e-zero-wounds-prone.recipients.gmOnly": "GM only",
-  "wfrp4e-zero-wounds-prone.recipients.owners": "Owners + GM",
-  "wfrp4e-zero-wounds-prone.recipients.everyone": "All players",
+  "wfrp4e-zero-wounds-prone.settings.npcRecipients.name": "NPCs: Message Recipients",
+  "wfrp4e-zero-wounds-prone.settings.npcRecipients.hint": "Who should receive all messages related to NPCs / creatures.",
 
-  "wfrp4e-zero-wounds-prone.mode.disabled": "Disabled",
-  "wfrp4e-zero-wounds-prone.mode.chat": "Chat button",
-  "wfrp4e-zero-wounds-prone.mode.auto": "Automatic",
-
-  "wfrp4e-zero-wounds-prone.condition.prone": "Prone",
-  "wfrp4e-zero-wounds-prone.condition.unconscious": "Unconscious",
-
-  "wfrp4e-zero-wounds-prone.chat.message": "{actorName} has been reduced to 0 Wounds.",
-  "wfrp4e-zero-wounds-prone.chat.button": "Apply Prone condition",
-
-  "wfrp4e-zero-wounds-prone.chat.unconscious": "{actorName} has remained at 0 Wounds for too long (TB {tb}) and falls ",
-  "wfrp4e-zero-wounds-prone.chat.unconsciousButton": "Apply Unconscious condition",
-
-  "wfrp4e-zero-wounds-prone.notifications.actorNotFound": "Unable to find the Actor to apply the condition.",
-  "wfrp4e-zero-wounds-prone.notifications.noAddCondition": "actor.addCondition was not found. Please check your WFRP4e system version.",
-  "wfrp4e-zero-wounds-prone.notifications.errorApplying": "Error while applying the condition. Check the console.",
-
-  "wfrp4e-zero-wounds-prone.chat.wake": "{actorName} is no longer at 0 Wounds and may remove ",
-  "wfrp4e-zero-wounds-prone.chat.wakeButton": "Remove Unconscious",
-  "wfrp4e-zero-wounds-prone.settings.wakeMode.name": "Wake up from Unconscious",
-  "wfrp4e-zero-wounds-prone.settings.wakeMode.hint": "When a character at 0 Wounds and Unconscious is healed to at least 1 Wound, choose how to handle the removal of the Unconscious condition.",
-  "wfrp4e-zero-wounds-prone.settings.wakeAutoNotify.name": "Notify on automatic wake up",
-  "wfrp4e-zero-wounds-prone.settings.wakeAutoNotify.hint": "If enabled, a chat message is sent when Unconscious is removed automatically.",
   "wfrp4e-zero-wounds-prone.settings.mode.disabled": "Disabled",
-  "wfrp4e-zero-wounds-prone.settings.mode.chat": "Chat prompt",
-  "wfrp4e-zero-wounds-prone.settings.mode.auto": "Automatic"
+  "wfrp4e-zero-wounds-prone.settings.mode.chat": "Chat Prompt",
+  "wfrp4e-zero-wounds-prone.settings.mode.auto": "Automatic",
 
+  "wfrp4e-zero-wounds-prone.settings.recipients.gmOnly": "GM only",
+  "wfrp4e-zero-wounds-prone.settings.recipients.owners": "Owners + GM",
+  "wfrp4e-zero-wounds-prone.settings.recipients.everyone": "Everyone",
+
+  "wfrp4e-zero-wounds-prone.chat.message": "{actorName} has been reduced to 0 Wounds. Falls",
+  "wfrp4e-zero-wounds-prone.chat.button": "Apply Prone",
+
+  "wfrp4e-zero-wounds-prone.chat.unconscious": "{actorName} has remained at 0 Wounds for too long (TB {tb}) and now falls",
+  "wfrp4e-zero-wounds-prone.chat.unconsciousButton": "Apply Unconscious",
+
+  "wfrp4e-zero-wounds-prone.chat.wake": "{actorName} is no longer at 0 Wounds and may remove",
+  "wfrp4e-zero-wounds-prone.chat.wakeButton": "Remove Unconscious"
 }
