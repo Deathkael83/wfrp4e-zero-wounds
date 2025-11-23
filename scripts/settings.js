@@ -112,4 +112,29 @@ Hooks.once("init", function () {
     type: Boolean,
     default: true
   });
+  
+// Modalità risveglio (rimozione Privo di sensi quando le Ferite tornano ≥ 1)
+game.settings.register(MODULE_ID, "wakeMode", {
+  name: `${LOCAL}.settings.wakeMode.name`,
+  hint: `${LOCAL}.settings.wakeMode.hint`,
+  scope: "world",
+  config: true,
+  type: String,
+  choices: {
+    disabled: `${LOCAL}.settings.mode.disabled`,
+    chat: `${LOCAL}.settings.mode.chat`,
+    auto: `${LOCAL}.settings.mode.auto`
+  },
+  default: "chat"
+  });
+
+// Notifica in chat anche in modalità auto
+game.settings.register(MODULE_ID, "wakeAutoNotify", {
+  name: `${LOCAL}.settings.wakeAutoNotify.name`,
+  hint: `${LOCAL}.settings.wakeAutoNotify.hint`,
+  scope: "world",
+  config: true,
+  type: Boolean,
+  default: true
+  });
 });
