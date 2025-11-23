@@ -75,17 +75,22 @@ function getRecipients(actor, mode) {
   return gmIds;
 }
 
-// Tag condizione stile WFRP4e (condKey minuscolo: "prone", "unconscious")
+// Tag condizione stile WFRP4e usando @Condition(<nome localizzato>)
 function makeConditionTag(condKey) {
-  const cfg = CONFIG.WFRP4E;
-  if (!cfg?.conditions || !cfg?.conditionNames) return `[${condKey}]`;
+  // condKey è minuscolo: "prone", "unconscious"
+  const cfg = CONFIG.WFRP4E || {};
 
-  const id = cfg.conditions[condKey];       // "prone"
-  const name = cfg.conditionNames[condKey]; // "Prono" / "Privo di sensi"
-  if (!id) return `[${condKey}]`;
+  // prova prima il nuovo schema, poi eventuali alias vecchi per sicurezza
+  const conditionNames = cfg.conditionNames || cfg.ConditionName || {};
+  const name =
+    conditionNames[condKey] ||
+    conditionNames[condKey.charAt(0).toUpperCase() + condKey.slice(1)] ||
+    condKey;
 
-  return `<a class="condition-chat" data-cond="${id}">${name}</a>`;
+  // Lasciamo che sia WFRP4e a trasformare questa stringa in pulsante
+  return `@Condition(${name})`;
 }
+
 
 /* --------------------------------------------- */
 /* PREUPDATE ACTOR – unico punto di ingresso     */
@@ -200,6 +205,7 @@ async function clearUnconsciousTimer(actor) {
   try {
     const tokens = actor.getActiveTokens(true, true);
     for (const t of tokens) {
+      const doc = t.document ?? t;
       await t.document.unsetFlag(MODULE_ID, "zeroWoundsInfo").catch(() => {});
     }
   } catch (err) {
