@@ -1,12 +1,14 @@
 # WFRP4e – Zero Wounds: Prone & Unconscious
 
-
 ![Foundry VTT Compatibility](https://img.shields.io/badge/Foundry_VTT-12%20%7C%2013-orange)
 ![System: WFRP4e](https://img.shields.io/badge/System-WFRP4e-blue)
 ![License: MIT](https://img.shields.io/badge/License-MIT-green)
 ![Status: Stable](https://img.shields.io/badge/Status-Stable-brightgreen)
 ![Languages: EN/IT](https://img.shields.io/badge/Localization-EN%20%7C%20IT-purple)
-
+![Latest Release](https://img.shields.io/github/v/release/Deathkael83/wfrp4e-zero-wounds-prone)
+![Downloads](https://img.shields.io/github/downloads/Deathkael83/wfrp4e-zero-wounds-prone/total)
+![Foundry Verified](https://img.shields.io/badge/Verified%20For-FoundryVTT%2012%2F13-orange)
+![GitHub Stars](https://img.shields.io/github/stars/Deathkael83/wfrp4e-zero-wounds-prone?style=social)
 
 This module automates and enhances how WFRP4e handles characters and creatures reaching **0 Wounds**, falling **Prone**, becoming **Unconscious**, and waking up again when they recover Wounds.
 
