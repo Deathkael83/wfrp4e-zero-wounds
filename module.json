@@ -2,7 +2,7 @@
   "id": "wfrp4e-zero-wounds-prone",
   "title": "WFRP4e – Zero Wounds: Prone & Unconscious",
   "description": "When a creature reaches 0 Wounds, it becomes Prone, and after Toughness Bonus rounds it falls Unconscious. Includes per-type (PC/NPC) settings, chat prompts or full automation, and localized condition tags.",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "compatibility": {
     "minimum": "12",
     "verified": "13"
