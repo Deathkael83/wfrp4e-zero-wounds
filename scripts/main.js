@@ -204,14 +204,24 @@ async function startUnconsciousTimer(actor, tokenDoc) {
 async function clearUnconsciousTimer(actor) {
   try {
     const tokens = actor.getActiveTokens(true, true);
+    if (!tokens || !tokens.length) return;
+
     for (const t of tokens) {
+      if (!t) continue; // token fantasma, skip
+
+      // token può essere Token o TokenDocument
       const doc = t.document ?? t;
-      await t.document.unsetFlag(MODULE_ID, "zeroWoundsInfo").catch(() => {});
+
+      // controlla che esista davvero e che abbia unsetFlag
+      if (!doc || typeof doc.unsetFlag !== "function") continue;
+
+      await doc.unsetFlag(MODULE_ID, "zeroWoundsInfo").catch(() => {});
     }
   } catch (err) {
     console.error(`[${MODULE_ID}] clearUnconsciousTimer error:`, err);
   }
 }
+
 
 /* --------------------------------------------- */
 /* UPDATE COMBAT – controlla svenimento          */
