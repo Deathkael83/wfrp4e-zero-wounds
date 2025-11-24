@@ -7,14 +7,6 @@ Hooks.once("init", function () {
   /* GENERAL SETTINGS                              */
   /* --------------------------------------------- */
 
-  game.settings.register(MODULE_ID, "headerGeneral", {
-    name: game.i18n.localize(`${PREFIX}.settings.headerGeneral`),
-    scope: "world",
-    config: true,
-    type: String,
-    default: ""
-  });
-
   game.settings.register(MODULE_ID, "enableModule", {
     name: game.i18n.localize(`${PREFIX}.settings.enableModule.name`),
     hint: game.i18n.localize(`${PREFIX}.settings.enableModule.hint`),
@@ -27,14 +19,6 @@ Hooks.once("init", function () {
   /* --------------------------------------------- */
   /* PLAYER CHARACTERS (PCs)                       */
   /* --------------------------------------------- */
-
-  game.settings.register(MODULE_ID, "headerPC", {
-    name: game.i18n.localize(`${PREFIX}.settings.headerPC`),
-    scope: "world",
-    config: true,
-    type: String,
-    default: ""
-  });
 
   game.settings.register(MODULE_ID, "enablePC", {
     name: game.i18n.localize(`${PREFIX}.settings.enablePC.name`),
@@ -118,14 +102,6 @@ Hooks.once("init", function () {
   /* NPCs / CREATURES                              */
   /* --------------------------------------------- */
 
-  game.settings.register(MODULE_ID, "headerNPC", {
-    name: game.i18n.localize(`${PREFIX}.settings.headerNPC`),
-    scope: "world",
-    config: true,
-    type: String,
-    default: ""
-  });
-
   game.settings.register(MODULE_ID, "enableNPC", {
     name: game.i18n.localize(`${PREFIX}.settings.enableNPC.name`),
     hint: game.i18n.localize(`${PREFIX}.settings.enableNPC.hint`),
@@ -208,14 +184,6 @@ Hooks.once("init", function () {
   /* MESSAGE RECIPIENTS                            */
   /* --------------------------------------------- */
 
-  game.settings.register(MODULE_ID, "headerRecipients", {
-    name: game.i18n.localize(`${PREFIX}.settings.headerRecipients`),
-    scope: "world",
-    config: true,
-    type: String,
-    default: ""
-  });
-
   game.settings.register(MODULE_ID, "pcRecipientsMain", {
     name: game.i18n.localize(`${PREFIX}.settings.pcRecipientsMain.name`),
     hint: game.i18n.localize(`${PREFIX}.settings.pcRecipientsMain.hint`),
@@ -258,4 +226,36 @@ Hooks.once("init", function () {
     default: "gmOnly"
   });
 
+});
+
+/* --------------------------------------------- */
+/* HEADERS RENDERING IN SETTINGS UI              */
+/* --------------------------------------------- */
+
+Hooks.on("renderSettingsConfig", (app, html, data) => {
+  const moduleId = MODULE_ID;
+
+  function insertHeader(afterSelector, title) {
+    const headerHtml = `
+      <h3 class="form-header" style="margin-top:15px;border-top:1px solid rgba(255,255,255,0.2);padding-top:10px;">
+        ${title}
+      </h3>
+    `;
+    const target = html.find(afterSelector).first();
+    if (target.length) {
+      target.before(headerHtml);
+    }
+  }
+
+  insertHeader(`[data-setting-id="${moduleId}.enableModule"]`,
+    game.i18n.localize(`${moduleId}.settings.headerGeneral`));
+
+  insertHeader(`[data-setting-id="${moduleId}.enablePC"]`,
+    game.i18n.localize(`${moduleId}.settings.headerPC`));
+
+  insertHeader(`[data-setting-id="${moduleId}.enableNPC"]`,
+    game.i18n.localize(`${moduleId}.settings.headerNPC`));
+
+  insertHeader(`[data-setting-id="${moduleId}.pcRecipientsMain"]`,
+    game.i18n.localize(`${moduleId}.settings.headerRecipients`));
 });
