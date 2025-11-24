@@ -60,5 +60,14 @@
 
   "wfrp4e-zero-wounds-prone.settings.recipients.gmOnly": "Solo GM",
   "wfrp4e-zero-wounds-prone.settings.recipients.owners": "Proprietari + GM",
-  "wfrp4e-zero-wounds-prone.settings.recipients.everyone": "Tutti"
+  "wfrp4e-zero-wounds-prone.settings.recipients.everyone": "Tutti",
+
+  "wfrp4e-zero-wounds-prone.chat.message": "{actorName} è stato ridotto a 0 Ferite. Cade",
+  "wfrp4e-zero-wounds-prone.chat.button": "Applica Prono",
+
+  "wfrp4e-zero-wounds-prone.chat.unconscious": "{actorName} è rimasto a 0 Ferite per troppo tempo (TB {tb}) e ora cade",
+  "wfrp4e-zero-wounds-prone.chat.unconsciousButton": "Applica Privo di Sensi",
+
+  "wfrp4e-zero-wounds-prone.chat.wake": "{actorName} non è più a 0 Ferite e può rimuovere",
+  "wfrp4e-zero-wounds-prone.chat.wakeButton": "Rimuovi Privo di Sensi"
 }
