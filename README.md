@@ -1,130 +1,134 @@
-# WFRP4e – Zero Wounds: Prone & Unconscious
+# WFRP4e – Zero Wounds
 
-![Foundry VTT Compatibility](https://img.shields.io/badge/Foundry_VTT-12%20%7C%2013-orange)
+![Foundry VTT Compatibility](https://img.shields.io/badge/Foundry_VTT-13-orange)
 ![System: WFRP4e](https://img.shields.io/badge/System-WFRP4e-blue)
 ![License: MIT](https://img.shields.io/badge/License-MIT-green)
 ![Status: Stable](https://img.shields.io/badge/Status-Stable-brightgreen)
-![Languages: EN/IT](https://img.shields.io/badge/Localization-EN%20%7C%20IT-purple)
+![Languages](https://img.shields.io/badge/Localization-EN%20%7C%20IT%20%7C%20FR%20%7C%20ES%20%7C%20DE%20%7C%20PT--BR-purple)
 ![Latest Release](https://img.shields.io/github/v/release/Deathkael83/wfrp4e-zero-wounds-prone)
 ![Downloads](https://img.shields.io/github/downloads/Deathkael83/wfrp4e-zero-wounds-prone/total)
-![Foundry Verified](https://img.shields.io/badge/Verified%20For-FoundryVTT%2012%2F13-orange)
 ![GitHub Stars](https://img.shields.io/github/stars/Deathkael83/wfrp4e-zero-wounds-prone?style=social)
 
-This module automates and enhances how WFRP4e handles characters and creatures reaching **0 Wounds**, falling **Prone**, becoming **Unconscious**, and waking up again when they recover Wounds.
+This module automates and enhances how WFRP4e handles characters and creatures reaching **0 Wounds**, falling **Prone**, becoming **Unconscious**, and waking up again after recovering Wounds.
 
-It is designed to be fully configurable, non-intrusive, system-compatible, and respectful of both PC and NPC workflows.
+It is designed to be configurable, non-intrusive, system-friendly, and fully compatible with both PC and NPC workflows.
 
 ---
 
 ## ✦ Features
 
-### **1. Automatic or Chat-Prompt Handling**
+### **Automatic or Chat-Prompt Handling**
 When a character reaches **0 Wounds**, the module can:
 
-- Display a **chat message** with a button to apply *Prone*  
-- Apply *Prone* **automatically**, optionally sending a notification  
-- Do nothing (disabled)
+• Show a **chat message** with a button to apply *Prone*  
+• Apply *Prone* **automatically**, optionally sending a notification  
+• Stay inactive (disabled)
 
-The same applies to:
+The same logic applies to:
 
-- Falling **Unconscious** after TB Rounds at 0 Wounds  
-- **Waking up** when Wounds rise above 0
+• Becoming **Unconscious** after TB Rounds at 0 Wounds  
+• **Waking up** when Wounds rise above 0  
 
-Each state (Prone, Unconscious, Wake Up) can be controlled **independently**.
+Each effect (Prone, Unconscious, Wake Up) can be configured **independently** for PCs and NPCs.
 
 ---
 
-## ✦ Fully Separate Settings for PCs and NPCs
+## ✦ Separate Settings for PCs and NPCs
 
-Player Characters and NPCs/Monsters each have:
+Players and NPCs/Creatures each have:
 
-- Independent **enable/disable** toggles  
-- Independent **Prone / Unconscious / Wake Up** modes  
-- Independent **notification on auto-apply** toggles  
-- Independent **recipient settings**
+• Independent enable/disable toggles  
+• Independent modes for Prone / Unconscious / Wake Up  
+• Independent “auto-apply notification” toggles  
+• Independent recipient settings  
+
+NPCs use simplified controls while still supporting all effects.
 
 ---
 
 ## ✦ Recipient Control
 
-You decide who receives chat messages:
+Choose who receives chat messages:
 
-- **GM only**
-- **Owners + GM**
-- **Everyone**
+• **GM only**  
+• **Owners + GM**  
+• **Everyone**  
 
-PCs have separate recipient settings for:
-- Prone / Unconscious  
-- Wake Up  
+PCs have separate recipient control for:
 
-NPCs have a single recipient control.
+• Prone / Unconscious  
+• Wake Up  
 
----
-
-## ✦ Smart Condition Tagging
-
-The module displays condition names using WFRP4e’s built-in localization, and inserts clean, non-interactive condition tags (without the system’s default “Apply condition” button).
+NPCs use a single recipient option.
 
 ---
 
-## ✦ Combat-Safe Behaviour
+## ✦ Clean, Localized Condition Tags
 
-NPCs with non-linked or duplicated names (e.g. *Citizen 1*, *Citizen 2*) are handled safely:
+The module inserts non-interactive, localized condition tags (e.g. *Prone*, *Prono*, *À Terre*) without triggering the WFRP4e system’s default “Apply Condition” chat button.
 
-- Token resolution uses strict document identity  
-- Works inside and outside combat  
-- No bleed-over between different tokens
+---
+
+## ✦ Combat-Safe Token Handling
+
+Handles non-linked and duplicated NPC names such as:
+
+• *Citizen 1*  
+• *Citizen 2*  
+
+Token resolution is based on **document identity**, preventing cross-target bugs even during combat.
 
 ---
 
 ## ✦ Settings Overview
 
-The module adds the following configuration groups:
+The module creates three clean configuration blocks:
 
-- **General Settings**  
-- **Player Characters (PCs)**  
-- **NPCs / Creatures**  
-- **Recipients**  
+1. **Player Characters (PCs)**  
+2. **NPCs / Creatures**  
+3. **Recipients**  
 
-Everything can be enabled, disabled, or set to chat/automatic mode independently.
+Each mode (Prone / Unconscious / Wake) has separate behaviour, separate auto notifications, and separate recipients where applicable.
+
+---
+
+## ✦ Compatibility
+
+• **WFRP4e system v7.1.1+**  
+• Fully compatible with Foundry VTT **v13**  
+• No prototype overrides  
+• No core patches  
+• Designed to coexist with other automation modules  
 
 ---
 
 ## ✦ Installation
 
 ### **Foundry VTT**
-Install directly by adding the manifest URL in the module installation screen.
+Use the manifest URL from the latest release.
 
 ### **The Forge**
-The module is fully compatible. Upload or link your repository and The Forge will detect the manifest automatically.
-
----
-
-## ✦ Compatibility
-
-- **WFRP4e Core v7.1.1+**  
-- Should work with all major WFRP4e automation and utility modules  
-- No core overrides, no prototype patching
+Upload the module or link your GitHub repository. The manifest is detected automatically.
 
 ---
 
 ## ✦ Known Limitations
 
-- Condition tags intentionally remove the built-in “Apply” button  
-- Requires the WFRP4e system to be loaded before initialization
+• Condition tags do not include the default “Apply Condition” button by design  
+• Requires the WFRP4e system to load before the module initializes  
 
 ---
 
 ## ✦ License
 
-This module is released under the **MIT License**.  
+Released under the **MIT License**.  
 See `LICENSE` for details.
 
 ---
 
 ## ✦ Credits
 
-Developed for use in advanced WFRP4e campaigns requiring finer control over 0-Wound states and combat automation.
+Created for tables wanting cleaner automation of 0-Wound behaviour in WFRP4e.
 
-Feedback, suggestions, and pull requests are welcome.
+Feedback, suggestions and pull requests are welcome.
 
