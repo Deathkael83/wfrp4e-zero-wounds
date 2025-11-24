@@ -229,44 +229,31 @@ Hooks.once("init", function () {
 });
 
 /* --------------------------------------------- */
-/* HEADERS RENDERING IN SETTINGS UI              */
+/* SECTION HEADERS IN SETTINGS UI                */
 /* --------------------------------------------- */
 
-Hooks.on("renderSettingsConfig", (app, html, data) => {
+Hooks.on("renderSettingsConfig", (app, html) => {
   const moduleId = MODULE_ID;
 
-  function insertHeader(settingKey, headerKey) {
-    const fullId = `${moduleId}.${settingKey}`;
+  function addHeaderBefore(settingKey, headerKey) {
+    const fullName = `${moduleId}.${settingKey}`;
 
-    // trova l'input del setting (checkbox / select / ecc.)
-    const input = html.find(`[name="${fullId}"]`).first();
-    if (!input.length) return;
-
-    // risale al contenitore della riga
-    const group = input.closest(".form-group");
-    if (!group.length) return;
+    // trova la riga del setting
+    const row = html.find(`[name="${fullName}"]`).closest(".form-group");
+    if (!row.length) return;
 
     const title = game.i18n.localize(`${moduleId}.settings.${headerKey}`);
 
-    const headerHtml = `
-      <h3 class="form-header" style="margin-top:15px;border-top:1px solid rgba(255,255,255,0.2);padding-top:10px;">
-        ${title}
-      </h3>
-    `;
-
-    group.before(headerHtml);
+    const header = $(`<div class="form-group group-header">${title}</div>`);
+    row.before(header);
   }
 
-  // General Settings sopra "enableModule"
-  insertHeader("enableModule", "headerGeneral");
+  // Header sopra i PG
+  addHeaderBefore("enablePC", "headerPC");
 
-  // Player Characters (PCs) sopra "enablePC"
-  insertHeader("enablePC", "headerPC");
+  // Header sopra i PNG / Mostri
+  addHeaderBefore("enableNPC", "headerNPC");
 
-  // NPCs / Creatures sopra "enableNPC"
-  insertHeader("enableNPC", "headerNPC");
-
-  // Message Recipients sopra "pcRecipientsMain"
-  insertHeader("pcRecipientsMain", "headerRecipients");
+  // Header sopra i Destinatari
+  addHeaderBefore("pcRecipientsMain", "headerRecipients");
 });
-
