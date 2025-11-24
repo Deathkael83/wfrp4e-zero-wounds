@@ -1,35 +1,22 @@
-/* ================================
- *  SETTINGS HEADERS (SEPARATORI)
- * ================================ */
+/* ============================================
+   WFRP4E Zero Wounds: Prone & Unconscious
+   Styles for Settings Headers
+   ============================================ */
 
-/* Righe di intestazione: bordo superiore e label stile sezione */
-.form-group[data-setting-id="wfrp4e-zero-wounds-prone.headerGeneral"],
-.form-group[data-setting-id="wfrp4e-zero-wounds-prone.headerPC"],
-.form-group[data-setting-id="wfrp4e-zero-wounds-prone.headerNPC"],
-.form-group[data-setting-id="wfrp4e-zero-wounds-prone.headerRecipients"] {
-  border-top: 1px solid rgba(255, 255, 255, 0.25);
-  margin-top: 0.75rem;
-  padding-top: 0.4rem;
-}
-
-/* Nasconde del tutto i campi a destra (quei riquadri viola) */
-.form-group[data-setting-id="wfrp4e-zero-wounds-prone.headerGeneral"] .form-fields,
-.form-group[data-setting-id="wfrp4e-zero-wounds-prone.headerPC"] .form-fields,
-.form-group[data-setting-id="wfrp4e-zero-wounds-prone.headerNPC"] .form-fields,
-.form-group[data-setting-id="wfrp4e-zero-wounds-prone.headerRecipients"] .form-fields {
-  display: none;
-}
-
-/* Label a tutta larghezza, effetto “titolo sezione” */
-.form-group[data-setting-id="wfrp4e-zero-wounds-prone.headerGeneral"] > label,
-.form-group[data-setting-id="wfrp4e-zero-wounds-prone.headerPC"] > label,
-.form-group[data-setting-id="wfrp4e-zero-wounds-prone.headerNPC"] > label,
-.form-group[data-setting-id="wfrp4e-zero-wounds-prone.headerRecipients"] > label {
-  font-weight: 700;
-  letter-spacing: 0.06em;
+/* Stile coerente con Foundry per <h3.form-header> */
+h3.form-header {
+  font-size: 1.05rem;
+  font-weight: bold;
   text-transform: uppercase;
-  font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.9);
+  letter-spacing: 0.05em;
+  color: rgba(255, 255, 255, 0.85);
+  margin: 1.2rem 0 0.3rem 0;
+}
+
+/* Bordo superiore che separa le sezioni */
+h3.form-header {
+  border-top: 1px solid rgba(255, 255, 255, 0.25);
+  padding-top: 0.5rem;
 }
 
 /* ================================
