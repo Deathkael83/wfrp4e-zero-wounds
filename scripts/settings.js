@@ -236,15 +236,16 @@ Hooks.on("renderSettingsConfig", (app, html, data) => {
   const moduleId = MODULE_ID;
 
   function insertHeader(settingKey, headerKey) {
-    // Trova l'input del setting (checkbox/select)
-    const input = html.find(`[data-setting-id="${moduleId}.${settingKey}"]`).first();
+    const fullId = `${moduleId}.${settingKey}`;
+
+    // trova l'input del setting (checkbox / select / ecc.)
+    const input = html.find(`[name="${fullId}"]`).first();
     if (!input.length) return;
 
-    // Risali al contenitore della riga intera
+    // risale al contenitore della riga
     const group = input.closest(".form-group");
     if (!group.length) return;
 
-    // Testo localizzato dell'header
     const title = game.i18n.localize(`${moduleId}.settings.${headerKey}`);
 
     const headerHtml = `
@@ -253,20 +254,19 @@ Hooks.on("renderSettingsConfig", (app, html, data) => {
       </h3>
     `;
 
-    // Inserisci l'header PRIMA della riga del setting
     group.before(headerHtml);
   }
 
   // General Settings sopra "enableModule"
   insertHeader("enableModule", "headerGeneral");
 
-  // Player Characters sopra "enablePC"
+  // Player Characters (PCs) sopra "enablePC"
   insertHeader("enablePC", "headerPC");
 
-  // NPCs sopra "enableNPC"
+  // NPCs / Creatures sopra "enableNPC"
   insertHeader("enableNPC", "headerNPC");
 
-  // Recipients sopra "pcRecipientsMain"
+  // Message Recipients sopra "pcRecipientsMain"
   insertHeader("pcRecipientsMain", "headerRecipients");
 });
 
