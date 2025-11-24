@@ -2,34 +2,34 @@
  *  SETTINGS HEADERS (SEPARATORI)
  * ================================ */
 
-/* Righe di intestazione: bordo e stile label */
-#client-settings section.settings-list .form-group[data-setting-id="wfrp4e-zero-wounds-prone.headerGeneral"],
-#client-settings section.settings-list .form-group[data-setting-id="wfrp4e-zero-wounds-prone.headerPC"],
-#client-settings section.settings-list .form-group[data-setting-id="wfrp4e-zero-wounds-prone.headerNPC"],
-#client-settings section.settings-list .form-group[data-setting-id="wfrp4e-zero-wounds-prone.headerRecipients"] {
-  border-top: 1px solid rgba(255, 255, 255, 0.15);
+/* Righe di intestazione: bordo superiore e label stile sezione */
+.form-group[data-setting-id="wfrp4e-zero-wounds-prone.headerGeneral"],
+.form-group[data-setting-id="wfrp4e-zero-wounds-prone.headerPC"],
+.form-group[data-setting-id="wfrp4e-zero-wounds-prone.headerNPC"],
+.form-group[data-setting-id="wfrp4e-zero-wounds-prone.headerRecipients"] {
+  border-top: 1px solid rgba(255, 255, 255, 0.25);
   margin-top: 0.75rem;
-  padding-top: 0.5rem;
+  padding-top: 0.4rem;
 }
 
-/* Nasconde tutta la parte dei campi (i box viola a destra) */
-#client-settings section.settings-list .form-group[data-setting-id="wfrp4e-zero-wounds-prone.headerGeneral"] .form-fields,
-#client-settings section.settings-list .form-group[data-setting-id="wfrp4e-zero-wounds-prone.headerPC"] .form-fields,
-#client-settings section.settings-list .form-group[data-setting-id="wfrp4e-zero-wounds-prone.headerNPC"] .form-fields,
-#client-settings section.settings-list .form-group[data-setting-id="wfrp4e-zero-wounds-prone.headerRecipients"] .form-fields {
+/* Nasconde del tutto i campi a destra (quei riquadri viola) */
+.form-group[data-setting-id="wfrp4e-zero-wounds-prone.headerGeneral"] .form-fields,
+.form-group[data-setting-id="wfrp4e-zero-wounds-prone.headerPC"] .form-fields,
+.form-group[data-setting-id="wfrp4e-zero-wounds-prone.headerNPC"] .form-fields,
+.form-group[data-setting-id="wfrp4e-zero-wounds-prone.headerRecipients"] .form-fields {
   display: none;
 }
 
-/* Label a tutta larghezza, stile “separatore” */
-#client-settings section.settings-list .form-group[data-setting-id="wfrp4e-zero-wounds-prone.headerGeneral"] label,
-#client-settings section.settings-list .form-group[data-setting-id="wfrp4e-zero-wounds-prone.headerPC"] label,
-#client-settings section.settings-list .form-group[data-setting-id="wfrp4e-zero-wounds-prone.headerNPC"] label,
-#client-settings section.settings-list .form-group[data-setting-id="wfrp4e-zero-wounds-prone.headerRecipients"] label {
+/* Label a tutta larghezza, effetto “titolo sezione” */
+.form-group[data-setting-id="wfrp4e-zero-wounds-prone.headerGeneral"] > label,
+.form-group[data-setting-id="wfrp4e-zero-wounds-prone.headerPC"] > label,
+.form-group[data-setting-id="wfrp4e-zero-wounds-prone.headerNPC"] > label,
+.form-group[data-setting-id="wfrp4e-zero-wounds-prone.headerRecipients"] > label {
   font-weight: 700;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.85);
+  color: rgba(255, 255, 255, 0.9);
 }
 
 /* ================================
