@@ -232,28 +232,25 @@ Hooks.once("init", function () {
 /* SECTION HEADERS IN SETTINGS UI                */
 /* --------------------------------------------- */
 
-Hooks.on("renderSettingsConfig", (app, html) => {
-  const moduleId = MODULE_ID;
+Hooks.on("renderSettingsConfig", (app, html, data) => {
 
-  function addHeaderBefore(settingKey, headerKey) {
-    const fullName = `${moduleId}.${settingKey}`;
+  // Header sopra il blocco dei PG
+  $('<div>')
+    .addClass('form-group group-header')
+    .html(game.i18n.localize("wfrp4e-zero-wounds-prone.settings.headerPC"))
+    .insertBefore($('[name="wfrp4e-zero-wounds-prone.enablePC"]').parents('div.form-group:first'));
 
-    // trova la riga del setting
-    const row = html.find(`[name="${fullName}"]`).closest(".form-group");
-    if (!row.length) return;
+  // Header sopra il blocco dei PNG / Mostri
+  $('<div>')
+    .addClass('form-group group-header')
+    .html(game.i18n.localize("wfrp4e-zero-wounds-prone.settings.headerNPC"))
+    .insertBefore($('[name="wfrp4e-zero-wounds-prone.enableNPC"]').parents('div.form-group:first'));
 
-    const title = game.i18n.localize(`${moduleId}.settings.${headerKey}`);
+  // Header sopra il blocco Destinatari
+  $('<div>')
+    .addClass('form-group group-header')
+    .html(game.i18n.localize("wfrp4e-zero-wounds-prone.settings.headerRecipients"))
+    .insertBefore($('[name="wfrp4e-zero-wounds-prone.pcRecipientsMain"]').parents('div.form-group:first'));
 
-    const header = $(`<div class="form-group group-header">${title}</div>`);
-    row.before(header);
-  }
-
-  // Header sopra i PG
-  addHeaderBefore("enablePC", "headerPC");
-
-  // Header sopra i PNG / Mostri
-  addHeaderBefore("enableNPC", "headerNPC");
-
-  // Header sopra i Destinatari
-  addHeaderBefore("pcRecipientsMain", "headerRecipients");
 });
+
