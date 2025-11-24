@@ -1,38 +1,46 @@
 # Changelog
 
-## 1.2.0 – Full Settings Overhaul & Stability Improvements
-- Added complete separation of PC and NPC logic for:
+## 1.2.0 – Full Overhaul, Multi-Language & UI Improvements
+- Renamed module to **WFRP4e – Zero Wounds** for clarity and consistency.
+- Added full multi-language support:
+  - **English, Italian, French, Spanish, German, Portuguese (Brazil)**
+- Complete rewrite of the settings interface:
+  - Added section headers (PC, NPC, Recipients) with clean UI separation.
+  - Rebuilt headers using injected `.form-group.group-header` blocks for maximum compatibility.
+- Full separation of PC and NPC logic for:
   - Prone handling
-  - Unconscious handling
-  - Wake-up handling
-- Added independent mode selection (Disabled / Chat Prompt / Automatic) for:
-  - PCs: Prone, Unconscious, Wake-up
-  - NPCs: Prone, Unconscious, Wake-up
-- Added separate auto-notification toggles for each condition type.
-- Added dedicated recipient controls:
-  - PCs: Prone/Unconscious recipients
-  - PCs: Wake-up recipients
+  - Unconscious handling (TB rounds at 0 Wounds)
+  - Wake-Up handling (when Wounds > 0)
+- Independent mode selection for each condition type:
+  - **Disabled / Chat Prompt / Automatic**
+  - Standalone settings for PCs and NPCs.
+- Added auto-notification toggles for every automated condition.
+- Added recipient controls:
+  - PCs: separate recipients for Prone/Unconscious and Wake-Up
   - NPCs: unified recipients
-- Reworked token resolution system:
+- Token resolution improvements:
   - Correct handling of non-linked tokens
-  - Correct handling of duplicated names (e.g., Citizen 1, Citizen 2)
-  - Correct behavior in and out of combat
-- Fixed condition tagging:
-  - Now uses localized condition names
-  - Removed unwanted “Apply Condition” buttons
-  - Added enriched condition tags compatible with WFRP4e
-- Added Wake-up automation and associated chat prompts.
-- Added full EN/IT localization for every setting and message.
-- Cleaned internal code structure and split main/settings into separate scripts.
-- Improved chat flags for accurate token/actor association.
-- General performance and reliability improvements.
+  - Stable behaviour with duplicated names (e.g. Citizen 1, Citizen 2)
+  - Correct identification both inside and outside combat
+- Condition tagging improvements:
+  - Localized condition names per user language
+  - Removed unwanted “Apply Condition” buttons in chat
+  - Added safe enriched tags compatible with WFRP4e
+- Improved chat message flow and formatting:
+  - Ensured spacing before condition tags
+  - Cleaned wake-up, unconscious and prone messages
+- Major internal refactor:
+  - Split scripts into `main.js` and `settings.js`
+  - Cleaned outdated logic and obsolete checks
+  - Improved flag usage and state tracking
+- General stability, performance and safety improvements.
 
 ## 1.1.7 – Stability & Chat Improvements
 - Improved handling of actors reaching 0 Wounds in edge cases.
-- Fixed cases where chat messages referenced the wrong actor or token name.
-- Corrected behaviour for some NPCs not applying Prone correctly.
-- Refined chat button behaviour to apply conditions more reliably.
-- Minor internal cleanup in preparation for the 1.2.0 overhaul.
+- Fixed cases where chat messages referenced the wrong token.
+- Corrected behaviour where some NPCs did not apply Prone.
+- Refined chat button actions for more reliable condition handling.
+- Minor cleanup in preparation for the 1.2.0 rewrite.
 
 ## 1.1.6 – Condition Application Adjustments
 - Improved Prone/Unconscious application workflow.
@@ -43,10 +51,10 @@
 - Fixed naming issues in chat messages.
 
 ## 1.1.0 – Added Unconscious Timer
-- Added automatic “fall Unconscious after Toughness Bonus rounds at 0 Wounds”.
+- Added automatic Unconscious application after Toughness Bonus rounds at 0 Wounds.
 - Added chat notification for Unconscious events.
 
 ## 1.0.0 – Initial Release
 - Basic Prone detection at 0 Wounds.
 - Chat button to apply Prone.
-- Initial NPC/PC compatibility.
+- Initial PC/NPC compatibility.
