@@ -1,18 +1,17 @@
 {
   "id": "wfrp4e-zero-wounds-prone",
-  "title": "WFRP4e - Zero Wounds: Prone & Unconscious",
-  "description": "When a creature reaches 0 Wounds, it becomes Prone, and after Toughness Bonus rounds it falls Unconscious. Includes per-type (PC/NPC) settings, chat prompts or full automation, and localized condition tags.",
+  "title": "WFRP4e - Zero Wounds",
+  "description": "When a creature reaches 0 Wounds, it becomes Prone and may fall Unconscious after a number of Rounds equal to its Toughness Bonus. This module automates Prone, Unconscious and Wake Up effects for PCs and NPCs, with configurable chat prompts or full automation, and localized condition tags.",
   "version": "1.2.0",
 
   "compatibility": {
-    "minimum": "12",
+    "minimum": "13",
     "verified": "13"
   },
 
   "authors": [
     {
-      "name": "Deathkael83",
-      "url": "https://github.com/Deathkael83"
+      "name": "Deathkael83"
     }
   ],
 
@@ -21,10 +20,10 @@
     "scripts/main.js"
   ],
 
+  "scripts": [],
   "styles": [
     "styles/module.css"
   ],
-
   "packs": [],
 
   "relationships": {
@@ -50,6 +49,26 @@
       "lang": "it",
       "name": "Italiano",
       "path": "lang/it.json"
+    },
+    {
+      "lang": "fr",
+      "name": "Français",
+      "path": "lang/fr.json"
+    },
+    {
+      "lang": "es",
+      "name": "Español",
+      "path": "lang/es.json"
+    },
+    {
+      "lang": "de",
+      "name": "Deutsch",
+      "path": "lang/de.json"
+    },
+    {
+      "lang": "pt-BR",
+      "name": "Português (Brasil)",
+      "path": "lang/pt-BR.json"
     }
   ],
 
@@ -58,7 +77,5 @@
   "download": "https://github.com/Deathkael83/wfrp4e-zero-wounds-prone/releases/latest/download/module.zip",
 
   "license": "LICENSE",
-  "flags": {},
-
-  "icon": "icon.png"
+  "flags": {}
 }
