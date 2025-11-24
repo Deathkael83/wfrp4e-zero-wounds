@@ -4,7 +4,7 @@ const LOCAL = MODULE_ID;
 Hooks.once("init", function () {
 
   /* --------------------------------------------- */
-  /* HEADERS (SEPARATORI VISIVI)                   */
+  /* GENERAL SETTINGS                              */
   /* --------------------------------------------- */
 
   game.settings.register(MODULE_ID, "headerGeneral", {
@@ -14,34 +14,6 @@ Hooks.once("init", function () {
     type: String,
     default: ""
   });
-
-  game.settings.register(MODULE_ID, "headerPC", {
-    name: game.i18n.localize(`${LOCAL}.settings.headerPC`),
-    scope: "world",
-    config: true,
-    type: String,
-    default: ""
-  });
-
-  game.settings.register(MODULE_ID, "headerNPC", {
-    name: game.i18n.localize(`${LOCAL}.settings.headerNPC`),
-    scope: "world",
-    config: true,
-    type: String,
-    default: ""
-  });
-
-  game.settings.register(MODULE_ID, "headerRecipients", {
-    name: game.i18n.localize(`${LOCAL}.settings.headerRecipients`),
-    scope: "world",
-    config: true,
-    type: String,
-    default: ""
-  });
-
-  /* --------------------------------------------- */
-  /* GENERALI                                      */
-  /* --------------------------------------------- */
 
   game.settings.register(MODULE_ID, "enableModule", {
     name: `${LOCAL}.settings.enableModule.name`,
@@ -53,8 +25,16 @@ Hooks.once("init", function () {
   });
 
   /* --------------------------------------------- */
-  /* PLAYER CHARACTERS (PG)                        */
+  /* PLAYER CHARACTERS (PCs)                       */
   /* --------------------------------------------- */
+
+  game.settings.register(MODULE_ID, "headerPC", {
+    name: game.i18n.localize(`${LOCAL}.settings.headerPC`),
+    scope: "world",
+    config: true,
+    type: String,
+    default: ""
+  });
 
   game.settings.register(MODULE_ID, "enablePC", {
     name: `${LOCAL}.settings.enablePC.name`,
@@ -128,20 +108,28 @@ Hooks.once("init", function () {
   game.settings.register(MODULE_ID, "pcWakeAutoNotify", {
     name: `${LOCAL}.settings.pcWakeAutoNotify.name`,
     hint: `${LOCAL}.settings.pcWakeAutoNotify.hint`,
-    scope: "world",
+    scope: "world`,
     config: true,
     type: Boolean,
     default: true
   });
 
   /* --------------------------------------------- */
-  /* NPC / MOSTRI                                  */
+  /* NPCs / CREATURES                              */
   /* --------------------------------------------- */
+
+  game.settings.register(MODULE_ID, "headerNPC", {
+    name: game.i18n.localize(`${LOCAL}.settings.headerNPC`),
+    scope: "world",
+    config: true,
+    type: String,
+    default: ""
+  });
 
   game.settings.register(MODULE_ID, "enableNPC", {
     name: `${LOCAL}.settings.enableNPC.name`,
     hint: `${LOCAL}.settings.enableNPC.hint`,
-    scope: "world",
+    scope: "world`,
     config: true,
     type: Boolean,
     default: true
@@ -150,7 +138,7 @@ Hooks.once("init", function () {
   game.settings.register(MODULE_ID, "npcProneMode", {
     name: `${LOCAL}.settings.npcProneMode.name`,
     hint: `${LOCAL}.settings.npcProneMode.hint`,
-    scope: "world",
+    scope: "world`,
     config: true,
     type: String,
     choices: {
@@ -164,7 +152,7 @@ Hooks.once("init", function () {
   game.settings.register(MODULE_ID, "npcProneAutoNotify", {
     name: `${LOCAL}.settings.npcProneAutoNotify.name`,
     hint: `${LOCAL}.settings.npcProneAutoNotify.hint`,
-    scope: "world",
+    scope: "world`,
     config: true,
     type: Boolean,
     default: true
@@ -173,7 +161,7 @@ Hooks.once("init", function () {
   game.settings.register(MODULE_ID, "npcUnconsciousMode", {
     name: `${LOCAL}.settings.npcUnconsciousMode.name`,
     hint: `${LOCAL}.settings.npcUnconsciousMode.hint`,
-    scope: "world",
+    scope: "world`,
     config: true,
     type: String,
     choices: {
@@ -187,7 +175,7 @@ Hooks.once("init", function () {
   game.settings.register(MODULE_ID, "npcUnconsciousAutoNotify", {
     name: `${LOCAL}.settings.npcUnconsciousAutoNotify.name`,
     hint: `${LOCAL}.settings.npcUnconsciousAutoNotify.hint`,
-    scope: "world",
+    scope: "world`,
     config: true,
     type: Boolean,
     default: true
@@ -196,7 +184,7 @@ Hooks.once("init", function () {
   game.settings.register(MODULE_ID, "npcWakeMode", {
     name: `${LOCAL}.settings.npcWakeMode.name`,
     hint: `${LOCAL}.settings.npcWakeMode.hint`,
-    scope: "world",
+    scope: "world`,
     config: true,
     type: String,
     choices: {
@@ -210,20 +198,28 @@ Hooks.once("init", function () {
   game.settings.register(MODULE_ID, "npcWakeAutoNotify", {
     name: `${LOCAL}.settings.npcWakeAutoNotify.name`,
     hint: `${LOCAL}.settings.npcWakeAutoNotify.hint`,
-    scope: "world",
+    scope: "world`,
     config: true,
     type: Boolean,
     default: true
   });
 
   /* --------------------------------------------- */
-  /* DESTINATARI                                   */
+  /* MESSAGE RECIPIENTS                            */
   /* --------------------------------------------- */
+
+  game.settings.register(MODULE_ID, "headerRecipients", {
+    name: game.i18n.localize(`${LOCAL}.settings.headerRecipients`),
+    scope: "world`,
+    config: true,
+    type: String,
+    default: ""
+  });
 
   game.settings.register(MODULE_ID, "pcRecipientsMain", {
     name: `${LOCAL}.settings.pcRecipientsMain.name`,
     hint: `${LOCAL}.settings.pcRecipientsMain.hint`,
-    scope: "world",
+    scope: "world`,
     config: true,
     type: String,
     choices: {
@@ -237,7 +233,7 @@ Hooks.once("init", function () {
   game.settings.register(MODULE_ID, "pcRecipientsWake", {
     name: `${LOCAL}.settings.pcRecipientsWake.name`,
     hint: `${LOCAL}.settings.pcRecipientsWake.hint`,
-    scope: "world",
+    scope: "world`,
     config: true,
     type: String,
     choices: {
@@ -251,7 +247,7 @@ Hooks.once("init", function () {
   game.settings.register(MODULE_ID, "npcRecipients", {
     name: `${LOCAL}.settings.npcRecipients.name`,
     hint: `${LOCAL}.settings.npcRecipients.hint`,
-    scope: "world",
+    scope: "world`,
     config: true,
     type: String,
     choices: {
