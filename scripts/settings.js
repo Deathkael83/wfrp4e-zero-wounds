@@ -235,27 +235,38 @@ Hooks.once("init", function () {
 Hooks.on("renderSettingsConfig", (app, html, data) => {
   const moduleId = MODULE_ID;
 
-  function insertHeader(afterSelector, title) {
+  function insertHeader(settingKey, headerKey) {
+    // Trova l'input del setting (checkbox/select)
+    const input = html.find(`[data-setting-id="${moduleId}.${settingKey}"]`).first();
+    if (!input.length) return;
+
+    // Risali al contenitore della riga intera
+    const group = input.closest(".form-group");
+    if (!group.length) return;
+
+    // Testo localizzato dell'header
+    const title = game.i18n.localize(`${moduleId}.settings.${headerKey}`);
+
     const headerHtml = `
       <h3 class="form-header" style="margin-top:15px;border-top:1px solid rgba(255,255,255,0.2);padding-top:10px;">
         ${title}
       </h3>
     `;
-    const target = html.find(afterSelector).first();
-    if (target.length) {
-      target.before(headerHtml);
-    }
+
+    // Inserisci l'header PRIMA della riga del setting
+    group.before(headerHtml);
   }
 
-  insertHeader(`[data-setting-id="${moduleId}.enableModule"]`,
-    game.i18n.localize(`${moduleId}.settings.headerGeneral`));
+  // General Settings sopra "enableModule"
+  insertHeader("enableModule", "headerGeneral");
 
-  insertHeader(`[data-setting-id="${moduleId}.enablePC"]`,
-    game.i18n.localize(`${moduleId}.settings.headerPC`));
+  // Player Characters sopra "enablePC"
+  insertHeader("enablePC", "headerPC");
 
-  insertHeader(`[data-setting-id="${moduleId}.enableNPC"]`,
-    game.i18n.localize(`${moduleId}.settings.headerNPC`));
+  // NPCs sopra "enableNPC"
+  insertHeader("enableNPC", "headerNPC");
 
-  insertHeader(`[data-setting-id="${moduleId}.pcRecipientsMain"]`,
-    game.i18n.localize(`${moduleId}.settings.headerRecipients`));
+  // Recipients sopra "pcRecipientsMain"
+  insertHeader("pcRecipientsMain", "headerRecipients");
 });
+
