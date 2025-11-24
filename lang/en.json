@@ -2,7 +2,6 @@
   "wfrp4e-zero-wounds-prone.title": "WFRP4e – Zero Wounds: Prone & Unconscious",
   "wfrp4e-zero-wounds-prone.description": "Handles Prone, Unconscious, and Wake Up effects for PCs and NPCs when Wounds drop to or rise from zero. Includes automatic modes, chat prompts, and configurable recipients.",
 
-  "wfrp4e-zero-wounds-prone.settings.headerGeneral": "────────  General Settings  ────────",
   "wfrp4e-zero-wounds-prone.settings.headerPC": "────────  Player Characters (PCs)  ────────",
   "wfrp4e-zero-wounds-prone.settings.headerNPC": "────────  NPCs / Creatures  ────────",
   "wfrp4e-zero-wounds-prone.settings.headerRecipients": "────────  Message Recipients  ────────",
