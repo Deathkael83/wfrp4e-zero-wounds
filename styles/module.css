@@ -2,6 +2,7 @@
  *  SETTINGS HEADERS (SEPARATORI)
  * ================================ */
 
+/* Righe di intestazione: bordo e stile label */
 #client-settings section.settings-list .form-group[data-setting-id="wfrp4e-zero-wounds-prone.headerGeneral"],
 #client-settings section.settings-list .form-group[data-setting-id="wfrp4e-zero-wounds-prone.headerPC"],
 #client-settings section.settings-list .form-group[data-setting-id="wfrp4e-zero-wounds-prone.headerNPC"],
@@ -11,14 +12,15 @@
   padding-top: 0.5rem;
 }
 
-/* Nasconde il campo input dei “header” e lascia solo l’etichetta */
-#client-settings section.settings-list .form-group[data-setting-id="wfrp4e-zero-wounds-prone.headerGeneral"] input,
-#client-settings section.settings-list .form-group[data-setting-id="wfrp4e-zero-wounds-prone.headerPC"] input,
-#client-settings section.settings-list .form-group[data-setting-id="wfrp4e-zero-wounds-prone.headerNPC"] input,
-#client-settings section.settings-list .form-group[data-setting-id="wfrp4e-zero-wounds-prone.headerRecipients"] input {
+/* Nasconde tutta la parte dei campi (i box viola a destra) */
+#client-settings section.settings-list .form-group[data-setting-id="wfrp4e-zero-wounds-prone.headerGeneral"] .form-fields,
+#client-settings section.settings-list .form-group[data-setting-id="wfrp4e-zero-wounds-prone.headerPC"] .form-fields,
+#client-settings section.settings-list .form-group[data-setting-id="wfrp4e-zero-wounds-prone.headerNPC"] .form-fields,
+#client-settings section.settings-list .form-group[data-setting-id="wfrp4e-zero-wounds-prone.headerRecipients"] .form-fields {
   display: none;
 }
 
+/* Label a tutta larghezza, stile “separatore” */
 #client-settings section.settings-list .form-group[data-setting-id="wfrp4e-zero-wounds-prone.headerGeneral"] label,
 #client-settings section.settings-list .form-group[data-setting-id="wfrp4e-zero-wounds-prone.headerPC"] label,
 #client-settings section.settings-list .form-group[data-setting-id="wfrp4e-zero-wounds-prone.headerNPC"] label,
