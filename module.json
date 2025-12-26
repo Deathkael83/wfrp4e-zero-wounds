@@ -16,7 +16,7 @@
   "styles": [
     "style/module.css"
   ],
-  "url": "https://github.com/Deathkael83/wfrp4e-zero-wounds-prone",
+  "url": "https://github.com/Deathkael83/wfrp4e-zero-wounds-prone/tree/dev",
   "manifest": "https://github.com/Deathkael83/wfrp4e-zero-wounds-prone/releases/download/v1.2.1-beta.1/module.json",
   "download": "https://github.com/Deathkael83/wfrp4e-zero-wounds-prone/releases/download/v1.2.1-beta.1/module.zip",
   "compatibility": {
