@@ -9,11 +9,6 @@
   "wfrp4e-zero-wounds-prone.settings.enableModule.name": "Enable Module",
   "wfrp4e-zero-wounds-prone.settings.enableModule.hint": "Enable or disable all features of this module.",
 
-
-  /* ------------------------------------------ */
-  /* PLAYER CHARACTERS (PCs)                    */
-  /* ------------------------------------------ */
-
   "wfrp4e-zero-wounds-prone.settings.enablePC.name": "Enable for PCs",
   "wfrp4e-zero-wounds-prone.settings.enablePC.hint": "Apply these rules to all player characters.",
 
@@ -39,11 +34,6 @@
   "wfrp4e-zero-wounds-prone.settings.pcDeathAllowFate.name": "PCs: Enable «Death May Wait»",
   "wfrp4e-zero-wounds-prone.settings.pcDeathAllowFate.hint": "Allows the GM to spend 1 Fate Point to prevent death: removes all Bleeding conditions and pauses death, leaving the character unconscious but stable.",
 
-
-  /* ------------------------------------------ */
-  /* NPCs / CREATURES                           */
-  /* ------------------------------------------ */
-
   "wfrp4e-zero-wounds-prone.settings.enableNPC.name": "Enable for NPCs / Creatures",
   "wfrp4e-zero-wounds-prone.settings.enableNPC.hint": "Apply these rules to NPCs and creatures.",
 
@@ -67,22 +57,12 @@
   "wfrp4e-zero-wounds-prone.settings.npcDeathAutoNotify.name": "NPCs: Auto notification (Death)",
   "wfrp4e-zero-wounds-prone.settings.npcDeathAutoNotify.hint": "Send a notification to the GM when Death is applied automatically to NPCs.",
 
-
-  /* ------------------------------------------ */
-  /* MESSAGE RECIPIENTS                         */
-  /* ------------------------------------------ */
-
   "wfrp4e-zero-wounds-prone.settings.pcRecipientsMain.name": "PCs: Message Recipients",
   "wfrp4e-zero-wounds-prone.settings.pcRecipientsMain.hint": "Who receives messages for PCs reaching 0 Wounds.",
   "wfrp4e-zero-wounds-prone.settings.pcRecipientsWake.name": "PCs: Wake Up Recipients",
   "wfrp4e-zero-wounds-prone.settings.pcRecipientsWake.hint": "Who receives messages when PCs wake from Unconscious.",
   "wfrp4e-zero-wounds-prone.settings.npcRecipients.name": "NPCs: Message Recipients",
   "wfrp4e-zero-wounds-prone.settings.npcRecipients.hint": "Who receives messages for NPCs and creatures.",
-
-
-  /* ------------------------------------------ */
-  /* COMMON SETTINGS VALUES                    */
-  /* ------------------------------------------ */
 
   "wfrp4e-zero-wounds-prone.settings.mode.disabled": "Disabled",
   "wfrp4e-zero-wounds-prone.settings.mode.chat": "Chat Prompt",
@@ -91,11 +71,6 @@
   "wfrp4e-zero-wounds-prone.settings.recipients.gmOnly": "GM only",
   "wfrp4e-zero-wounds-prone.settings.recipients.owners": "Owners + GM",
   "wfrp4e-zero-wounds-prone.settings.recipients.everyone": "Everyone",
-
-
-  /* ------------------------------------------ */
-  /* CHAT MESSAGES                              */
-  /* ------------------------------------------ */
 
   "wfrp4e-zero-wounds-prone.chat.message": "{actorName} has been reduced to 0 Wounds. Falls ",
   "wfrp4e-zero-wounds-prone.chat.button": "Apply Prone",
