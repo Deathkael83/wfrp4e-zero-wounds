@@ -1,44 +1,41 @@
 {
   "id": "wfrp4e-zero-wounds-prone",
   "title": "WFRP4e - Zero Wounds",
-  "description": "When a creature reaches 0 Wounds, it becomes Prone and may fall Unconscious after a number of Rounds equal to its Toughness Bonus. This module automates Prone, Unconscious and Wake Up effects for PCs and NPCs, with configurable chat prompts or full automation, and localized condition tags.",
-  "version": "1.2.0",
-
-  "compatibility": {
-    "minimum": "13",
-    "verified": "13"
-  },
-
+  "description": "Automates Prone, Unconscious, and Wake Up for WFRP4e at 0 Wounds. Independent PC/NPC settings, chat prompts or automation, and full localization in six languages.",
+  "version": "1.2.1-beta.1",
   "authors": [
     {
-      "name": "Deathkael83"
+      "name": "Deathkael83",
+      "url": "https://github.com/Deathkael83"
     }
   ],
-
   "esmodules": [
-    "scripts/settings.js",
-    "scripts/main.js"
+    "main.js",
+    "settings.js"
   ],
-
-  "scripts": [],
   "styles": [
-    "styles/module.css"
+    "style/module.css"
   ],
-  "packs": [],
-
+  "url": "https://github.com/Deathkael83/wfrp4e-zero-wounds-prone",
+  "manifest": "https://github.com/Deathkael83/wfrp4e-zero-wounds-prone/releases/latest/download/module.json",
+  "download": "https://github.com/Deathkael83/wfrp4e-zero-wounds-prone/releases/latest/download/module.zip",
+  "compatibility": {
+    "minimum": "12",
+    "verified": "13",
+    "maximum": "13"
+  },
   "relationships": {
     "systems": [
       {
         "id": "wfrp4e",
         "type": "system",
         "compatibility": {
-          "minimum": "7",
-          "verified": "7"
+          "minimum": "7.0.0",
+          "verified": "7.1.1"
         }
       }
     ]
   },
-
   "languages": [
     {
       "lang": "en",
@@ -56,26 +53,33 @@
       "path": "lang/fr.json"
     },
     {
-      "lang": "es",
-      "name": "Español",
-      "path": "lang/es.json"
-    },
-    {
       "lang": "de",
       "name": "Deutsch",
       "path": "lang/de.json"
     },
     {
-      "lang": "pt-BR",
-      "name": "Português (Brasil)",
-      "path": "lang/pt-BR.json"
+      "lang": "es",
+      "name": "Español",
+      "path": "lang/es.json"
+    },
+    {
+      "lang": "pt",
+      "name": "Português",
+      "path": "lang/pt.json"
     }
   ],
-
-  "url": "https://github.com/Deathkael83/wfrp4e-zero-wounds-prone",
-  "manifest": "https://github.com/Deathkael83/wfrp4e-zero-wounds-prone/releases/latest/download/module.json",
-  "download": "https://github.com/Deathkael83/wfrp4e-zero-wounds-prone/releases/latest/download/module.zip",
-
-  "license": "LICENSE",
-  "flags": {}
+  "media": [
+    {
+      "type": "icon",
+      "url": "icon.png"
+    },
+    {
+      "type": "cover",
+      "url": "preview.png"
+    },
+    {
+      "type": "card",
+      "url": "card.png"
+    }
+  ]
 }
