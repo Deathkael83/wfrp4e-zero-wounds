@@ -255,8 +255,8 @@ Hooks.once("init", function () {
     type: String,
     default: "ownersGM",
     choices: {
-      gm: `${PREFIX}.settings.recipients.gmOnly`,
-      ownersGM: `${PREFIX}.settings.recipients.owners`,
+      gm: `${PREFIX}.settings.recipients.gm`,
+      ownersGM: `${PREFIX}.settings.recipients.ownersGM`,
       everyone: `${PREFIX}.settings.recipients.everyone`
     }
   });
@@ -269,8 +269,8 @@ Hooks.once("init", function () {
     type: String,
     default: "ownersGM",
     choices: {
-      gm: `${PREFIX}.settings.recipients.gmOnly`,
-      ownersGM: `${PREFIX}.settings.recipients.owners`,
+      gm: `${PREFIX}.settings.recipients.gm`,
+      ownersGM: `${PREFIX}.settings.recipients.ownersGM`,
       everyone: `${PREFIX}.settings.recipients.everyone`
     }
   });
@@ -283,8 +283,8 @@ Hooks.once("init", function () {
     type: String,
     default: "gm",
     choices: {
-      gm: `${PREFIX}.settings.recipients.gmOnly`,
-      ownersGM: `${PREFIX}.settings.recipients.owners`,
+      gm: `${PREFIX}.settings.recipients.gm`,
+      ownersGM: `${PREFIX}.settings.recipients.ownersGM`,
       everyone: `${PREFIX}.settings.recipients.everyone`
     }
   });
