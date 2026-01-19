@@ -2,7 +2,7 @@
   "id": "wfrp4e-zero-wounds-prone",
   "title": "WFRP4e - Zero Wounds",
   "description": "When a creature reaches 0 Wounds, it becomes Prone and may fall Unconscious after a number of Rounds equal to its Toughness Bonus. This module automates Prone, Unconscious and Wake Up effects for PCs and NPCs, with configurable chat prompts or full automation, and localized condition tags.",
-  "version": "1.2.0",
+  "version": "1.2.1-beta1",
 
   "compatibility": {
     "minimum": "13",
@@ -73,8 +73,8 @@
   ],
 
   "url": "https://github.com/Deathkael83/wfrp4e-zero-wounds-prone",
-  "manifest": "https://github.com/Deathkael83/wfrp4e-zero-wounds-prone/releases/latest/download/module.json",
-  "download": "https://github.com/Deathkael83/wfrp4e-zero-wounds-prone/releases/latest/download/module.zip",
+  "manifest": "https://github.com/Deathkael83/wfrp4e-zero-wounds-prone/releases/download/v1.2.1-beta.1/module.json",
+  "download": "https://github.com/Deathkael83/wfrp4e-zero-wounds-prone/releases/download/v1.2.1-beta.1/module.zip",
 
   "license": "LICENSE",
   "flags": {}
