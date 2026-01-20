@@ -161,6 +161,7 @@ async function startUnconsciousTimer(actor, tokenDoc) {
     unconsciousApplied: false,
     deathResolved: false,
     deathPaused: false,
+    // legacy field (kept for backward compatibility with existing flags)
     deathDelay: 0
   });
 }
@@ -332,40 +333,13 @@ async function applyDead(actor) {
   }
 }
 
-function countActiveCriticalWounds(actor) {
-  try {
-    // In WFRP4e, Critical Wounds are usually Items. We count those that are not marked as healed.
-    const critItems = actor?.items?.filter(i => {
-      if (!i) return false;
-      const t = String(i.type ?? "").toLowerCase();
-      return t === "critical" || t === "criticalwound";
-    }) ?? [];
-
-    let count = 0;
-    for (const it of critItems) {
-      const healed =
-        foundry.utils.getProperty(it, "system.healed") ??
-        foundry.utils.getProperty(it, "system.healed.value") ??
-        foundry.utils.getProperty(it, "system.isHealed") ??
-        false;
-      if (!healed) count += 1;
-    }
-    return count;
-  } catch (err) {
-    console.error(`[${MODULE_ID}] countActiveCriticalWounds`, err);
-    return 0;
-  }
-}
-
-async function onDeathThreshold(actor, tokenDoc, tb, opts = {}) {
+async function onDeathThreshold(actor, tokenDoc, tb) {
   const { mode, notify, allowMayWait } = getDeathSettings(actor);
   if (mode === "disabled") return;
 
   const whisper = getGMRecipients();
   const name = getDisplayName(actor, tokenDoc);
-  const msgKey = opts.msgKey ?? `${LOCAL}.chat.death`;
-  const msgData = opts.msgData ?? { actorName: name, tb };
-  const msg = game.i18n.format(msgKey, msgData);
+  const msg = game.i18n.format(`${LOCAL}.chat.death`, { actorName: name, tb });
   const tag = await makeConditionTagHTML("dead");
 
   if (mode === "auto") {
@@ -378,18 +352,18 @@ async function onDeathThreshold(actor, tokenDoc, tb, opts = {}) {
     return;
   }
 
-  await sendDeathPrompt(actor, tokenDoc, whisper, tb, allowMayWait, msg);
+  await sendDeathPrompt(actor, tokenDoc, whisper, tb, allowMayWait);
 }
 
-async function sendDeathPrompt(actor, tokenDoc, whisper, tb, allowMayWait, msgOverride = null) {
+async function sendDeathPrompt(actor, tokenDoc, whisper, tb, allowMayWait) {
   const name = getDisplayName(actor, tokenDoc);
-  const msg = msgOverride ?? game.i18n.format(`${LOCAL}.chat.death`, { actorName: name, tb });
+  const msg = game.i18n.format(`${LOCAL}.chat.death`, { actorName: name, tb });
   const tag = await makeConditionTagHTML("dead");
   const tokenUuid = tokenDoc?.uuid ?? "";
   const actorUuid = actor?.uuid ?? "";
 
   const btnApply = game.i18n.localize(`${LOCAL}.chat.deathApply`);
-  const btnDelay = game.i18n.localize(`${LOCAL}.chat.deathDelay`);
+  const waitText = game.i18n.localize(`${LOCAL}.chat.deathWaitNextRound`);
   const btnPause = game.i18n.localize(`${LOCAL}.chat.deathPause`);
   const btnMayWait = game.i18n.localize(`${LOCAL}.chat.deathMayWait`);
 
@@ -402,7 +376,7 @@ async function sendDeathPrompt(actor, tokenDoc, whisper, tb, allowMayWait, msgOv
     <p>${msg} ${tag}</p>
     <div class="zwp-buttons">
       <a class="zwp-button apply-dead-zero-wounds" data-token-uuid="${tokenUuid}" data-actor-uuid="${actorUuid}">${btnApply}</a>
-      <a class="zwp-button delay-dead-zero-wounds" data-token-uuid="${tokenUuid}" data-actor-uuid="${actorUuid}">${btnDelay}</a>
+      <span class="zwp-death-wait-text">${waitText}</span>
       <a class="zwp-button pause-dead-zero-wounds" data-token-uuid="${tokenUuid}" data-actor-uuid="${actorUuid}">${btnPause}</a>
       ${mayWaitBtn}
     </div>
@@ -492,40 +466,93 @@ Hooks.on("updateCombat", async (combat, changed) => {
       await updateZeroWTimer(tokenDoc, { unconsciousApplied: true });
     }
 
-    // Death handling (GM-controlled), unless paused/resolved
+    // Death from too many Critical Wounds: if at 0 Wounds, Unconscious, and Critical Wounds > TB.
+    // (Checked at end of each round via updateCombat round changes.)
     const deathInfo = await tokenDoc.getFlag(MODULE_ID, "zeroWTimer") || {};
     if (deathInfo.deathResolved) continue;
     if (deathInfo.deathPaused) continue;
 
-    let delay = Number(deathInfo.deathDelay ?? 0);
-    if (delay > 0) {
-      await updateZeroWTimer(tokenDoc, { deathDelay: delay - 1 });
-      continue;
-    }
-
-    // Critical Wounds rule: if Unconscious + 0 Wounds and Critical Wounds > TB, death at end of round
-    if (actor.hasCondition?.("unconscious")) {
-      const critCount = countActiveCriticalWounds(actor);
-      if (critCount > tb) {
-        // Avoid spamming the same prompt multiple times in the same round
-        const alreadyThisRound = Number(deathInfo.critPromptRound ?? 0) === Number(combat.round);
-        if (!alreadyThisRound) {
-          await updateZeroWTimer(tokenDoc, { critPromptRound: combat.round });
-          const name = getDisplayName(actor, tokenDoc);
-          await onDeathThreshold(actor, tokenDoc, tb, {
-            msgKey: `${LOCAL}.chat.deathCrit`,
-            msgData: { actorName: name, tb, critCount }
-          });
-        }
-        continue;
+    if (actor.hasCondition("unconscious")) {
+      const crits = getCriticalWoundsCount(actor);
+      if (Number.isFinite(crits) && crits > tb) {
+        await onDeathFromCriticals(actor, tokenDoc, tb, crits);
       }
     }
-
-    // NOTE: No "timer-based" death any more.
-    // Death checks are handled only by the Critical Wounds rule (see above),
-    // and then resolved according to the GM death mode (Auto vs Chat).
   }
 });
+
+/* --------------------------------------------- */
+/* CRITICAL WOUNDS DEATH CHECK                   */
+/* --------------------------------------------- */
+
+function getCriticalWoundsCount(actor) {
+  // WFRP4e data paths have changed across versions/modules; try a few common candidates.
+  const candidates = [
+    "system.status.criticalWounds.value",
+    "system.status.criticalWounds.current",
+    "system.status.criticalWounds",
+    "system.status.critWounds.value",
+    "system.status.critWounds.current",
+    "system.status.critWounds",
+    "system.details.criticalWounds.value",
+    "system.details.criticalWounds.current",
+    "system.details.criticalWounds"
+  ];
+  for (const p of candidates) {
+    const v = foundry.utils.getProperty(actor, p);
+    if (typeof v === "number") return v;
+  }
+  return NaN;
+}
+
+async function onDeathFromCriticals(actor, tokenDoc, tb, crits) {
+  const { mode, notify, allowMayWait } = getDeathSettings(actor);
+  if (mode === "disabled") return;
+
+  const whisper = getGMRecipients();
+  const name = getDisplayName(actor, tokenDoc);
+  const msg = game.i18n.format(`${LOCAL}.chat.deathCrit`, { actorName: name, crits, tb });
+  const tag = await makeConditionTagHTML("dead");
+
+  if (mode === "auto") {
+    await applyDead(actor);
+    await updateZeroWTimer(tokenDoc, { deathResolved: true, deathPaused: true, deathDelay: 0 });
+    if (notify) await sendMessage(actor, tokenDoc, `<div><p>${msg} ${tag}</p></div>`, whisper);
+    return;
+  }
+
+  await sendDeathCritPrompt(actor, tokenDoc, whisper, tb, crits, allowMayWait);
+}
+
+async function sendDeathCritPrompt(actor, tokenDoc, whisper, tb, crits, allowMayWait) {
+  const name = getDisplayName(actor, tokenDoc);
+  const msg = game.i18n.format(`${LOCAL}.chat.deathCrit`, { actorName: name, crits, tb });
+  const tag = await makeConditionTagHTML("dead");
+  const tokenUuid = tokenDoc?.uuid ?? "";
+  const actorUuid = actor?.uuid ?? "";
+
+  const btnApply = game.i18n.localize(`${LOCAL}.chat.deathApply`);
+  const waitText = game.i18n.localize(`${LOCAL}.chat.deathWaitNextRound`);
+  const btnPause = game.i18n.localize(`${LOCAL}.chat.deathPause`);
+  const btnMayWait = game.i18n.localize(`${LOCAL}.chat.deathMayWait`);
+
+  const mayWaitBtn = allowMayWait
+    ? `<a class="zwp-button death-may-wait-zero-wounds" data-token-uuid="${tokenUuid}" data-actor-uuid="${actorUuid}">${btnMayWait}</a>`
+    : "";
+
+  const html = `
+  <div class="zwp-message">
+    <p>${msg} ${tag}</p>
+    <div class="zwp-buttons">
+      <a class="zwp-button apply-dead-zero-wounds" data-token-uuid="${tokenUuid}" data-actor-uuid="${actorUuid}">${btnApply}</a>
+      <span class="zwp-death-wait-text">${waitText}</span>
+      <a class="zwp-button pause-dead-zero-wounds" data-token-uuid="${tokenUuid}" data-actor-uuid="${actorUuid}">${btnPause}</a>
+      ${mayWaitBtn}
+    </div>
+  </div>`;
+
+  await sendMessage(actor, tokenDoc, html, whisper);
+}
 
 /* --------------------------------------------- */
 /* CHAT MESSAGE SENDER                           */
@@ -560,35 +587,31 @@ Hooks.on("renderChatMessage", async (message, html) => {
   const flags = message.flags?.[MODULE_ID];
   if (!flags) return;
 
-  // Foundry version differences: sometimes 'html' is a jQuery object, sometimes an HTMLElement.
-  const $html = (html?.find && typeof html.find === "function") ? html : $(html);
-
   const { actorUuid, tokenUuid } = flags;
 
   async function resolve() {
-    const resolved = tokenUuid ? await fromUuid(tokenUuid) : null;
-
-    // fromUuid(tokenUuid) can return either a TokenDocument (v10+) or a Token placeable.
-    const tokenDoc = resolved?.document ?? resolved ?? null;
-    const actor = tokenDoc?.actor ?? (await fromUuid(actorUuid));
-
-    return { tokenDoc, actor };
+    const token = tokenUuid ? await fromUuid(tokenUuid) : null;
+    const actor = token?.actor ?? (await fromUuid(actorUuid));
+    return { token, actor };
   }
 
-  // Use delegated handlers to survive re-renders and avoid binding issues.
-  $html.on("click", ".apply-prone-zero-wounds", async evt => {
+  const $html = html instanceof jQuery ? html : $(html);
+
+  $html.off("click.zwp");
+
+  $html.on("click.zwp", ".apply-prone-zero-wounds", async evt => {
     evt.preventDefault();
     const { actor } = await resolve();
     if (actor) await applyProne(actor);
   });
 
-  $html.on("click", ".apply-unconscious-zero-wounds", async evt => {
+  $html.on("click.zwp", ".apply-unconscious-zero-wounds", async evt => {
     evt.preventDefault();
     const { actor } = await resolve();
     if (actor) await applyUnconscious(actor);
   });
 
-  $html.on("click", ".remove-unconscious-zero-wounds", async evt => {
+  $html.on("click.zwp", ".remove-unconscious-zero-wounds", async evt => {
     evt.preventDefault();
     const { actor } = await resolve();
     if (actor) await removeUnconscious(actor);
@@ -598,36 +621,28 @@ Hooks.on("renderChatMessage", async (message, html) => {
   /* DEATH (GM ONLY)                */
   /* ------------------------------ */
 
-  $html.on("click", ".apply-dead-zero-wounds", async evt => {
+  $html.on("click.zwp", ".apply-dead-zero-wounds", async evt => {
     evt.preventDefault();
     if (!game.user.isGM) return;
-    const { tokenDoc, actor } = await resolve();
-    if (!actor || !tokenDoc) return;
+    const { token, actor } = await resolve();
+    if (!actor || !token?.document) return;
     await applyDead(actor);
-    await updateZeroWTimer(tokenDoc, { deathResolved: true, deathPaused: true, deathDelay: 0 });
+    await updateZeroWTimer(token.document, { deathResolved: true, deathPaused: true, deathDelay: 0 });
   });
 
-  $html.on("click", ".delay-dead-zero-wounds", async evt => {
+  $html.on("click.zwp", ".pause-dead-zero-wounds", async evt => {
     evt.preventDefault();
     if (!game.user.isGM) return;
-    const { tokenDoc } = await resolve();
-    if (!tokenDoc) return;
-    await updateZeroWTimer(tokenDoc, { deathDelay: 1 });
+    const { token } = await resolve();
+    if (!token?.document) return;
+    await updateZeroWTimer(token.document, { deathPaused: true, deathDelay: 0 });
   });
 
-  $html.on("click", ".pause-dead-zero-wounds", async evt => {
+  $html.on("click.zwp", ".death-may-wait-zero-wounds", async evt => {
     evt.preventDefault();
     if (!game.user.isGM) return;
-    const { tokenDoc } = await resolve();
-    if (!tokenDoc) return;
-    await updateZeroWTimer(tokenDoc, { deathPaused: true, deathDelay: 0 });
-  });
-
-  $html.on("click", ".death-may-wait-zero-wounds", async evt => {
-    evt.preventDefault();
-    if (!game.user.isGM) return;
-    const { tokenDoc, actor } = await resolve();
-    if (!actor || !tokenDoc) return;
-    await deathMayWait(actor, tokenDoc);
+    const { token, actor } = await resolve();
+    if (!actor || !token?.document) return;
+    await deathMayWait(actor, token.document);
   });
 });
