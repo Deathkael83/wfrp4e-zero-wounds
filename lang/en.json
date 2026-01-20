@@ -74,19 +74,24 @@
 
   "wfrp4e-zero-wounds-prone.chat.message": "{actorName} has been reduced to 0 Wounds. Falls ",
   "wfrp4e-zero-wounds-prone.chat.button": "Apply Prone",
+  "wfrp4e-zero-wounds-prone.chat.prone": "{actorName} has been reduced to 0 Wounds and falls ",
+  "wfrp4e-zero-wounds-prone.chat.applyProne": "Apply Prone",
 
   "wfrp4e-zero-wounds-prone.chat.unconscious": "{actorName} has remained at 0 Wounds for too long (TB {tb}) and now falls ",
   "wfrp4e-zero-wounds-prone.chat.unconsciousButton": "Apply Unconscious",
+  "wfrp4e-zero-wounds-prone.chat.applyUnconscious": "Apply Unconscious",
 
   "wfrp4e-zero-wounds-prone.chat.wake": "{actorName} is no longer at 0 Wounds and may remove ",
   "wfrp4e-zero-wounds-prone.chat.wakeButton": "Remove Unconscious",
+  "wfrp4e-zero-wounds-prone.chat.removeUnconscious": "Remove Unconscious",
 
   "wfrp4e-zero-wounds-prone.chat.death": "{actorName} has reached the death threshold (TB {tb}) and may die ",
   "wfrp4e-zero-wounds-prone.chat.deathApply": "Apply Dead",
   "wfrp4e-zero-wounds-prone.chat.deathDelay": "Delay by 1 Round",
-  "wfrp4e-zero-wounds-prone.chat.deathPause": "Pause Death Counter",
+  "wfrp4e-zero-wounds-prone.chat.deathPause": "Avoid Death",
   "wfrp4e-zero-wounds-prone.chat.deathFate": "Death May Wait",
   "wfrp4e-zero-wounds-prone.chat.deathMayWait": "Death May Wait",
-  "wfrp4e-zero-wounds-prone.chat.deathCrit": "{actorName} has suffered too many Critical Wounds ({critCount} > TB {tb}) and may die at the end of the Round ",
+  "wfrp4e-zero-wounds-prone.chat.deathCrit": "{actorName} has suffered too many Critical Wounds ({crits} > TB {tb}) and may die at the end of the Round ",
+  "wfrp4e-zero-wounds-prone.chat.deathWaitNextRound": "or wait until the next round",
   "wfrp4e-zero-wounds-prone.chat.deathNoFate": "No Fate Points available."
 }

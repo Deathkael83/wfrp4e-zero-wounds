@@ -82,18 +82,26 @@
   "wfrp4e-zero-wounds-prone.chat.message": "{actorName} è ridotto a 0 Ferite e cade ",
   "wfrp4e-zero-wounds-prone.chat.button": "Applica Prono",
 
+  "wfrp4e-zero-wounds-prone.chat.prone": "{actorName} è ridotto a 0 Ferite e cade ",
+  "wfrp4e-zero-wounds-prone.chat.applyProne": "Applica Prono",
+
   "wfrp4e-zero-wounds-prone.chat.unconscious": "{actorName} è rimasto a 0 Ferite per troppo tempo (BR {tb}) e cade ",
   "wfrp4e-zero-wounds-prone.chat.unconsciousButton": "Applica Privo di Sensi",
+
+  "wfrp4e-zero-wounds-prone.chat.applyUnconscious": "Applica Privo di Sensi",
 
   "wfrp4e-zero-wounds-prone.chat.wake": "{actorName} non è più a 0 Ferite e può perdere ",
   "wfrp4e-zero-wounds-prone.chat.wakeButton": "Rimuovi Privo di Sensi",
 
+  "wfrp4e-zero-wounds-prone.chat.removeUnconscious": "Rimuovi Privo di Sensi",
+
   "wfrp4e-zero-wounds-prone.chat.death": "{actorName} ha raggiunto la soglia di morte (BR {tb}) e potrebbe morire ",
   "wfrp4e-zero-wounds-prone.chat.deathApply": "Applica Morto",
   "wfrp4e-zero-wounds-prone.chat.deathDelay": "Posticipa di 1 Round",
-  "wfrp4e-zero-wounds-prone.chat.deathPause": "Metti in pausa il contatore",
+  "wfrp4e-zero-wounds-prone.chat.deathPause": "Evita Morte",
   "wfrp4e-zero-wounds-prone.chat.deathFate": "La Morte Può Attendere",
   "wfrp4e-zero-wounds-prone.chat.deathMayWait": "La Morte Può Attendere",
-  "wfrp4e-zero-wounds-prone.chat.deathCrit": "{actorName} ha subito troppe Ferite Critiche ({critCount} > BR {tb}) e potrebbe morire alla fine del Round ",
+  "wfrp4e-zero-wounds-prone.chat.deathCrit": "{actorName} ha subito troppe Ferite Critiche ({crits} > BR {tb}) e potrebbe morire alla fine del Round ",
+  "wfrp4e-zero-wounds-prone.chat.deathWaitNextRound": "oppure attendi il prossimo round",
   "wfrp4e-zero-wounds-prone.chat.deathNoFate": "Nessun Punto Fato disponibile."
 }

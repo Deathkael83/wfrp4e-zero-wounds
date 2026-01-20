@@ -58,5 +58,17 @@
   "wfrp4e-zero-wounds-prone.chat.unconscious": "{actorName} est resté trop longtemps à 0 Blessures (TB {tb}) et devient ",
   "wfrp4e-zero-wounds-prone.chat.unconsciousButton": "Appliquer Inconscient",
   "wfrp4e-zero-wounds-prone.chat.wake": "{actorName} n'est plus à 0 Blessures et peut retirer ",
-  "wfrp4e-zero-wounds-prone.chat.wakeButton": "Retirer Inconscient"
+  "wfrp4e-zero-wounds-prone.chat.wakeButton": "Retirer Inconscient",
+
+  "wfrp4e-zero-wounds-prone.chat.prone": "{actorName} est tombé à 0 Blessures. Tombe ",
+  "wfrp4e-zero-wounds-prone.chat.applyProne": "Appliquer À Terre",
+  "wfrp4e-zero-wounds-prone.chat.applyUnconscious": "Appliquer Inconscient",
+  "wfrp4e-zero-wounds-prone.chat.removeUnconscious": "Retirer Inconscient",
+
+  "wfrp4e-zero-wounds-prone.chat.deathApply": "Appliquer Mort",
+  "wfrp4e-zero-wounds-prone.chat.deathPause": "Éviter la Mort",
+  "wfrp4e-zero-wounds-prone.chat.deathMayWait": "La Mort Peut Attendre",
+  "wfrp4e-zero-wounds-prone.chat.deathNoFate": "Aucun Point de Destin disponible.",
+  "wfrp4e-zero-wounds-prone.chat.deathWaitNextRound": "ou attendre le prochain round",
+  "wfrp4e-zero-wounds-prone.chat.deathCrit": "{actorName} a subi trop de Blessures Critiques ({crits} > TB {tb}) et pourrait mourir à la fin du Round "
 }

@@ -58,5 +58,17 @@
   "wfrp4e-zero-wounds-prone.chat.unconscious": "{actorName} ha permanecido demasiado tiempo a 0 Heridas (TB {tb}) y ahora queda ",
   "wfrp4e-zero-wounds-prone.chat.unconsciousButton": "Aplicar Inconsciente",
   "wfrp4e-zero-wounds-prone.chat.wake": "{actorName} ya no está a 0 Heridas y puede retirar ",
-  "wfrp4e-zero-wounds-prone.chat.wakeButton": "Retirar Inconsciente"
+  "wfrp4e-zero-wounds-prone.chat.wakeButton": "Retirar Inconsciente",
+
+  "wfrp4e-zero-wounds-prone.chat.prone": "{actorName} ha sido reducido a 0 Heridas. Cae ",
+  "wfrp4e-zero-wounds-prone.chat.applyProne": "Aplicar Derribado",
+  "wfrp4e-zero-wounds-prone.chat.applyUnconscious": "Aplicar Inconsciente",
+  "wfrp4e-zero-wounds-prone.chat.removeUnconscious": "Retirar Inconsciente",
+
+  "wfrp4e-zero-wounds-prone.chat.deathApply": "Aplicar Muerto",
+  "wfrp4e-zero-wounds-prone.chat.deathPause": "Evitar Muerte",
+  "wfrp4e-zero-wounds-prone.chat.deathMayWait": "La Muerte Puede Esperar",
+  "wfrp4e-zero-wounds-prone.chat.deathNoFate": "No hay Puntos de Destino disponibles.",
+  "wfrp4e-zero-wounds-prone.chat.deathWaitNextRound": "o espera hasta el próximo asalto",
+  "wfrp4e-zero-wounds-prone.chat.deathCrit": "{actorName} ha sufrido demasiadas Heridas Críticas ({crits} > TB {tb}) y podría morir al final del Asalto "
 }
