@@ -22,8 +22,7 @@
 
 .chat-message .apply-prone-zero-wounds,
 .chat-message .apply-unconscious-zero-wounds,
-.chat-message .remove-unconscious-zero-wounds,
-.chat-message .zwp-button {
+.chat-message .remove-unconscious-zero-wounds {
   display: block;
   width: 100%;
   margin-top: 0.3rem;
@@ -39,27 +38,15 @@
 
 .chat-message .apply-prone-zero-wounds:hover,
 .chat-message .apply-unconscious-zero-wounds:hover,
-.chat-message .remove-unconscious-zero-wounds:hover,
-.chat-message .zwp-button:hover {
+.chat-message .remove-unconscious-zero-wounds:hover {
   filter: brightness(1.1);
   box-shadow: 0 0 4px rgba(255, 215, 128, 0.6);
 }
 
 .chat-message .apply-prone-zero-wounds:active,
 .chat-message .apply-unconscious-zero-wounds:active,
-.chat-message .remove-unconscious-zero-wounds:active,
-.chat-message .zwp-button:active {
+.chat-message .remove-unconscious-zero-wounds:active {
   filter: brightness(0.95);
-}
-
-/* Inline helper text used in death prompts */
-.chat-message .zwp-death-wait-text {
-  display: block;
-  width: 100%;
-  margin: 0.15rem 0 0.25rem 0;
-  font-size: 0.8rem;
-  text-align: center;
-  opacity: 0.9;
 }
 
 /* Margine leggero tra testo e pulsanti */
@@ -67,4 +54,12 @@
 .chat-message .apply-unconscious-zero-wounds,
 .chat-message .remove-unconscious-zero-wounds {
   margin-bottom: 0.1rem;
+}
+
+/* ================================
+ *  PUBLIC ANNOUNCEMENTS (PC DEATH)
+ * ================================ */
+
+.chat-message .zwp-public {
+  font-style: italic;
 }
