@@ -134,6 +134,16 @@ Hooks.once("init", function () {
     default: true
   });
 
+  game.settings.register(MODULE_ID, "pcDeathPublicMessage", {
+    name: `${PREFIX}.settings.pcDeathPublicMessage.name`,
+    hint: `${PREFIX}.settings.pcDeathPublicMessage.hint`,
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: false
+  });
+
+
   /* --------------------------------------------- */
   /* NPC SETTINGS                                  */
   /* --------------------------------------------- */
@@ -288,4 +298,35 @@ Hooks.once("init", function () {
       everyone: `${PREFIX}.settings.recipients.everyone`
     }
   });
+});
+
+/* --------------------------------------------- */
+/* SECTION HEADERS IN SETTINGS UI                */
+/* --------------------------------------------- */
+
+Hooks.on("renderSettingsConfig", (app, html) => {
+  // Foundry sometimes provides a jQuery object, sometimes a raw HTMLElement.
+  const $html = (html instanceof jQuery) ? html : $(html);
+
+  const insertHeaderBefore = (settingKey, i18nKey) => {
+    const $target = $html.find(`[name="${MODULE_ID}.${settingKey}"]`).closest("div.form-group").first();
+    if (!$target.length) return;
+
+    // Avoid duplicating headers if the settings window is re-rendered.
+    if ($target.prev().hasClass("group-header")) return;
+
+    $("<div>")
+      .addClass("form-group group-header")
+      .html(game.i18n.localize(i18nKey))
+      .insertBefore($target);
+  };
+
+  // Header above the PCs block
+  insertHeaderBefore("enablePC", `${PREFIX}.settings.headerPC`);
+
+  // Header above the NPCs / Monsters block
+  insertHeaderBefore("enableNPC", `${PREFIX}.settings.headerNPC`);
+
+  // Header above the Recipients block
+  insertHeaderBefore("pcRecipientsMain", `${PREFIX}.settings.headerRecipients`);
 });
