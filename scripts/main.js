@@ -308,16 +308,33 @@ function getGMRecipients() {
 }
 
 function getUnhealedCriticalCount(actor) {
-  // Prefer the derived numeric field if present
-  const v = actor?.system?.status?.criticalWounds?.value;
-  if (typeof v === "number") return v;
+  // Prefer derived numeric fields if present (schema varies across WFRP4e versions)
+  const cw = actor?.system?.status?.criticalWounds;
+  const direct =
+    (typeof cw === "number") ? cw :
+    (typeof cw?.value === "number") ? cw.value :
+    (typeof cw?.current === "number") ? cw.current :
+    (typeof actor?.system?.status?.criticalWounds?.value === "number") ? actor.system.status.criticalWounds.value :
+    null;
+  if (typeof direct === "number") return direct;
 
-  // Fallback: count embedded Critical Wound items that are not marked as healed
+  // Fallback: count embedded Critical Wound items that are NOT healed/resolved
   const items = actor?.items ?? [];
   let count = 0;
+
   for (const it of items) {
-    if (it?.type !== "critical") continue;
-    const healed = it.system?.healed ?? it.system?.isHealed;
+    if (!it) continue;
+    if (it.type !== "critical") continue;
+
+    // WFRP4e has used different flags/fields across versions
+    const healed =
+      it.system?.healed?.value ??
+      it.system?.healed ??
+      it.system?.isHealed ??
+      it.system?.resolved ??
+      it.system?.resolved?.value ??
+      false;
+
     if (healed) continue;
     count += 1;
   }
@@ -361,8 +378,6 @@ async function onDeathThreshold(actor, tokenDoc, tb) {
   if (mode === "auto") {
     await applyDead(actor);
     await updateZeroWTimer(tokenDoc, { deathResolved: true, deathPaused: true, deathDelay: 0 });
-    await sendPublicPCDeathAnnouncement(actor, tokenDoc, "mayWait");
-
     await sendPublicPCDeathAnnouncement(actor, tokenDoc, "applied");
 
     if (notify) {
@@ -386,7 +401,6 @@ async function onDeathCritThreshold(actor, tokenDoc, tb, critCount) {
   if (mode === "auto") {
     await applyDead(actor);
     await updateZeroWTimer(tokenDoc, { deathResolved: true, deathPaused: true, deathDelay: 0 });
-    await sendPublicPCDeathAnnouncement(actor, tokenDoc, "mayWait");
     await sendPublicPCDeathAnnouncement(actor, tokenDoc, "applied");
     if (notify) {
       await sendMessage(actor, tokenDoc, `<div><p>${msg} ${tag}</p></div>`, whisper);
