@@ -324,15 +324,20 @@ function getUnhealedCriticalCount(actor) {
 
   for (const it of items) {
     if (!it) continue;
-    if (it.type !== "critical") continue;
+    const t = (it.type ?? "").toLowerCase();
+    if (!["critical", "criticalwound", "critical-wound"].includes(t)) continue;
 
     // WFRP4e has used different flags/fields across versions
     const healed =
       it.system?.healed?.value ??
       it.system?.healed ??
       it.system?.isHealed ??
-      it.system?.resolved ??
+      it.system?.treated?.value ??
+      it.system?.treated ??
+      it.system?.isTreated?.value ??
+      it.system?.isTreated ??
       it.system?.resolved?.value ??
+      it.system?.resolved ??
       false;
 
     if (healed) continue;
@@ -536,7 +541,7 @@ Hooks.on("updateCombat", async (combat, changed) => {
     if (tb <= 0) continue;
 
     // Only when at 0 wounds and unconscious
-    if (wounds !== 0) {
+    if (wounds > 0) {
       // clear spam guard when not eligible
       const di = await tokenDoc.getFlag(MODULE_ID, "zeroWTimer");
       if (di?.deathCritPromptRound) {
