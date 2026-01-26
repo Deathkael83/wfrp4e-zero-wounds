@@ -501,44 +501,71 @@ Hooks.on("updateCombat", async (combat, changed) => {
     const tokenDoc = c.token;
     if (!actor || !tokenDoc) continue;
 
-    const info = await tokenDoc.getFlag(MODULE_ID, "zeroWTimer");
-    if (!info) continue;
-    if (info.combatId !== combat.id) continue;
-
-    const delta = combat.round - info.round;
     const tb = actor.system.characteristics.t.bonus;
     const wounds = actor.system.status.wounds.value;
 
-    // stop tracking if healed or invalid TB
-    if (wounds >= 1 || tb <= 0) {
-      await tokenDoc.unsetFlag(MODULE_ID, "zeroWTimer");
+    // ----------------------------
+    // ZERO-WOUND TIMER (Prone/Unconscious workflow)
+    // ----------------------------
+    const info = await tokenDoc.getFlag(MODULE_ID, "zeroWTimer");
+    if (info && info.combatId === combat.id) {
+      const delta = combat.round - info.round;
+
+      // stop tracking if healed or invalid TB
+      if (wounds >= 1 || tb <= 0) {
+        await tokenDoc.unsetFlag(MODULE_ID, "zeroWTimer");
+      } else {
+        // Unconscious at TB rounds (only once)
+        if (!info.unconsciousApplied && delta >= tb) {
+          await onUnconscious(actor, tokenDoc, tb);
+          await updateZeroWTimer(tokenDoc, { unconsciousApplied: true });
+        }
+
+        // Remove unconscious prompt when healed above 0
+        if (info.unconsciousApplied && wounds >= 1) {
+          await onWakeUp(actor, tokenDoc);
+          await tokenDoc.unsetFlag(MODULE_ID, "zeroWTimer");
+        }
+      }
+    }
+
+    // ----------------------------
+    // DEATH BY CRITICALS (end of round check)
+    // This must work even if the token never got a zeroWTimer flag (e.g. actor set to 0 manually).
+    // ----------------------------
+    if (tb <= 0) continue;
+
+    // Only when at 0 wounds and unconscious
+    if (wounds !== 0) {
+      // clear spam guard when not eligible
+      const di = await tokenDoc.getFlag(MODULE_ID, "zeroWTimer");
+      if (di?.deathCritPromptRound) {
+        await updateZeroWTimer(tokenDoc, { deathCritPromptRound: 0 });
+      }
       continue;
     }
 
-    // Unconscious at TB rounds (only once)
-    if (!info.unconsciousApplied && delta >= tb) {
-      await onUnconscious(actor, tokenDoc, tb);
-      await updateZeroWTimer(tokenDoc, { unconsciousApplied: true });
-    }
-
-    // Death check (end of round): 0 Wounds + Unconscious + Critical Wounds > TB
-    const deathInfo = (await tokenDoc.getFlag(MODULE_ID, "zeroWTimer")) || {};
-    if (deathInfo.deathResolved) continue;
-    if (deathInfo.deathPaused) continue;
-
-    // Ensure we run this check at most once per round per token
-    const lastChecked = Number(deathInfo.lastCritCheckRound ?? 0);
-    if (lastChecked === combat.round) continue;
-    await updateZeroWTimer(tokenDoc, { lastCritCheckRound: combat.round });
-
-    // Only evaluate when actually unconscious (either condition or we already applied it)
-    const isUnconscious = actor.hasCondition?.("unconscious") || deathInfo.unconsciousApplied;
+    const isUnconscious = actor.hasCondition?.("unconscious");
     if (!isUnconscious) continue;
 
     const critCount = getUnhealedCriticalCount(actor);
-    if (critCount > tb) {
-      await onDeathCritThreshold(actor, tokenDoc, tb, critCount);
+    if (critCount <= tb) {
+      // not over threshold, clear spam guard
+      const di = await tokenDoc.getFlag(MODULE_ID, "zeroWTimer");
+      if (di?.deathCritPromptRound) {
+        await updateZeroWTimer(tokenDoc, { deathCritPromptRound: 0 });
+      }
+      continue;
     }
+
+    const deathInfo = await tokenDoc.getFlag(MODULE_ID, "zeroWTimer") || {};
+    if (deathInfo.deathPaused || deathInfo.deathResolved) continue;
+
+    // Avoid re-posting multiple times in the same round
+    if (deathInfo.deathCritPromptRound === combat.round) continue;
+    await updateZeroWTimer(tokenDoc, { deathCritPromptRound: combat.round });
+
+    await onDeathCritThreshold(actor, tokenDoc, tb, critCount);
   }
 });
 
