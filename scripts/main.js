@@ -307,44 +307,22 @@ function getGMRecipients() {
   return game.users.filter(u => u.isGM && u.active).map(u => u.id);
 }
 
-function getUnhealedCriticalCount(actor) {
-  // Prefer derived numeric fields if present (schema varies across WFRP4e versions)
-  const cw = actor?.system?.status?.criticalWounds;
-  const direct =
-    (typeof cw === "number") ? cw :
-    (typeof cw?.value === "number") ? cw.value :
-    (typeof cw?.current === "number") ? cw.current :
-    (typeof actor?.system?.status?.criticalWounds?.value === "number") ? actor.system.status.criticalWounds.value :
-    null;
-  if (typeof direct === "number") return direct;
+function getCriticalCount(actor) {
+  // In WFRP4e, Critical Wounds are embedded Items shown in the "Critici" list.
+  // Different system versions expose them differently; prefer itemTypes when available.
+  const byType = actor?.itemTypes?.critical;
+  if (Array.isArray(byType)) return byType.length;
 
-  // Fallback: count embedded Critical Wound items that are NOT healed/resolved
-  const items = actor?.items ?? [];
+  // Fallback: count embedded items whose type matches "critical" variants.
+  const items = actor?.items?.contents ?? actor?.items ?? [];
   let count = 0;
-
   for (const it of items) {
-    if (!it) continue;
-    const t = (it.type ?? "").toLowerCase();
-    if (!["critical", "criticalwound", "critical-wound"].includes(t)) continue;
-
-    // WFRP4e has used different flags/fields across versions
-    const healed =
-      it.system?.healed?.value ??
-      it.system?.healed ??
-      it.system?.isHealed ??
-      it.system?.treated?.value ??
-      it.system?.treated ??
-      it.system?.isTreated?.value ??
-      it.system?.isTreated ??
-      it.system?.resolved?.value ??
-      it.system?.resolved ??
-      false;
-
-    if (healed) continue;
-    count += 1;
+    const t = (it?.type ?? "").toLowerCase();
+    if (t === "critical" || t === "criticalwound" || t === "critical-wound" || t === "crit") count += 1;
   }
   return count;
 }
+
 
 async function updateZeroWTimer(tokenDoc, patch) {
   const cur = (await tokenDoc.getFlag(MODULE_ID, "zeroWTimer")) || {};
@@ -553,7 +531,7 @@ Hooks.on("updateCombat", async (combat, changed) => {
     const isUnconscious = actor.hasCondition?.("unconscious");
     if (!isUnconscious) continue;
 
-    const critCount = getUnhealedCriticalCount(actor);
+    const critCount = getCriticalCount(actor);
     if (critCount <= tb) {
       // not over threshold, clear spam guard
       const di = await tokenDoc.getFlag(MODULE_ID, "zeroWTimer");
@@ -669,25 +647,25 @@ Hooks.on("renderChatMessage", async (message, html) => {
     evt.preventDefault();
     if (!game.user.isGM) return;
     const { token, actor } = await resolve();
-    if (!actor || !token?.document) return;
+    if (!actor || !token) return;
     await applyDead(actor);
-    await updateZeroWTimer(token.document, { deathResolved: true, deathPaused: true, deathDelay: 0 });
-    await sendPublicPCDeathAnnouncement(actor, token.document, "applied");
+    await updateZeroWTimer(token, { deathResolved: true, deathPaused: true, deathDelay: 0 });
+    await sendPublicPCDeathAnnouncement(actor, token, "applied");
   });
 
   $html.on("click.zwp", ".pause-dead-zero-wounds", async evt => {
     evt.preventDefault();
     if (!game.user.isGM) return;
     const { token } = await resolve();
-    if (!token?.document) return;
-    await updateZeroWTimer(token.document, { deathResolved: true, deathPaused: true, deathDelay: 0 });
+    if (!token) return;
+    await updateZeroWTimer(token, { deathResolved: true, deathPaused: true, deathDelay: 0 });
   });
 
   $html.on("click.zwp", ".death-may-wait-zero-wounds", async evt => {
     evt.preventDefault();
     if (!game.user.isGM) return;
     const { token, actor } = await resolve();
-    if (!actor || !token?.document) return;
-    await deathMayWait(actor, token.document);
+    if (!actor || !token) return;
+    await deathMayWait(actor, token);
   });
 });
