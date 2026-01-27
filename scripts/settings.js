@@ -143,6 +143,34 @@ Hooks.once("init", function () {
     default: false
   });
 
+  /* ------------------------------------------ */
+  /* PCs: CRIT-DEATH WARNING ON UNCONSCIOUS      */
+  /* ------------------------------------------ */
+
+  game.settings.register(MODULE_ID, "pcCritDeathWarnOnUnconscious", {
+    name: `${PREFIX}.settings.pcCritDeathWarnOnUnconscious.name`,
+    hint: `${PREFIX}.settings.pcCritDeathWarnOnUnconscious.hint`,
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: false
+  });
+
+  game.settings.register(MODULE_ID, "pcCritDeathWarnRecipients", {
+    name: `${PREFIX}.settings.pcCritDeathWarnRecipients.name`,
+    hint: `${PREFIX}.settings.pcCritDeathWarnRecipients.hint`,
+    scope: "world",
+    config: true,
+    type: String,
+    default: "ownersGM",
+    choices: {
+      gm: `${PREFIX}.settings.recipients.gm`,
+      ownersGM: `${PREFIX}.settings.recipients.ownersGM`,
+      everyone: `${PREFIX}.settings.recipients.everyone`
+    }
+  });
+
+
 
   /* --------------------------------------------- */
   /* NPC SETTINGS                                  */
@@ -252,6 +280,34 @@ Hooks.once("init", function () {
     type: Boolean,
     default: true
   });
+
+  /* ------------------------------------------ */
+  /* NPCs: CRIT-DEATH WARNING ON UNCONSCIOUS     */
+  /* ------------------------------------------ */
+
+  game.settings.register(MODULE_ID, "npcCritDeathWarnOnUnconscious", {
+    name: `${PREFIX}.settings.npcCritDeathWarnOnUnconscious.name`,
+    hint: `${PREFIX}.settings.npcCritDeathWarnOnUnconscious.hint`,
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: false
+  });
+
+  game.settings.register(MODULE_ID, "npcCritDeathWarnRecipients", {
+    name: `${PREFIX}.settings.npcCritDeathWarnRecipients.name`,
+    hint: `${PREFIX}.settings.npcCritDeathWarnRecipients.hint`,
+    scope: "world",
+    config: true,
+    type: String,
+    default: "gm",
+    choices: {
+      gm: `${PREFIX}.settings.recipients.gm`,
+      ownersGM: `${PREFIX}.settings.recipients.ownersGM`,
+      everyone: `${PREFIX}.settings.recipients.everyone`
+    }
+  });
+
 
   /* --------------------------------------------- */
   /* RECIPIENT SETTINGS                            */
