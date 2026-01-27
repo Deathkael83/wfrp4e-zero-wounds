@@ -1,671 +1,332 @@
 const MODULE_ID = "wfrp4e-zero-wounds-prone";
-const LOCAL = MODULE_ID;
+const PREFIX = MODULE_ID;
 
-function getDisplayName(actor, tokenDoc) {
-  return tokenDoc?.name ?? actor?.name ?? "Unknown";
-}
+Hooks.once("init", function () {
 
-async function resolveTokenDocument(actor) {
-  const placeable = canvas?.tokens?.placeables?.find(t => t.actor === actor);
-  if (placeable) return placeable.document;
-  return null;
-}
+  /* --------------------------------------------- */
+  /* GENERAL SETTINGS                              */
+  /* --------------------------------------------- */
 
-function getRecipients(actor, recipientsSetting) {
-  const gms = game.users.filter(u => u.isGM && u.active).map(u => u.id);
-
-  if (recipientsSetting === "gm") return gms;
-
-  const ownerIds = game.users
-    .filter(u => u.active && actor?.testUserPermission(u, "OWNER"))
-    .map(u => u.id);
-
-  if (recipientsSetting === "ownersGM") {
-    return Array.from(new Set([...ownerIds, ...gms]));
-  }
-
-  return null; // everyone
-}
-
-async function makeConditionTagHTML(condKey) {
-  const cap = condKey.charAt(0).toUpperCase() + condKey.slice(1);
-  const i18nKey = `WFRP4E.ConditionName.${cap}`;
-
-  let name = game.i18n.localize(i18nKey);
-  if (!name || name === i18nKey) name = cap;
-
-  const enriched = await TextEditor.enrichHTML(`@Condition[${name}]`, {
-    async: true,
-    secrets: false
+  game.settings.register(MODULE_ID, "enableModule", {
+    name: `${PREFIX}.settings.enableModule.name`,
+    hint: `${PREFIX}.settings.enableModule.hint`,
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: true
   });
 
-  const div = document.createElement("div");
-  div.innerHTML = enriched;
+  /* --------------------------------------------- */
+  /* PCs SETTINGS                                  */
+  /* --------------------------------------------- */
 
-  // remove WFRP "Apply ..." button, keep only the clickable link text
-  const btn = div.querySelector("button");
-  if (btn) btn.remove();
+  game.settings.register(MODULE_ID, "enablePC", {
+    name: `${PREFIX}.settings.enablePC.name`,
+    hint: `${PREFIX}.settings.enablePC.hint`,
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: true
+  });
 
-  return div.innerHTML.trim();
-}
+  game.settings.register(MODULE_ID, "pcProneMode", {
+    name: `${PREFIX}.settings.pcProneMode.name`,
+    hint: `${PREFIX}.settings.pcProneMode.hint`,
+    scope: "world",
+    config: true,
+    type: String,
+    default: "chat",
+    choices: {
+      disabled: `${PREFIX}.settings.mode.disabled`,
+      chat: `${PREFIX}.settings.mode.chat`,
+      auto: `${PREFIX}.settings.mode.auto`
+    }
+  });
 
-/* --------------------------------------------- */
-/* LISTENERS: PRE-UPDATE ACTOR                   */
-/* --------------------------------------------- */
+  game.settings.register(MODULE_ID, "pcProneAutoNotify", {
+    name: `${PREFIX}.settings.pcProneAutoNotify.name`,
+    hint: `${PREFIX}.settings.pcProneAutoNotify.hint`,
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: true
+  });
 
-Hooks.on("preUpdateActor", async (actor, changes, options, userId) => {
-  if (!game.settings.get(MODULE_ID, "enableModule")) return;
+  game.settings.register(MODULE_ID, "pcUnconsciousMode", {
+    name: `${PREFIX}.settings.pcUnconsciousMode.name`,
+    hint: `${PREFIX}.settings.pcUnconsciousMode.hint`,
+    scope: "world",
+    config: true,
+    type: String,
+    default: "chat",
+    choices: {
+      disabled: `${PREFIX}.settings.mode.disabled`,
+      chat: `${PREFIX}.settings.mode.chat`,
+      auto: `${PREFIX}.settings.mode.auto`
+    }
+  });
 
-  const woundsBefore = actor.system.status.wounds.value;
-  const woundsAfter = foundry.utils.getProperty(changes, "system.status.wounds.value");
+  game.settings.register(MODULE_ID, "pcUnconsciousAutoNotify", {
+    name: `${PREFIX}.settings.pcUnconsciousAutoNotify.name`,
+    hint: `${PREFIX}.settings.pcUnconsciousAutoNotify.hint`,
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: true
+  });
 
-  if (woundsAfter === undefined) return;
+  game.settings.register(MODULE_ID, "pcWakeMode", {
+    name: `${PREFIX}.settings.pcWakeMode.name`,
+    hint: `${PREFIX}.settings.pcWakeMode.hint`,
+    scope: "world",
+    config: true,
+    type: String,
+    default: "chat",
+    choices: {
+      disabled: `${PREFIX}.settings.mode.disabled`,
+      chat: `${PREFIX}.settings.mode.chat`,
+      auto: `${PREFIX}.settings.mode.auto`
+    }
+  });
 
-  // dropped to 0
-  if (woundsBefore >= 1 && woundsAfter <= 0) {
-    await onZeroWounds(actor);
-  }
+  game.settings.register(MODULE_ID, "pcWakeAutoNotify", {
+    name: `${PREFIX}.settings.pcWakeAutoNotify.name`,
+    hint: `${PREFIX}.settings.pcWakeAutoNotify.hint`,
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: true
+  });
 
-  // regained to >= 1
-  if (woundsBefore <= 0 && woundsAfter >= 1) {
-    await onRegainConscious(actor);
-  }
+  /* ------------------------------------------ */
+  /* PCs: DEATH (GM ONLY)                       */
+  /* ------------------------------------------ */
+
+  game.settings.register(MODULE_ID, "pcDeathMode", {
+    name: `${PREFIX}.settings.pcDeathMode.name`,
+    hint: `${PREFIX}.settings.pcDeathMode.hint`,
+    scope: "world",
+    config: true,
+    type: String,
+    default: "auto",
+    choices: {
+      disabled: `${PREFIX}.settings.mode.disabled`,
+      chat: `${PREFIX}.settings.mode.chat`,
+      auto: `${PREFIX}.settings.mode.auto`
+    }
+  });
+
+  game.settings.register(MODULE_ID, "pcDeathAutoNotify", {
+    name: `${PREFIX}.settings.pcDeathAutoNotify.name`,
+    hint: `${PREFIX}.settings.pcDeathAutoNotify.hint`,
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: true
+  });
+
+  game.settings.register(MODULE_ID, "pcDeathAllowFate", {
+    name: `${PREFIX}.settings.pcDeathAllowFate.name`,
+    hint: `${PREFIX}.settings.pcDeathAllowFate.hint`,
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: true
+  });
+
+  game.settings.register(MODULE_ID, "pcDeathPublicMessage", {
+    name: `${PREFIX}.settings.pcDeathPublicMessage.name`,
+    hint: `${PREFIX}.settings.pcDeathPublicMessage.hint`,
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: false
+  });
+
+
+  /* --------------------------------------------- */
+  /* NPC SETTINGS                                  */
+  /* --------------------------------------------- */
+
+  game.settings.register(MODULE_ID, "enableNPC", {
+    name: `${PREFIX}.settings.enableNPC.name`,
+    hint: `${PREFIX}.settings.enableNPC.hint`,
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: true
+  });
+
+  game.settings.register(MODULE_ID, "npcProneMode", {
+    name: `${PREFIX}.settings.npcProneMode.name`,
+    hint: `${PREFIX}.settings.npcProneMode.hint`,
+    scope: "world",
+    config: true,
+    type: String,
+    default: "chat",
+    choices: {
+      disabled: `${PREFIX}.settings.mode.disabled`,
+      chat: `${PREFIX}.settings.mode.chat`,
+      auto: `${PREFIX}.settings.mode.auto`
+    }
+  });
+
+  game.settings.register(MODULE_ID, "npcProneAutoNotify", {
+    name: `${PREFIX}.settings.npcProneAutoNotify.name`,
+    hint: `${PREFIX}.settings.npcProneAutoNotify.hint`,
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: true
+  });
+
+  game.settings.register(MODULE_ID, "npcUnconsciousMode", {
+    name: `${PREFIX}.settings.npcUnconsciousMode.name`,
+    hint: `${PREFIX}.settings.npcUnconsciousMode.hint`,
+    scope: "world",
+    config: true,
+    type: String,
+    default: "chat",
+    choices: {
+      disabled: `${PREFIX}.settings.mode.disabled`,
+      chat: `${PREFIX}.settings.mode.chat`,
+      auto: `${PREFIX}.settings.mode.auto`
+    }
+  });
+
+  game.settings.register(MODULE_ID, "npcUnconsciousAutoNotify", {
+    name: `${PREFIX}.settings.npcUnconsciousAutoNotify.name`,
+    hint: `${PREFIX}.settings.npcUnconsciousAutoNotify.hint`,
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: true
+  });
+
+  game.settings.register(MODULE_ID, "npcWakeMode", {
+    name: `${PREFIX}.settings.npcWakeMode.name`,
+    hint: `${PREFIX}.settings.npcWakeMode.hint`,
+    scope: "world",
+    config: true,
+    type: String,
+    default: "chat",
+    choices: {
+      disabled: `${PREFIX}.settings.mode.disabled`,
+      chat: `${PREFIX}.settings.mode.chat`,
+      auto: `${PREFIX}.settings.mode.auto`
+    }
+  });
+
+  game.settings.register(MODULE_ID, "npcWakeAutoNotify", {
+    name: `${PREFIX}.settings.npcWakeAutoNotify.name`,
+    hint: `${PREFIX}.settings.npcWakeAutoNotify.hint`,
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: true
+  });
+
+  /* ------------------------------------------ */
+  /* NPCs: DEATH (GM ONLY)                      */
+  /* ------------------------------------------ */
+
+  game.settings.register(MODULE_ID, "npcDeathMode", {
+    name: `${PREFIX}.settings.npcDeathMode.name`,
+    hint: `${PREFIX}.settings.npcDeathMode.hint`,
+    scope: "world",
+    config: true,
+    type: String,
+    default: "auto",
+    choices: {
+      disabled: `${PREFIX}.settings.mode.disabled`,
+      chat: `${PREFIX}.settings.mode.chat`,
+      auto: `${PREFIX}.settings.mode.auto`
+    }
+  });
+
+  game.settings.register(MODULE_ID, "npcDeathAutoNotify", {
+    name: `${PREFIX}.settings.npcDeathAutoNotify.name`,
+    hint: `${PREFIX}.settings.npcDeathAutoNotify.hint`,
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: true
+  });
+
+  /* --------------------------------------------- */
+  /* RECIPIENT SETTINGS                            */
+  /* --------------------------------------------- */
+
+  game.settings.register(MODULE_ID, "pcRecipientsMain", {
+    name: `${PREFIX}.settings.pcRecipientsMain.name`,
+    hint: `${PREFIX}.settings.pcRecipientsMain.hint`,
+    scope: "world",
+    config: true,
+    type: String,
+    default: "ownersGM",
+    choices: {
+      gm: `${PREFIX}.settings.recipients.gm`,
+      ownersGM: `${PREFIX}.settings.recipients.ownersGM`,
+      everyone: `${PREFIX}.settings.recipients.everyone`
+    }
+  });
+
+  game.settings.register(MODULE_ID, "pcRecipientsWake", {
+    name: `${PREFIX}.settings.pcRecipientsWake.name`,
+    hint: `${PREFIX}.settings.pcRecipientsWake.hint`,
+    scope: "world",
+    config: true,
+    type: String,
+    default: "ownersGM",
+    choices: {
+      gm: `${PREFIX}.settings.recipients.gm`,
+      ownersGM: `${PREFIX}.settings.recipients.ownersGM`,
+      everyone: `${PREFIX}.settings.recipients.everyone`
+    }
+  });
+
+  game.settings.register(MODULE_ID, "npcRecipients", {
+    name: `${PREFIX}.settings.npcRecipients.name`,
+    hint: `${PREFIX}.settings.npcRecipients.hint`,
+    scope: "world",
+    config: true,
+    type: String,
+    default: "gm",
+    choices: {
+      gm: `${PREFIX}.settings.recipients.gm`,
+      ownersGM: `${PREFIX}.settings.recipients.ownersGM`,
+      everyone: `${PREFIX}.settings.recipients.everyone`
+    }
+  });
 });
 
 /* --------------------------------------------- */
-/* ZERO WOUNDS ENTRY POINT                       */
+/* SECTION HEADERS IN SETTINGS UI                */
 /* --------------------------------------------- */
 
-async function onZeroWounds(actor) {
-  const tokenDoc = await resolveTokenDocument(actor);
-  if (!tokenDoc) return;
-
-  const isPC = actor.type === "character";
-  if (isPC && !game.settings.get(MODULE_ID, "enablePC")) return;
-  if (!isPC && !game.settings.get(MODULE_ID, "enableNPC")) return;
-
-  await applyProne(actor);
-
-  const recipients = isPC
-    ? game.settings.get(MODULE_ID, "pcRecipientsMain")
-    : game.settings.get(MODULE_ID, "npcRecipients");
-
-  const whisper = getRecipients(actor, recipients);
-
-  const proneMode = isPC
-    ? game.settings.get(MODULE_ID, "pcProneMode")
-    : game.settings.get(MODULE_ID, "npcProneMode");
-
-  const proneNotify = isPC
-    ? game.settings.get(MODULE_ID, "pcProneAutoNotify")
-    : game.settings.get(MODULE_ID, "npcProneAutoNotify");
-
-  if (proneMode === "chat") {
-    await sendPronePrompt(actor, tokenDoc, whisper);
-  } else if (proneMode === "auto" && proneNotify) {
-    await sendProneAuto(actor, tokenDoc, whisper);
-  }
-
-  await startUnconsciousTimer(actor, tokenDoc);
-}
-
-async function applyProne(actor) {
-  try {
-    await actor.addCondition("prone");
-  } catch (err) {
-    console.error(`[${MODULE_ID}] applyProne`, err);
-  }
-}
-
-async function sendPronePrompt(actor, tokenDoc, whisper) {
-  const name = getDisplayName(actor, tokenDoc);
-  const msg = game.i18n.format(`${LOCAL}.chat.prone`, { actorName: name });
-  const tag = await makeConditionTagHTML("prone");
-
-  const btn = game.i18n.localize(`${LOCAL}.chat.applyProne`);
-  const html = `
-  <div class="zwp-message">
-    <p>${msg} ${tag}</p>
-    <div class="zwp-buttons">
-      <a class="zwp-button apply-prone-zero-wounds">${btn}</a>
-    </div>
-  </div>`;
-
-  await sendMessage(actor, tokenDoc, html, whisper);
-}
-
-async function sendProneAuto(actor, tokenDoc, whisper) {
-  const name = getDisplayName(actor, tokenDoc);
-  const msg = game.i18n.format(`${LOCAL}.chat.prone`, { actorName: name });
-  const tag = await makeConditionTagHTML("prone");
-  await sendMessage(actor, tokenDoc, `<div><p>${msg} ${tag}</p></div>`, whisper);
-}
-
-/* --------------------------------------------- */
-/* TIMER PRIVO DI SENSI                           */
-/* --------------------------------------------- */
-
-async function startUnconsciousTimer(actor, tokenDoc) {
-  if (!tokenDoc) return;
-  const modePC  = game.settings.get(MODULE_ID, "pcUnconsciousMode");
-  const modeNPC = game.settings.get(MODULE_ID, "npcUnconsciousMode");
-  const mode = actor.type === "character" ? modePC : modeNPC;
-  if (mode === "disabled") return;
-
-  if (!game.combat) return;
-
-  await tokenDoc.setFlag(MODULE_ID, "zeroWTimer", {
-    combatId: game.combat.id,
-    round: game.combat.round,
-    tokenId: tokenDoc.id,
-    unconsciousApplied: false,
-    deathResolved: false,
-    deathPaused: false,
-    deathDelay: 0
-  });
-}
-
-async function clearUnconsciousTimer(tokenDoc) {
-  if (!tokenDoc) return;
-  await tokenDoc.unsetFlag(MODULE_ID, "zeroWTimer");
-}
-
-async function onUnconscious(actor, tokenDoc, tb) {
-  const isPC = actor.type === "character";
-
-  const recipients = isPC
-    ? game.settings.get(MODULE_ID, "pcRecipientsMain")
-    : game.settings.get(MODULE_ID, "npcRecipients");
-
-  const whisper = getRecipients(actor, recipients);
-
-  const mode = isPC
-    ? game.settings.get(MODULE_ID, "pcUnconsciousMode")
-    : game.settings.get(MODULE_ID, "npcUnconsciousMode");
-
-  if (mode === "chat") {
-    await sendUnconsciousPrompt(actor, tokenDoc, whisper, tb);
-  } else if (mode === "auto") {
-    await applyUnconscious(actor);
-
-    const notify = isPC
-      ? game.settings.get(MODULE_ID, "pcUnconsciousAutoNotify")
-      : game.settings.get(MODULE_ID, "npcUnconsciousAutoNotify");
-
-    if (notify) await sendUnconsciousAuto(actor, tokenDoc, whisper, tb);
-  }
-}
-
-async function applyUnconscious(actor) {
-  try {
-    await actor.addCondition("unconscious");
-  } catch (err) {
-    console.error(`[${MODULE_ID}] applyUnconscious`, err);
-  }
-}
-
-async function sendUnconsciousPrompt(actor, tokenDoc, whisper, tb) {
-  const name = getDisplayName(actor, tokenDoc);
-  const msg = game.i18n.format(`${LOCAL}.chat.unconscious`, { actorName: name, tb });
-  const tag = await makeConditionTagHTML("unconscious");
-
-  const btn = game.i18n.localize(`${LOCAL}.chat.applyUnconscious`);
-  const html = `
-  <div class="zwp-message">
-    <p>${msg} ${tag}</p>
-    <div class="zwp-buttons">
-      <a class="zwp-button apply-unconscious-zero-wounds">${btn}</a>
-    </div>
-  </div>`;
-
-  await sendMessage(actor, tokenDoc, html, whisper);
-}
-
-async function sendUnconsciousAuto(actor, tokenDoc, whisper, tb) {
-  const name = getDisplayName(actor, tokenDoc);
-  const msg = game.i18n.format(`${LOCAL}.chat.unconscious`, { actorName: name, tb });
-  const tag = await makeConditionTagHTML("unconscious");
-  await sendMessage(actor, tokenDoc, `<div><p>${msg} ${tag}</p></div>`, whisper);
-}
-
-/* --------------------------------------------- */
-/* WAKE UP / REMOVE UNCONSCIOUS                  */
-/* --------------------------------------------- */
-
-async function onRegainConscious(actor) {
-  const tokenDoc = await resolveTokenDocument(actor);
-  if (!tokenDoc) return;
-
-  await clearUnconsciousTimer(tokenDoc);
-
-  if (!actor.hasCondition("unconscious")) return;
-
-  const isPC = actor.type === "character";
-
-  const mode = isPC
-    ? game.settings.get(MODULE_ID, "pcWakeMode")
-    : game.settings.get(MODULE_ID, "npcWakeMode");
-
-  if (mode === "disabled") return;
-
-  const recipients = isPC
-    ? game.settings.get(MODULE_ID, "pcRecipientsWake")
-    : game.settings.get(MODULE_ID, "npcRecipients");
-
-  const whisper = getRecipients(actor, recipients);
-
-  if (mode === "chat") {
-    await sendWakePrompt(actor, tokenDoc, whisper);
-  } else if (mode === "auto") {
-    await removeUnconscious(actor);
-
-    const notify = isPC
-      ? game.settings.get(MODULE_ID, "pcWakeAutoNotify")
-      : game.settings.get(MODULE_ID, "npcWakeAutoNotify");
-
-    if (notify) await sendWakeAuto(actor, tokenDoc, whisper);
-  }
-}
-
-async function removeUnconscious(actor) {
-  try {
-    await actor.removeCondition("unconscious");
-  } catch (err) {
-    console.error(`[${MODULE_ID}] removeUnconscious`, err);
-  }
-}
-
-async function sendWakePrompt(actor, tokenDoc, whisper) {
-  const name = getDisplayName(actor, tokenDoc);
-  const msg = game.i18n.format(`${LOCAL}.chat.wake`, { actorName: name });
-  const tag = await makeConditionTagHTML("unconscious");
-
-  const btn = game.i18n.localize(`${LOCAL}.chat.removeUnconscious`);
-  const html = `
-  <div class="zwp-message">
-    <p>${msg} ${tag}</p>
-    <div class="zwp-buttons">
-      <a class="zwp-button remove-unconscious-zero-wounds">${btn}</a>
-    </div>
-  </div>`;
-
-  await sendMessage(actor, tokenDoc, html, whisper);
-}
-
-async function sendWakeAuto(actor, tokenDoc, whisper) {
-  const name = getDisplayName(actor, tokenDoc);
-  const msg = game.i18n.format(`${LOCAL}.chat.wake`, { actorName: name });
-  const tag = await makeConditionTagHTML("unconscious");
-  await sendMessage(actor, tokenDoc, `<div><p>${msg} ${tag}</p></div>`, whisper);
-}
-
-/* --------------------------------------------- */
-/* TIMER MORTE (DOPO PRIVO DI SENSI)             */
-/* --------------------------------------------- */
-
-function getGMRecipients() {
-  return game.users.filter(u => u.isGM && u.active).map(u => u.id);
-}
-
-function getCriticalCount(actor) {
-  // In WFRP4e, Critical Wounds are embedded Items shown in the "Critici" list.
-  // Different system versions expose them differently; prefer itemTypes when available.
-  const byType = actor?.itemTypes?.critical;
-  if (Array.isArray(byType)) return byType.length;
-
-  // Fallback: count embedded items whose type matches "critical" variants.
-  const items = actor?.items?.contents ?? actor?.items ?? [];
-  let count = 0;
-  for (const it of items) {
-    const t = (it?.type ?? "").toLowerCase();
-    if (t === "critical" || t === "criticalwound" || t === "critical-wound" || t === "crit") count += 1;
-  }
-  return count;
-}
-
-
-async function updateZeroWTimer(tokenDoc, patch) {
-  const cur = (await tokenDoc.getFlag(MODULE_ID, "zeroWTimer")) || {};
-  const next = { ...cur, ...patch };
-  await tokenDoc.setFlag(MODULE_ID, "zeroWTimer", next);
-  return next;
-}
-
-function getDeathSettings(actor) {
-  const isPC = actor.type === "character";
-  return {
-    isPC,
-    mode: game.settings.get(MODULE_ID, isPC ? "pcDeathMode" : "npcDeathMode"),
-    notify: game.settings.get(MODULE_ID, isPC ? "pcDeathAutoNotify" : "npcDeathAutoNotify"),
-    allowMayWait: isPC && game.settings.get(MODULE_ID, "pcDeathAllowFate")
-  };
-}
-
-async function applyDead(actor) {
-  try {
-    await actor.addCondition("dead");
-  } catch (err) {
-    console.error(`[${MODULE_ID}] applyDead`, err);
-  }
-}
-
-async function onDeathThreshold(actor, tokenDoc, tb) {
-  const { mode, notify, allowMayWait } = getDeathSettings(actor);
-  if (mode === "disabled") return;
-
-  const whisper = getGMRecipients();
-  const name = getDisplayName(actor, tokenDoc);
-  const msg = game.i18n.format(`${LOCAL}.chat.death`, { actorName: name, tb });
-  const tag = await makeConditionTagHTML("dead");
-
-  if (mode === "auto") {
-    await applyDead(actor);
-    await updateZeroWTimer(tokenDoc, { deathResolved: true, deathPaused: true, deathDelay: 0 });
-    await sendPublicPCDeathAnnouncement(actor, tokenDoc, "applied");
-
-    if (notify) {
-      await sendMessage(actor, tokenDoc, `<div><p>${msg} ${tag}</p></div>`, whisper);
-    }
-    return;
-  }
-
-  await sendDeathPrompt(actor, tokenDoc, whisper, msg, tag, allowMayWait);
-}
-
-async function onDeathCritThreshold(actor, tokenDoc, tb, critCount) {
-  const { mode, notify, allowMayWait } = getDeathSettings(actor);
-  if (mode === "disabled") return;
-
-  const whisper = getGMRecipients();
-  const name = getDisplayName(actor, tokenDoc);
-  const msg = game.i18n.format(`${LOCAL}.chat.deathCrit`, { actorName: name, critCount, tb });
-  const tag = await makeConditionTagHTML("dead");
-
-  if (mode === "auto") {
-    await applyDead(actor);
-    await updateZeroWTimer(tokenDoc, { deathResolved: true, deathPaused: true, deathDelay: 0 });
-    await sendPublicPCDeathAnnouncement(actor, tokenDoc, "applied");
-    if (notify) {
-      await sendMessage(actor, tokenDoc, `<div><p>${msg} ${tag}</p></div>`, whisper);
-    }
-    return;
-  }
-
-  await sendDeathPrompt(actor, tokenDoc, whisper, msg, tag, allowMayWait);
-}
-
-async function sendDeathPrompt(actor, tokenDoc, whisper, msg, tag, allowMayWait) {
-  const tokenUuid = tokenDoc?.uuid ?? "";
-  const actorUuid = actor?.uuid ?? "";
-
-  const btnApply = game.i18n.localize(`${LOCAL}.chat.deathApply`);
-  const btnPause = game.i18n.localize(`${LOCAL}.chat.deathPause`);
-  const btnMayWait = game.i18n.localize(`${LOCAL}.chat.deathMayWait`);
-  const waitNext = game.i18n.localize(`${LOCAL}.chat.deathWaitNextRound`);
-
-  const mayWaitBtn = allowMayWait
-    ? `<a class="zwp-button death-may-wait-zero-wounds" data-token-uuid="${tokenUuid}" data-actor-uuid="${actorUuid}">${btnMayWait}</a>`
-    : "";
-
-  const html = `
-  <div class="zwp-message">
-    <p>${msg} ${tag}</p>
-    <div class="zwp-buttons">
-      <a class="zwp-button apply-dead-zero-wounds" data-token-uuid="${tokenUuid}" data-actor-uuid="${actorUuid}">${btnApply}</a>
-      <a class="zwp-button pause-dead-zero-wounds" data-token-uuid="${tokenUuid}" data-actor-uuid="${actorUuid}">${btnPause}</a>
-      ${mayWaitBtn}
-    </div>
-    <div class="zwp-note">${waitNext}</div>
-  </div>`;
-
-  await sendMessage(actor, tokenDoc, html, whisper);
-}
-
-async function deathMayWait(actor, tokenDoc) {
-  try {
-    if (!game.user.isGM) return;
-    if (!actor || actor.type !== "character") return;
-    if (!tokenDoc) return;
-
-    const candidates = [
-      "system.details.fate.value",
-      "system.details.fate.current",
-      "system.details.fate",
-      "system.status.fate.value",
-      "system.fate.value",
-      "system.fate"
-    ];
-
-    let path = null;
-    let value = null;
-    for (const p of candidates) {
-      const v = foundry.utils.getProperty(actor, p);
-      if (typeof v === "number") { path = p; value = v; break; }
-    }
-
-    if (path === null || typeof value !== "number" || value <= 0) {
-      ui.notifications.info(game.i18n.localize(`${LOCAL}.chat.deathNoFate`));
-      return;
-    }
-
-    await actor.update({ [path]: value - 1 });
-
-    await removeAllBleeding(actor);
-
-    // block death (remain unconscious/stable, do not heal wounds, do not remove unconscious)
-    await updateZeroWTimer(tokenDoc, { deathResolved: true, deathPaused: true, deathDelay: 0 });
-    await sendPublicPCDeathAnnouncement(actor, tokenDoc, "mayWait");
-  } catch (err) {
-    console.error(`[${MODULE_ID}] deathMayWait`, err);
-  }
-}
-
-async function removeAllBleeding(actor) {
-  try {
-    let safety = 50;
-    while (safety-- > 0 && actor.hasCondition("bleeding")) {
-      await actor.removeCondition("bleeding");
-    }
-  } catch (err) {
-    console.error(`[${MODULE_ID}] removeAllBleeding`, err);
-  }
-}
-
-/* --------------------------------------------- */
-/* UPDATE COMBAT – CHECK PRIVO DI SENSI + MORTE   */
-/* --------------------------------------------- */
-
-Hooks.on("updateCombat", async (combat, changed) => {
-  if (!game.settings.get(MODULE_ID, "enableModule")) return;
-  if (changed.round === undefined) return;
-
-  for (const c of combat.combatants) {
-    const actor = c.actor;
-    const tokenDoc = c.token;
-    if (!actor || !tokenDoc) continue;
-
-    const tb = actor.system.characteristics.t.bonus;
-    const wounds = actor.system.status.wounds.value;
-
-    // ----------------------------
-    // ZERO-WOUND TIMER (Prone/Unconscious workflow)
-    // ----------------------------
-    const info = await tokenDoc.getFlag(MODULE_ID, "zeroWTimer");
-    if (info && info.combatId === combat.id) {
-      const delta = combat.round - info.round;
-
-      // stop tracking if healed or invalid TB
-      if (wounds >= 1 || tb <= 0) {
-        await tokenDoc.unsetFlag(MODULE_ID, "zeroWTimer");
-      } else {
-        // Unconscious at TB rounds (only once)
-        if (!info.unconsciousApplied && delta >= tb) {
-          await onUnconscious(actor, tokenDoc, tb);
-          await updateZeroWTimer(tokenDoc, { unconsciousApplied: true });
-        }
-
-        // Remove unconscious prompt when healed above 0
-        if (info.unconsciousApplied && wounds >= 1) {
-          await onWakeUp(actor, tokenDoc);
-          await tokenDoc.unsetFlag(MODULE_ID, "zeroWTimer");
-        }
-      }
-    }
-
-    // ----------------------------
-    // DEATH BY CRITICALS (end of round check)
-    // This must work even if the token never got a zeroWTimer flag (e.g. actor set to 0 manually).
-    // ----------------------------
-    if (tb <= 0) continue;
-
-    // Only when at 0 wounds and unconscious
-    if (wounds > 0) {
-      // clear spam guard when not eligible
-      const di = await tokenDoc.getFlag(MODULE_ID, "zeroWTimer");
-      if (di?.deathCritPromptRound) {
-        await updateZeroWTimer(tokenDoc, { deathCritPromptRound: 0 });
-      }
-      continue;
-    }
-
-    const isUnconscious = actor.hasCondition?.("unconscious");
-    if (!isUnconscious) continue;
-
-    const critCount = getCriticalCount(actor);
-    if (critCount <= tb) {
-      // not over threshold, clear spam guard
-      const di = await tokenDoc.getFlag(MODULE_ID, "zeroWTimer");
-      if (di?.deathCritPromptRound) {
-        await updateZeroWTimer(tokenDoc, { deathCritPromptRound: 0 });
-      }
-      continue;
-    }
-
-    const deathInfo = await tokenDoc.getFlag(MODULE_ID, "zeroWTimer") || {};
-    if (deathInfo.deathPaused || deathInfo.deathResolved) continue;
-
-    // Avoid re-posting multiple times in the same round
-    if (deathInfo.deathCritPromptRound === combat.round) continue;
-    await updateZeroWTimer(tokenDoc, { deathCritPromptRound: combat.round });
-
-    await onDeathCritThreshold(actor, tokenDoc, tb, critCount);
-  }
-});
-
-/* --------------------------------------------- */
-/* CHAT MESSAGE SENDER                           */
-/* --------------------------------------------- */
-
-async function sendMessage(actor, tokenDoc, content, whisper) {
-  const speaker = ChatMessage.getSpeaker({ token: tokenDoc, actor });
-
-  const data = {
-    user: game.user.id,
-    speaker,
-    content,
-    type: CONST.CHAT_MESSAGE_TYPES.OTHER,
-    flags: {
-      [MODULE_ID]: {
-        actorUuid: actor.uuid,
-        tokenUuid: tokenDoc?.uuid ?? null
-      }
-    }
+Hooks.on("renderSettingsConfig", (app, html) => {
+  // Foundry sometimes provides a jQuery object, sometimes a raw HTMLElement.
+  const $html = (html instanceof jQuery) ? html : $(html);
+
+  const insertHeaderBefore = (settingKey, i18nKey) => {
+    const $target = $html.find(`[name="${MODULE_ID}.${settingKey}"]`).closest("div.form-group").first();
+    if (!$target.length) return;
+
+    // Avoid duplicating headers if the settings window is re-rendered.
+    if ($target.prev().hasClass("group-header")) return;
+
+    $("<div>")
+      .addClass("form-group group-header")
+      .html(game.i18n.localize(i18nKey))
+      .insertBefore($target);
   };
 
-  if (whisper) data.whisper = whisper;
+  // Header above the PCs block
+  insertHeaderBefore("enablePC", `${PREFIX}.settings.headerPC`);
 
-  await ChatMessage.create(data);
-}
+  // Header above the NPCs / Monsters block
+  insertHeaderBefore("enableNPC", `${PREFIX}.settings.headerNPC`);
 
-
-
-async function sendPublicPCDeathAnnouncement(actor, tokenDoc, kind) {
-  try {
-    if (!actor || actor.type !== "character") return;
-    if (!game.settings.get(MODULE_ID, "pcDeathPublicMessage")) return;
-
-    const name = getDisplayName(actor, tokenDoc);
-    const key = kind === "mayWait" ? `${LOCAL}.chat.publicDeathMayWait` : `${LOCAL}.chat.publicDeathApplied`;
-    const msg = game.i18n.format(key, { actorName: name });
-
-    const speaker = ChatMessage.getSpeaker({ token: tokenDoc, actor });
-    await ChatMessage.create({
-      user: game.user.id,
-      speaker,
-      content: `<div class="zwp-public"><p>${msg}</p></div>`,
-      type: CONST.CHAT_MESSAGE_TYPES.OTHER
-    });
-  } catch (err) {
-    console.error(`[${MODULE_ID}] sendPublicPCDeathAnnouncement`, err);
-  }
-}
-
-
-/* --------------------------------------------- */
-/* CHAT BUTTON HANDLERS                          */
-/* --------------------------------------------- */
-
-Hooks.on("renderChatMessage", async (message, html) => {
-  const $html = html instanceof jQuery ? html : $(html);
-  const flags = message.flags?.[MODULE_ID];
-  if (!flags) return;
-
-  const { actorUuid, tokenUuid } = flags;
-
-  async function resolve() {
-    const token = tokenUuid ? await fromUuid(tokenUuid) : null;
-    const actor = token?.actor ?? (await fromUuid(actorUuid));
-    return { token, actor };
-  }
-
-  // Delegate handlers so they survive re-renders, and work whether `html` is jQuery or an HTMLElement.
-  $html.off("click.zwp");
-
-  $html.on("click.zwp", ".apply-prone-zero-wounds", async evt => {
-    evt.preventDefault();
-    const { actor } = await resolve();
-    if (actor) await applyProne(actor);
-  });
-
-  $html.on("click.zwp", ".apply-unconscious-zero-wounds", async evt => {
-    evt.preventDefault();
-    const { actor } = await resolve();
-    if (actor) await applyUnconscious(actor);
-  });
-
-  $html.on("click.zwp", ".remove-unconscious-zero-wounds", async evt => {
-    evt.preventDefault();
-    const { actor } = await resolve();
-    if (actor) await removeUnconscious(actor);
-  });
-
-  /* ------------------------------ */
-  /* DEATH (GM ONLY)                */
-  /* ------------------------------ */
-
-  $html.on("click.zwp", ".apply-dead-zero-wounds", async evt => {
-    evt.preventDefault();
-    if (!game.user.isGM) return;
-    const { token, actor } = await resolve();
-    if (!actor || !token) return;
-    await applyDead(actor);
-    await updateZeroWTimer(token, { deathResolved: true, deathPaused: true, deathDelay: 0 });
-    await sendPublicPCDeathAnnouncement(actor, token, "applied");
-  });
-
-  $html.on("click.zwp", ".pause-dead-zero-wounds", async evt => {
-    evt.preventDefault();
-    if (!game.user.isGM) return;
-    const { token } = await resolve();
-    if (!token) return;
-    await updateZeroWTimer(token, { deathResolved: true, deathPaused: true, deathDelay: 0 });
-  });
-
-  $html.on("click.zwp", ".death-may-wait-zero-wounds", async evt => {
-    evt.preventDefault();
-    if (!game.user.isGM) return;
-    const { token, actor } = await resolve();
-    if (!actor || !token) return;
-    await deathMayWait(actor, token);
-  });
+  // Header above the Recipients block
+  insertHeaderBefore("pcRecipientsMain", `${PREFIX}.settings.headerRecipients`);
 });
