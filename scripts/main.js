@@ -208,13 +208,16 @@ async function onUnconscious(actor, tokenDoc, tb) {
     await sendUnconsciousPrompt(actor, tokenDoc, whisper, tb);
   } else if (mode === "auto") {
     await applyUnconscious(actor);
-    await maybeSendCritDeathWarning(actor, tokenDoc);
+    await markLastUnconsciousApplied(tokenDoc);
 
     const notify = isPC
       ? game.settings.get(MODULE_ID, "pcUnconsciousAutoNotify")
       : game.settings.get(MODULE_ID, "npcUnconsciousAutoNotify");
 
+    // Order matters: announce unconscious first, then (optionally) warn about crit-death risk.
     if (notify) await sendUnconsciousAuto(actor, tokenDoc, whisper, tb);
+
+    await maybeSendCritDeathWarning(actor, tokenDoc);
   }
 }
 
@@ -223,6 +226,17 @@ async function applyUnconscious(actor) {
     await actor.addCondition("unconscious");
   } catch (err) {
     console.error(`[${MODULE_ID}] applyUnconscious`, err);
+  }
+}
+
+async function markLastUnconsciousApplied(tokenDoc) {
+  try {
+    const combatId = game.combat?.id ?? null;
+    const round = game.combat?.round ?? null;
+    if (!tokenDoc || !combatId || round === null) return;
+    await tokenDoc.setFlag(MODULE_ID, "lastUnconsciousApplied", { combatId, round });
+  } catch (err) {
+    console.error(`[${MODULE_ID}] markLastUnconsciousApplied`, err);
   }
 }
 
@@ -572,7 +586,7 @@ Hooks.on("updateCombat", async (combat, changed) => {
         // Unconscious at TB rounds (only once)
         if (!info.unconsciousApplied && delta >= tb) {
           await onUnconscious(actor, tokenDoc, tb);
-          await updateZeroWTimer(tokenDoc, { unconsciousApplied: true });
+          await updateZeroWTimer(tokenDoc, { unconsciousApplied: true, unconsciousAppliedRound: combat.round });
         }
 
         // Remove unconscious prompt when healed above 0
@@ -601,6 +615,14 @@ Hooks.on("updateCombat", async (combat, changed) => {
 
     const isUnconscious = actor.hasCondition?.("unconscious");
     if (!isUnconscious) continue;
+
+    // If unconscious was applied this same round, only warn; do not trigger death prompt until the next round.
+    const lastUnc = await tokenDoc.getFlag(MODULE_ID, "lastUnconsciousApplied");
+    if (lastUnc?.combatId === combat.id && lastUnc?.round === combat.round) continue;
+
+    const zwInfo = await tokenDoc.getFlag(MODULE_ID, "zeroWTimer");
+    if (zwInfo?.combatId === combat.id && zwInfo?.unconsciousAppliedRound === combat.round) continue;
+
 
     const critCount = getCriticalCount(actor);
     if (critCount <= tb) {
@@ -702,6 +724,7 @@ Hooks.on("renderChatMessage", async (message, html) => {
     evt.preventDefault();
     const { token, actor } = await resolve();
     if (actor) await applyUnconscious(actor);
+    if (token) await markLastUnconsciousApplied(token);
     if (actor && token) await maybeSendCritDeathWarning(actor, token);
   });
 
