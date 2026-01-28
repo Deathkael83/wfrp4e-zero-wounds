@@ -63,3 +63,32 @@
 .chat-message .zwp-public {
   font-style: italic;
 }
+
+/* ================================
+ *  GENERIC ZWP BUTTON (incl. death)
+ * ================================ */
+.chat-message .zwp-button,
+.chat-message .apply-dead-zero-wounds,
+.chat-message .pause-dead-zero-wounds,
+.chat-message .death-may-wait-zero-wounds {
+  display: block;
+  width: 100%;
+  margin-top: 0.3rem;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.85rem;
+  text-align: center;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 215, 128, 0.85);
+  background: linear-gradient(180deg, #5c3b1d, #3a2412);
+  color: #f5e2c2;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.chat-message .zwp-button:hover,
+.chat-message .apply-dead-zero-wounds:hover,
+.chat-message .pause-dead-zero-wounds:hover,
+.chat-message .death-may-wait-zero-wounds:hover {
+  filter: brightness(1.1);
+  box-shadow: 0 0 4px rgba(255, 215, 128, 0.6);
+}
