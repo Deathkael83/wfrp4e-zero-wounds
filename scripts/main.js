@@ -98,6 +98,36 @@ async function onZeroWounds(actor) {
   const tokenDoc = await resolveTokenDocument(actor);
   if (!tokenDoc) return;
 
+  const isPC = actor.type === "character";
+  if (isPC && !game.settings.get(MODULE_ID, "enablePC")) return;
+  if (!isPC && !game.settings.get(MODULE_ID, "enableNPC")) return;
+
+  const recipients = isPC
+    ? game.settings.get(MODULE_ID, "pcRecipientsMain")
+    : game.settings.get(MODULE_ID, "npcRecipients");
+
+  const whisper = getRecipients(actor, recipients);
+
+  /* ------------------------------
+   * PRONE (respect mode)
+   * ------------------------------ */
+  const proneMode = isPC
+    ? game.settings.get(MODULE_ID, "pcProneMode")
+    : game.settings.get(MODULE_ID, "npcProneMode");
+
+  const proneNotify = isPC
+    ? game.settings.get(MODULE_ID, "pcProneAutoNotify")
+    : game.settings.get(MODULE_ID, "npcProneAutoNotify");
+
+  if (proneMode === "chat") {
+    await sendPronePrompt(actor, tokenDoc, whisper);
+  } else if (proneMode === "auto") {
+    await applyProne(actor);
+    if (proneNotify) await sendProneAuto(actor, tokenDoc, whisper);
+  } // disabled => do nothing
+
+  // Start unconscious timer if configured (it will no-op if combat missing or mode disabled)
+  await startUnconsciousTimer(actor, tokenDoc);
 }
 
 async function applyProne(actor) {
@@ -127,7 +157,7 @@ async function sendPronePrompt(actor, tokenDoc, whisper) {
 
 async function sendProneAuto(actor, tokenDoc, whisper) {
   const name = getDisplayName(actor, tokenDoc);
-  const msg = game.i18n.format(`${LOCAL}.chat.prone`, { actorName: name });
+  const msg = game.i18n.format(`${LOCAL}.chat.proneAuto`, { actorName: name });
   const tag = await makeConditionTagHTML("prone");
   await sendMessage(actor, tokenDoc, `<div><p>${msg} ${tag}</p></div>`, whisper);
 }
