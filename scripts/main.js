@@ -6,7 +6,8 @@ function getDisplayName(actor, tokenDoc) {
 }
 
 async function resolveTokenDocument(actor) {
-  const placeable = canvas?.tokens?.placeables?.find(t => t.actor === actor);
+  const cvs = globalThis.canvas;
+  const placeable = cvs?.tokens?.placeables?.find(t => t.actor === actor);
   if (placeable) return placeable.document;
   return null;
 }
@@ -54,40 +55,48 @@ async function makeConditionTagHTML(condKey) {
 /* --------------------------------------------- */
 
 Hooks.on("preUpdateActor", async (actor, changes, options, userId) => {
-  if (!game.settings.get(MODULE_ID, "enableModule")) return;
+  try {
+    if (!game.settings.get(MODULE_ID, "enableModule")) return;
 
-  const woundsBefore = actor.system.status.wounds.value;
-  const woundsAfter = foundry.utils.getProperty(changes, "system.status.wounds.value");
+    const woundsBefore = actor?.system?.status?.wounds?.value;
+    const woundsAfter = foundry.utils.getProperty(changes, "system.status.wounds.value");
 
-  if (woundsAfter === undefined) return;
+    if (woundsBefore === undefined || woundsAfter === undefined) return;
 
-  // dropped to 0
-  if (woundsBefore >= 1 && woundsAfter <= 0) {
-    await onZeroWounds(actor);
-  }
+    // dropped to 0 (or below)
+    if (woundsBefore >= 1 && woundsAfter <= 0) {
+      await onZeroWounds(actor);
+    }
 
-  // regained to >= 1
-  if (woundsBefore <= 0 && woundsAfter >= 1) {
-    await onRegainConscious(actor);
+    // regained to >= 1
+    if (woundsBefore <= 0 && woundsAfter >= 1) {
+      await onRegainConscious(actor);
+    }
+  } catch (err) {
+    console.error(`[${MODULE_ID}] preUpdateActor`, err);
   }
 });
 
 
 Hooks.on("updateActor", async (actor, changes) => {
-  if (!game.settings.get(MODULE_ID, "enableModule")) return;
+  try {
+    if (!game.settings.get(MODULE_ID, "enableModule")) return;
 
-  // If unconscious was added externally (manual or other automation), still warn.
-  const touched = foundry.utils.getProperty(changes, "effects") !== undefined ||
-                  foundry.utils.getProperty(changes, "system.conditions") !== undefined ||
-                  foundry.utils.getProperty(changes, "flags.wfrp4e.conditions") !== undefined;
-  if (!touched) return;
+    // If unconscious was added externally (manual or other automation), still warn.
+    const touched = foundry.utils.getProperty(changes, "effects") !== undefined ||
+                    foundry.utils.getProperty(changes, "system.conditions") !== undefined ||
+                    foundry.utils.getProperty(changes, "flags.wfrp4e.conditions") !== undefined;
+    if (!touched) return;
 
-  if (!actor.hasCondition?.("unconscious")) return;
+    if (!actor?.hasCondition?.("unconscious")) return;
 
-  const tokenDoc = await resolveTokenDocument(actor);
-  if (!tokenDoc) return;
+    const tokenDoc = await resolveTokenDocument(actor);
+    if (!tokenDoc) return;
 
-  await maybeSendCritDeathWarning(actor, tokenDoc);
+    await maybeSendCritDeathWarning(actor, tokenDoc);
+  } catch (err) {
+    console.error(`[${MODULE_ID}] updateActor`, err);
+  }
 });
 
 /* --------------------------------------------- */
@@ -242,7 +251,7 @@ async function markLastUnconsciousApplied(tokenDoc) {
 
 async function sendUnconsciousPrompt(actor, tokenDoc, whisper, tb) {
   const name = getDisplayName(actor, tokenDoc);
-  const msg = game.i18n.format(`${LOCAL}.chat.unconscious`, { actorName: name, tb });
+  const msg = game.i18n.format(`${LOCAL}.chat.unconsciousAuto`, { actorName: name, tb });
   const tag = await makeConditionTagHTML("unconscious");
 
   const btn = game.i18n.localize(`${LOCAL}.chat.applyUnconscious`);
@@ -259,7 +268,7 @@ async function sendUnconsciousPrompt(actor, tokenDoc, whisper, tb) {
 
 async function sendUnconsciousAuto(actor, tokenDoc, whisper, tb) {
   const name = getDisplayName(actor, tokenDoc);
-  const msg = game.i18n.format(`${LOCAL}.chat.unconscious`, { actorName: name, tb });
+  const msg = game.i18n.format(`${LOCAL}.chat.unconsciousPrompt`, { actorName: name, tb });
   const tag = await makeConditionTagHTML("unconscious");
   await sendMessage(actor, tokenDoc, `<div><p>${msg} ${tag}</p></div>`, whisper);
 }
@@ -313,7 +322,7 @@ async function removeUnconscious(actor) {
 
 async function sendWakePrompt(actor, tokenDoc, whisper) {
   const name = getDisplayName(actor, tokenDoc);
-  const msg = game.i18n.format(`${LOCAL}.chat.wake`, { actorName: name });
+  const msg = game.i18n.format(`${LOCAL}.chat.wakeAuto`, { actorName: name });
   const tag = await makeConditionTagHTML("unconscious");
 
   const btn = game.i18n.localize(`${LOCAL}.chat.removeUnconscious`);
@@ -330,7 +339,7 @@ async function sendWakePrompt(actor, tokenDoc, whisper) {
 
 async function sendWakeAuto(actor, tokenDoc, whisper) {
   const name = getDisplayName(actor, tokenDoc);
-  const msg = game.i18n.format(`${LOCAL}.chat.wake`, { actorName: name });
+  const msg = game.i18n.format(`${LOCAL}.chat.wakePrompt`, { actorName: name });
   const tag = await makeConditionTagHTML("unconscious");
   await sendMessage(actor, tokenDoc, `<div><p>${msg} ${tag}</p></div>`, whisper);
 }
@@ -390,7 +399,6 @@ function getCritWarnSettings(actor) {
 async function maybeSendCritDeathWarning(actor, tokenDoc) {
   try {
     if (!actor || !tokenDoc) return;
-    if (actor.hasCondition?.("dead")) return;
 
     const { enabled, recipients } = getCritWarnSettings(actor);
     if (!enabled) return;
@@ -401,6 +409,7 @@ async function maybeSendCritDeathWarning(actor, tokenDoc) {
     if (tb <= 0) return;
     if (wounds > 0) return;
     if (!actor.hasCondition?.("unconscious")) return;
+    if (actor.hasCondition?.("dead")) return;
 
     const critCount = getCriticalCount(actor);
     if (critCount <= tb) return;
@@ -465,7 +474,6 @@ async function onDeathCritThreshold(actor, tokenDoc, tb, critCount) {
   const whisper = getGMRecipients();
   const name = getDisplayName(actor, tokenDoc);
   const msg = game.i18n.format(`${LOCAL}.chat.deathCrit`, { actorName: name, critCount, tb });
-  const msgAuto = game.i18n.format(`${LOCAL}.chat.deathCritAuto`, { actorName: name, critCount, tb });
   const tag = await makeConditionTagHTML("dead");
 
   if (mode === "auto") {
@@ -473,7 +481,7 @@ async function onDeathCritThreshold(actor, tokenDoc, tb, critCount) {
     await updateZeroWTimer(tokenDoc, { deathResolved: true, deathPaused: true, deathDelay: 0 });
     await sendPublicPCDeathAnnouncement(actor, tokenDoc, "applied");
     if (notify) {
-      await sendMessage(actor, tokenDoc, `<div><p>${msgAuto} ${tag}</p></div>`, whisper);
+      await sendMessage(actor, tokenDoc, `<div><p>${msg} ${tag}</p></div>`, whisper);
     }
     return;
   }
@@ -563,10 +571,11 @@ async function removeAllBleeding(actor) {
 /* --------------------------------------------- */
 
 Hooks.on("updateCombat", async (combat, changed) => {
-  if (!game.settings.get(MODULE_ID, "enableModule")) return;
-  if (changed.round === undefined) return;
+  try {
+    if (!game.settings.get(MODULE_ID, "enableModule")) return;
+    if (changed.round === undefined) return;
 
-  for (const c of combat.combatants) {
+    for (const c of combat.combatants) {
     const actor = c.actor;
     const tokenDoc = c.token;
     if (!actor || !tokenDoc) continue;
@@ -643,7 +652,10 @@ Hooks.on("updateCombat", async (combat, changed) => {
     if (deathInfo.deathCritPromptRound === combat.round) continue;
     await updateZeroWTimer(tokenDoc, { deathCritPromptRound: combat.round });
 
-    await onDeathCritThreshold(actor, tokenDoc, tb, critCount);
+      await onDeathCritThreshold(actor, tokenDoc, tb, critCount);
+    }
+  } catch (err) {
+    console.error(`[${MODULE_ID}] updateCombat`, err);
   }
 });
 
@@ -701,9 +713,14 @@ async function sendPublicPCDeathAnnouncement(actor, tokenDoc, kind) {
 /* --------------------------------------------- */
 
 Hooks.on("renderChatMessage", async (message, html) => {
-  const $html = html instanceof jQuery ? html : $(html);
-  const flags = message.flags?.[MODULE_ID];
-  if (!flags) return;
+  try {
+    const jq = globalThis.jQuery;
+    const $ = globalThis.$;
+    const $html = (jq && html instanceof jq) ? html : ($ ? $(html) : null);
+    if (!$html) return;
+
+    const flags = message.flags?.[MODULE_ID];
+    if (!flags) return;
 
   const { actorUuid, tokenUuid } = flags;
 
@@ -716,7 +733,7 @@ Hooks.on("renderChatMessage", async (message, html) => {
   // Delegate handlers so they survive re-renders, and work whether `html` is jQuery or an HTMLElement.
   $html.off("click.zwp");
 
-  $html.on("click.zwp", ".apply-prone-zero-wounds", async evt => {
+    $html.on("click.zwp", ".apply-prone-zero-wounds", async evt => {
     evt.preventDefault();
     const { actor } = await resolve();
     if (actor) await applyProne(actor);
@@ -740,7 +757,7 @@ Hooks.on("renderChatMessage", async (message, html) => {
   /* DEATH (GM ONLY)                */
   /* ------------------------------ */
 
-  $html.on("click.zwp", ".apply-dead-zero-wounds", async evt => {
+    $html.on("click.zwp", ".apply-dead-zero-wounds", async evt => {
     evt.preventDefault();
     if (!game.user.isGM) return;
     const { token, actor } = await resolve();
@@ -750,7 +767,7 @@ Hooks.on("renderChatMessage", async (message, html) => {
     await sendPublicPCDeathAnnouncement(actor, token, "applied");
   });
 
-  $html.on("click.zwp", ".pause-dead-zero-wounds", async evt => {
+    $html.on("click.zwp", ".pause-dead-zero-wounds", async evt => {
     evt.preventDefault();
     if (!game.user.isGM) return;
     const { token, actor } = await resolve();
@@ -758,6 +775,7 @@ Hooks.on("renderChatMessage", async (message, html) => {
 
     await updateZeroWTimer(token, { deathResolved: true, deathPaused: true, deathDelay: 0 });
 
+    // GM-only confirmation to avoid silent no-op
     const name = getDisplayName(actor, token);
     const msg = game.i18n.format(`${LOCAL}.chat.deathAvoided`, { actorName: name });
     await sendMessage(actor, token, `<div class="zwp-message"><p>${msg}</p></div>`, getGMRecipients());
@@ -770,4 +788,7 @@ Hooks.on("renderChatMessage", async (message, html) => {
     if (!actor || !token) return;
     await deathMayWait(actor, token);
   });
+  } catch (err) {
+    console.error(`[${MODULE_ID}] renderChatMessage`, err);
+  }
 });
