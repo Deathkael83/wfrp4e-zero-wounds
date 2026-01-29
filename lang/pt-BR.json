@@ -4,9 +4,7 @@
   "wfrp4e-zero-wounds-prone.chat.button": "Aplicar Caído",
   "wfrp4e-zero-wounds-prone.chat.death": "{actorName} has reached the death threshold (TB {tb}) and may die",
   "wfrp4e-zero-wounds-prone.chat.deathApply": "Apply Dead",
-  "wfrp4e-zero-wounds-prone.chat.deathAvoided": "A morte de <strong>{actorName}</strong> foi evitada completamente. O MJ deve gerenciar isso manualmente, ou ela pode voltar a ocorrer se o personagem mais tarde passar de 1 Ferida para Inconsciente, conforme as regras.",
   "wfrp4e-zero-wounds-prone.chat.deathCrit": "{actorName} sofreu Ferimentos Críticos demais ({critCount} > BR {tb}). Fim do Round: pode morrer.",
-  "wfrp4e-zero-wounds-prone.chat.deathCritAuto": "{actorName} sofreu Feridas Críticas demais ({critCount} > BR {tb}). Fim do Round: <b>morre</b>.",
   "wfrp4e-zero-wounds-prone.chat.deathCritWarn": "{actorName} sofreu Ferimentos Críticos demais ({critCount} > BR {tb}) e pode morrer no fim do round.",
   "wfrp4e-zero-wounds-prone.chat.deathMayWait": "Death Can Wait",
   "wfrp4e-zero-wounds-prone.chat.deathNoFate": "No Fate Points available.",
@@ -91,5 +89,10 @@
   "wfrp4e-zero-wounds-prone.settings.recipients.gmOnly": "Apenas Mestre",
   "wfrp4e-zero-wounds-prone.settings.recipients.owners": "Donos + Mestre",
   "wfrp4e-zero-wounds-prone.settings.recipients.ownersGM": "Donos + MJ",
-  "wfrp4e-zero-wounds-prone.title": "WFRP4e - Zero Wounds"
+  "wfrp4e-zero-wounds-prone.title": "WFRP4e - Zero Wounds",
+  "wfrp4e-zero-wounds-prone.chat.deathAvoided": "A morte de {actorName} foi evitada completamente. O MJ deve gerenciar isso manualmente, ou ela pode voltar a acontecer se o personagem passar novamente de 1 Ferimento para Inconsciente conforme as regras.",
+  "wfrp4e-zero-wounds-prone.chat.wakePrompt": "{actorName} não está mais com 0 Ferimentos e pode remover ",
+  "wfrp4e-zero-wounds-prone.chat.wakeAuto": "{actorName} não está mais com 0 Ferimentos e remover ",
+  "wfrp4e-zero-wounds-prone.chat.unconsciousAuto": "{actorName} permaneceu tempo demais com 0 Ferimentos (TB {tb}) e agora fica ",
+  "wfrp4e-zero-wounds-prone.chat.unconsciousPrompt": "{actorName} permaneceu tempo demais com 0 Ferimentos (TB {tb}) e agora fica "
 }

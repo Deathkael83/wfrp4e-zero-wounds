@@ -4,9 +4,7 @@
   "wfrp4e-zero-wounds-prone.chat.button": "Apply Prone",
   "wfrp4e-zero-wounds-prone.chat.death": "{actorName} has reached the death threshold (TB {tb}) and may die ",
   "wfrp4e-zero-wounds-prone.chat.deathApply": "Apply Dead",
-  "wfrp4e-zero-wounds-prone.chat.deathAvoided": "The death of <strong>{actorName}</strong> has been completely avoided. The GM must handle this manually, or it may occur again if the character later goes from 1 Wound to Unconscious, as per the rules.",
   "wfrp4e-zero-wounds-prone.chat.deathCrit": "{actorName} has suffered too many Critical Wounds ({critCount} > TB {tb}). End of Round: they could die.",
-  "wfrp4e-zero-wounds-prone.chat.deathCritAuto": "{actorName} has suffered too many Critical Wounds ({critCount} > TB {tb}). End of Round: <b>dies</b>.",
   "wfrp4e-zero-wounds-prone.chat.deathCritWarn": "{actorName} has suffered too many Critical Wounds ({critCount} > TB {tb}) and could die at the end of the round.",
   "wfrp4e-zero-wounds-prone.chat.deathDelay": "Delay by 1 Round",
   "wfrp4e-zero-wounds-prone.chat.deathFate": "Death May Wait",
@@ -93,5 +91,10 @@
   "wfrp4e-zero-wounds-prone.settings.recipients.gmOnly": "GM only",
   "wfrp4e-zero-wounds-prone.settings.recipients.owners": "Owners + GM",
   "wfrp4e-zero-wounds-prone.settings.recipients.ownersGM": "Owners + GM",
-  "wfrp4e-zero-wounds-prone.title": "WFRP4e - Zero Wounds"
+  "wfrp4e-zero-wounds-prone.title": "WFRP4e - Zero Wounds",
+  "wfrp4e-zero-wounds-prone.chat.deathAvoided": "The death of {actorName} has been completely averted. The GM must handle it manually, or it may return if the character goes from 1 Wound to Unconscious again as per the rules.",
+  "wfrp4e-zero-wounds-prone.chat.wakePrompt": "{actorName} is no longer at 0 Wounds and may remove ",
+  "wfrp4e-zero-wounds-prone.chat.wakeAuto": "{actorName} is no longer at 0 Wounds and remove ",
+  "wfrp4e-zero-wounds-prone.chat.unconsciousAuto": "{actorName} has remained at 0 Wounds for too long (TB {tb}) and now falls ",
+  "wfrp4e-zero-wounds-prone.chat.unconsciousPrompt": "{actorName} has remained at 0 Wounds for too long (TB {tb}) and now may fall "
 }
