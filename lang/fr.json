@@ -89,5 +89,6 @@
   "wfrp4e-zero-wounds-prone.settings.recipients.gmOnly": "MJ uniquement",
   "wfrp4e-zero-wounds-prone.settings.recipients.owners": "Propriétaires + MJ",
   "wfrp4e-zero-wounds-prone.settings.recipients.ownersGM": "Propriétaires + MJ",
-  "wfrp4e-zero-wounds-prone.title": "WFRP4e - Zero Wounds"
+  "wfrp4e-zero-wounds-prone.title": "WFRP4e - Zero Wounds",
+  "wfrp4e-zero-wounds-prone.chat.deathAvoided": "La mort de <strong>{actorName}</strong> a été totalement évitée. Le MJ devra la gérer manuellement, ou elle pourra se représenter si le personnage repasse plus tard de 1 Blessure à Inconscient, selon les règles."
 }

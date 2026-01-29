@@ -89,5 +89,6 @@
   "wfrp4e-zero-wounds-prone.settings.recipients.gmOnly": "Nur SL",
   "wfrp4e-zero-wounds-prone.settings.recipients.owners": "Besitzer + SL",
   "wfrp4e-zero-wounds-prone.settings.recipients.ownersGM": "Besitzer + SL",
-  "wfrp4e-zero-wounds-prone.title": "WFRP4e - Zero Wounds"
+  "wfrp4e-zero-wounds-prone.title": "WFRP4e - Zero Wounds",
+  "wfrp4e-zero-wounds-prone.chat.deathAvoided": "Der Tod von <strong>{actorName}</strong> wurde vollständig vermieden. Der SL muss dies manuell handhaben, oder es kann erneut auftreten, wenn die Figur später von 1 Wunde zu Bewusstlos wechselt, gemäß den Regeln."
 }

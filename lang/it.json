@@ -91,5 +91,6 @@
   "wfrp4e-zero-wounds-prone.settings.recipients.gmOnly": "Solo GM",
   "wfrp4e-zero-wounds-prone.settings.recipients.owners": "Owner + GM",
   "wfrp4e-zero-wounds-prone.settings.recipients.ownersGM": "Proprietari + GM",
-  "wfrp4e-zero-wounds-prone.title": "WFRP4e - Zero Wounds"
+  "wfrp4e-zero-wounds-prone.title": "WFRP4e - Zero Wounds",
+  "wfrp4e-zero-wounds-prone.chat.deathAvoided": "La morte di <strong>{actorName}</strong> è stata evitata completamente. Dovrà essere gestita manualmente dal GM, oppure potrà ripresentarsi se il personaggio passerà di nuovo da 1 Ferita a Privo di Sensi secondo le regole."
 }

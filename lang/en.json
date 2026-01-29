@@ -91,5 +91,6 @@
   "wfrp4e-zero-wounds-prone.settings.recipients.gmOnly": "GM only",
   "wfrp4e-zero-wounds-prone.settings.recipients.owners": "Owners + GM",
   "wfrp4e-zero-wounds-prone.settings.recipients.ownersGM": "Owners + GM",
-  "wfrp4e-zero-wounds-prone.title": "WFRP4e - Zero Wounds"
+  "wfrp4e-zero-wounds-prone.title": "WFRP4e - Zero Wounds",
+  "wfrp4e-zero-wounds-prone.chat.deathAvoided": "The death of <strong>{actorName}</strong> has been completely avoided. The GM must handle this manually, or it may occur again if the character later goes from 1 Wound to Unconscious, as per the rules."
 }

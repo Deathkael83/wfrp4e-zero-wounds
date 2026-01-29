@@ -89,5 +89,6 @@
   "wfrp4e-zero-wounds-prone.settings.recipients.gmOnly": "Sólo Director",
   "wfrp4e-zero-wounds-prone.settings.recipients.owners": "Propietarios + Director",
   "wfrp4e-zero-wounds-prone.settings.recipients.ownersGM": "Propietarios + DJ",
-  "wfrp4e-zero-wounds-prone.title": "WFRP4e - Zero Wounds"
+  "wfrp4e-zero-wounds-prone.title": "WFRP4e - Zero Wounds",
+  "wfrp4e-zero-wounds-prone.chat.deathAvoided": "La muerte de <strong>{actorName}</strong> se ha evitado por completo. El DJ debe gestionarlo manualmente, o podría volver a presentarse si el personaje pasa más adelante de 1 Herida a Inconsciente, según las reglas."
 }

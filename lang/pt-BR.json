@@ -89,5 +89,6 @@
   "wfrp4e-zero-wounds-prone.settings.recipients.gmOnly": "Apenas Mestre",
   "wfrp4e-zero-wounds-prone.settings.recipients.owners": "Donos + Mestre",
   "wfrp4e-zero-wounds-prone.settings.recipients.ownersGM": "Donos + MJ",
-  "wfrp4e-zero-wounds-prone.title": "WFRP4e - Zero Wounds"
+  "wfrp4e-zero-wounds-prone.title": "WFRP4e - Zero Wounds",
+  "wfrp4e-zero-wounds-prone.chat.deathAvoided": "A morte de <strong>{actorName}</strong> foi evitada completamente. O MJ deve gerenciar isso manualmente, ou ela pode voltar a ocorrer se o personagem mais tarde passar de 1 Ferida para Inconsciente, conforme as regras."
 }
