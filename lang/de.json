@@ -4,7 +4,9 @@
   "wfrp4e-zero-wounds-prone.chat.button": "Liegend anwenden",
   "wfrp4e-zero-wounds-prone.chat.death": "{actorName} has reached the death threshold (TB {tb}) and may die",
   "wfrp4e-zero-wounds-prone.chat.deathApply": "Apply Dead",
+  "wfrp4e-zero-wounds-prone.chat.deathAvoided": "Der Tod von <strong>{actorName}</strong> wurde vollständig vermieden. Der SL muss dies manuell handhaben, oder es kann erneut auftreten, wenn die Figur später von 1 Wunde zu Bewusstlos wechselt, gemäß den Regeln.",
   "wfrp4e-zero-wounds-prone.chat.deathCrit": "{actorName} hat zu viele Kritische Wunden erlitten ({critCount} > ZB {tb}). Rundenende: könnte sterben.",
+  "wfrp4e-zero-wounds-prone.chat.deathCritAuto": "{actorName} hat zu viele Kritische Wunden erlitten ({critCount} > ZäB {tb}). Ende der Runde: <b>stirbt</b>.",
   "wfrp4e-zero-wounds-prone.chat.deathCritWarn": "{actorName} hat zu viele Kritische Wunden erlitten ({critCount} > ZB {tb}) und könnte am Ende der Runde sterben.",
   "wfrp4e-zero-wounds-prone.chat.deathMayWait": "Death Can Wait",
   "wfrp4e-zero-wounds-prone.chat.deathNoFate": "No Fate Points available.",
@@ -89,6 +91,5 @@
   "wfrp4e-zero-wounds-prone.settings.recipients.gmOnly": "Nur SL",
   "wfrp4e-zero-wounds-prone.settings.recipients.owners": "Besitzer + SL",
   "wfrp4e-zero-wounds-prone.settings.recipients.ownersGM": "Besitzer + SL",
-  "wfrp4e-zero-wounds-prone.title": "WFRP4e - Zero Wounds",
-  "wfrp4e-zero-wounds-prone.chat.deathAvoided": "Der Tod von <strong>{actorName}</strong> wurde vollständig vermieden. Der SL muss dies manuell handhaben, oder es kann erneut auftreten, wenn die Figur später von 1 Wunde zu Bewusstlos wechselt, gemäß den Regeln."
+  "wfrp4e-zero-wounds-prone.title": "WFRP4e - Zero Wounds"
 }

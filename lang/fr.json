@@ -4,7 +4,9 @@
   "wfrp4e-zero-wounds-prone.chat.button": "Appliquer À Terre",
   "wfrp4e-zero-wounds-prone.chat.death": "{actorName} has reached the death threshold (TB {tb}) and may die",
   "wfrp4e-zero-wounds-prone.chat.deathApply": "Apply Dead",
+  "wfrp4e-zero-wounds-prone.chat.deathAvoided": "La mort de <strong>{actorName}</strong> a été totalement évitée. Le MJ devra la gérer manuellement, ou elle pourra se représenter si le personnage repasse plus tard de 1 Blessure à Inconscient, selon les règles.",
   "wfrp4e-zero-wounds-prone.chat.deathCrit": "{actorName} a subi trop de Blessures Critiques ({critCount} > BF {tb}). Fin du Round : il/elle pourrait mourir.",
+  "wfrp4e-zero-wounds-prone.chat.deathCritAuto": "{actorName} a subi trop de Blessures Critiques ({critCount} > BF {tb}). Fin du round : <b>meurt</b>.",
   "wfrp4e-zero-wounds-prone.chat.deathCritWarn": "{actorName} a subi trop de Blessures Critiques ({critCount} > BF {tb}) et pourrait mourir à la fin du round.",
   "wfrp4e-zero-wounds-prone.chat.deathMayWait": "Death Can Wait",
   "wfrp4e-zero-wounds-prone.chat.deathNoFate": "No Fate Points available.",
@@ -89,6 +91,5 @@
   "wfrp4e-zero-wounds-prone.settings.recipients.gmOnly": "MJ uniquement",
   "wfrp4e-zero-wounds-prone.settings.recipients.owners": "Propriétaires + MJ",
   "wfrp4e-zero-wounds-prone.settings.recipients.ownersGM": "Propriétaires + MJ",
-  "wfrp4e-zero-wounds-prone.title": "WFRP4e - Zero Wounds",
-  "wfrp4e-zero-wounds-prone.chat.deathAvoided": "La mort de <strong>{actorName}</strong> a été totalement évitée. Le MJ devra la gérer manuellement, ou elle pourra se représenter si le personnage repasse plus tard de 1 Blessure à Inconscient, selon les règles."
+  "wfrp4e-zero-wounds-prone.title": "WFRP4e - Zero Wounds"
 }

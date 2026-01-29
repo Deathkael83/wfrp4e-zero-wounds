@@ -4,7 +4,9 @@
   "wfrp4e-zero-wounds-prone.chat.button": "Applica Prono",
   "wfrp4e-zero-wounds-prone.chat.death": "{actorName} ha raggiunto la soglia di morte (BR {tb}) e potrebbe morire ",
   "wfrp4e-zero-wounds-prone.chat.deathApply": "Applica Morto",
+  "wfrp4e-zero-wounds-prone.chat.deathAvoided": "La morte di <strong>{actorName}</strong> è stata evitata completamente. Dovrà essere gestita manualmente dal GM, oppure potrà ripresentarsi se il personaggio passerà di nuovo da 1 Ferita a Privo di Sensi secondo le regole.",
   "wfrp4e-zero-wounds-prone.chat.deathCrit": "{actorName} ha subito troppe Ferite Critiche ({critCount} > BR {tb}). Fine Round: potrebbe morire.",
+  "wfrp4e-zero-wounds-prone.chat.deathCritAuto": "{actorName} ha subito troppe Ferite Critiche ({critCount} > BR {tb}). Fine Round: <b>muore</b>.",
   "wfrp4e-zero-wounds-prone.chat.deathCritWarn": "{actorName} ha subito troppe Ferite Critiche ({critCount} > BR {tb}) e potrebbe morire alla fine del round.",
   "wfrp4e-zero-wounds-prone.chat.deathDelay": "Posticipa di 1 Round",
   "wfrp4e-zero-wounds-prone.chat.deathFate": "La Morte Può Attendere",
@@ -91,6 +93,5 @@
   "wfrp4e-zero-wounds-prone.settings.recipients.gmOnly": "Solo GM",
   "wfrp4e-zero-wounds-prone.settings.recipients.owners": "Owner + GM",
   "wfrp4e-zero-wounds-prone.settings.recipients.ownersGM": "Proprietari + GM",
-  "wfrp4e-zero-wounds-prone.title": "WFRP4e - Zero Wounds",
-  "wfrp4e-zero-wounds-prone.chat.deathAvoided": "La morte di <strong>{actorName}</strong> è stata evitata completamente. Dovrà essere gestita manualmente dal GM, oppure potrà ripresentarsi se il personaggio passerà di nuovo da 1 Ferita a Privo di Sensi secondo le regole."
+  "wfrp4e-zero-wounds-prone.title": "WFRP4e - Zero Wounds"
 }
