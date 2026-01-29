@@ -465,6 +465,7 @@ async function onDeathCritThreshold(actor, tokenDoc, tb, critCount) {
   const whisper = getGMRecipients();
   const name = getDisplayName(actor, tokenDoc);
   const msg = game.i18n.format(`${LOCAL}.chat.deathCrit`, { actorName: name, critCount, tb });
+  const msgAuto = game.i18n.format(`${LOCAL}.chat.deathCritAuto`, { actorName: name, critCount, tb });
   const tag = await makeConditionTagHTML("dead");
 
   if (mode === "auto") {
@@ -472,7 +473,7 @@ async function onDeathCritThreshold(actor, tokenDoc, tb, critCount) {
     await updateZeroWTimer(tokenDoc, { deathResolved: true, deathPaused: true, deathDelay: 0 });
     await sendPublicPCDeathAnnouncement(actor, tokenDoc, "applied");
     if (notify) {
-      await sendMessage(actor, tokenDoc, `<div><p>${msg} ${tag}</p></div>`, whisper);
+      await sendMessage(actor, tokenDoc, `<div><p>${msgAuto} ${tag}</p></div>`, whisper);
     }
     return;
   }
