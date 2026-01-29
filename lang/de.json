@@ -94,5 +94,6 @@
   "wfrp4e-zero-wounds-prone.chat.wakePrompt": "{actorName} ist nicht mehr bei 0 Wunden und kann ",
   "wfrp4e-zero-wounds-prone.chat.wakeAuto": "{actorName} ist nicht mehr bei 0 Wunden und ",
   "wfrp4e-zero-wounds-prone.chat.unconsciousAuto": "{actorName} blieb zu lange bei 0 Wunden (TB {tb}) und wird ",
-  "wfrp4e-zero-wounds-prone.chat.unconsciousPrompt": "{actorName} blieb zu lange bei 0 Wunden (TB {tb}) und wird "
+  "wfrp4e-zero-wounds-prone.chat.unconsciousPrompt": "{actorName} blieb zu lange bei 0 Wunden (TB {tb}) und wird ",
+  "wfrp4e-zero-wounds-prone.chat.deathCritAuto": "{actorName} hat zu viele Kritische Wunden erlitten ({critCount} > ZB {tb}). Ende der Runde: **Stirbt**"
 }

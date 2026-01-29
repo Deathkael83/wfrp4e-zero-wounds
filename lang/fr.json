@@ -94,5 +94,6 @@
   "wfrp4e-zero-wounds-prone.chat.wakePrompt": "{actorName} n'est plus à 0 Blessures et peut retirer ",
   "wfrp4e-zero-wounds-prone.chat.wakeAuto": "{actorName} n'est plus à 0 Blessures et retirer ",
   "wfrp4e-zero-wounds-prone.chat.unconsciousAuto": "{actorName} est resté trop longtemps à 0 Blessures (TB {tb}) et devient ",
-  "wfrp4e-zero-wounds-prone.chat.unconsciousPrompt": "{actorName} est resté trop longtemps à 0 Blessures (TB {tb}) et devient "
+  "wfrp4e-zero-wounds-prone.chat.unconsciousPrompt": "{actorName} est resté trop longtemps à 0 Blessures (TB {tb}) et devient ",
+  "wfrp4e-zero-wounds-prone.chat.deathCritAuto": "{actorName} a subi trop de Blessures Critiques ({critCount} > BE {tb}). Fin du Round : **Meurt**"
 }
