@@ -55,6 +55,7 @@ async function makeConditionTagHTML(condKey) {
 /* --------------------------------------------- */
 
 Hooks.on("preUpdateActor", async (actor, changes, options, userId) => {
+  if (!game.user.isGM) return;
   try {
     if (!game.settings.get(MODULE_ID, "enableModule")) return;
 
@@ -79,6 +80,7 @@ Hooks.on("preUpdateActor", async (actor, changes, options, userId) => {
 
 
 Hooks.on("updateActor", async (actor, changes) => {
+  if (!game.user.isGM) return;
   try {
     if (!game.settings.get(MODULE_ID, "enableModule")) return;
 
@@ -571,6 +573,7 @@ async function removeAllBleeding(actor) {
 /* --------------------------------------------- */
 
 Hooks.on("updateCombat", async (combat, changed) => {
+  if (!game.user.isGM) return;
   try {
     if (!game.settings.get(MODULE_ID, "enableModule")) return;
     if (changed.round === undefined) return;
