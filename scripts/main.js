@@ -390,6 +390,7 @@ function getCritWarnSettings(actor) {
 async function maybeSendCritDeathWarning(actor, tokenDoc) {
   try {
     if (!actor || !tokenDoc) return;
+    if (actor.hasCondition?.("dead")) return;
 
     const { enabled, recipients } = getCritWarnSettings(actor);
     if (!enabled) return;
@@ -497,8 +498,8 @@ async function sendDeathPrompt(actor, tokenDoc, whisper, msg, tag, allowMayWait)
     <p>${msg} ${tag}</p>
     <div class="zwp-buttons">
       <a class="zwp-button apply-dead-zero-wounds" data-token-uuid="${tokenUuid}" data-actor-uuid="${actorUuid}">${btnApply}</a>
-      <a class="zwp-button pause-dead-zero-wounds" data-token-uuid="${tokenUuid}" data-actor-uuid="${actorUuid}">${btnPause}</a>
       ${mayWaitBtn}
+      <a class="zwp-button pause-dead-zero-wounds" data-token-uuid="${tokenUuid}" data-actor-uuid="${actorUuid}">${btnPause}</a>
     </div>
     <div class="zwp-note">${waitNext}</div>
   </div>`;
@@ -751,9 +752,14 @@ Hooks.on("renderChatMessage", async (message, html) => {
   $html.on("click.zwp", ".pause-dead-zero-wounds", async evt => {
     evt.preventDefault();
     if (!game.user.isGM) return;
-    const { token } = await resolve();
-    if (!token) return;
+    const { token, actor } = await resolve();
+    if (!token || !actor) return;
+
     await updateZeroWTimer(token, { deathResolved: true, deathPaused: true, deathDelay: 0 });
+
+    const name = getDisplayName(actor, token);
+    const msg = game.i18n.format(`${LOCAL}.chat.deathAvoided`, { actorName: name });
+    await sendMessage(actor, token, `<div class="zwp-message"><p>${msg}</p></div>`, getGMRecipients());
   });
 
   $html.on("click.zwp", ".death-may-wait-zero-wounds", async evt => {
