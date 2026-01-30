@@ -170,7 +170,7 @@ async function sendProneAuto(actor, tokenDoc, whisper) {
   const name = getDisplayName(actor, tokenDoc);
   const msg = game.i18n.format(`${LOCAL}.chat.proneAuto`, { actorName: name });
   const tag = await makeConditionTagHTML("prone");
-  await sendMessage(actor, tokenDoc, `<div><p>${msgAuto} ${tag}</p></div>`, whisper);
+  await sendMessage(actor, tokenDoc, `<div><p>${msg} ${tag}</p></div>`, whisper);
 }
 
 /* --------------------------------------------- */
@@ -253,7 +253,7 @@ async function markLastUnconsciousApplied(tokenDoc) {
 
 async function sendUnconsciousPrompt(actor, tokenDoc, whisper, tb) {
   const name = getDisplayName(actor, tokenDoc);
-  const msg = game.i18n.format(`${LOCAL}.chat.unconsciousAuto`, { actorName: name, tb });
+  const msg = game.i18n.format(`${LOCAL}.chat.unconsciousPrompt`, { actorName: name, tb });
   const tag = await makeConditionTagHTML("unconscious");
 
   const btn = game.i18n.localize(`${LOCAL}.chat.applyUnconscious`);
@@ -270,9 +270,9 @@ async function sendUnconsciousPrompt(actor, tokenDoc, whisper, tb) {
 
 async function sendUnconsciousAuto(actor, tokenDoc, whisper, tb) {
   const name = getDisplayName(actor, tokenDoc);
-  const msg = game.i18n.format(`${LOCAL}.chat.unconsciousPrompt`, { actorName: name, tb });
+  const msg = game.i18n.format(`${LOCAL}.chat.unconsciousAuto`, { actorName: name, tb });
   const tag = await makeConditionTagHTML("unconscious");
-  await sendMessage(actor, tokenDoc, `<div><p>${msgAuto} ${tag}</p></div>`, whisper);
+  await sendMessage(actor, tokenDoc, `<div><p>${msg} ${tag}</p></div>`, whisper);
 }
 
 /* --------------------------------------------- */
@@ -324,7 +324,7 @@ async function removeUnconscious(actor) {
 
 async function sendWakePrompt(actor, tokenDoc, whisper) {
   const name = getDisplayName(actor, tokenDoc);
-  const msg = game.i18n.format(`${LOCAL}.chat.wakeAuto`, { actorName: name });
+  const msg = game.i18n.format(`${LOCAL}.chat.wakePrompt`, { actorName: name });
   const tag = await makeConditionTagHTML("unconscious");
 
   const btn = game.i18n.localize(`${LOCAL}.chat.removeUnconscious`);
@@ -341,9 +341,9 @@ async function sendWakePrompt(actor, tokenDoc, whisper) {
 
 async function sendWakeAuto(actor, tokenDoc, whisper) {
   const name = getDisplayName(actor, tokenDoc);
-  const msg = game.i18n.format(`${LOCAL}.chat.wakePrompt`, { actorName: name });
+  const msg = game.i18n.format(`${LOCAL}.chat.wakeAuto`, { actorName: name });
   const tag = await makeConditionTagHTML("unconscious");
-  await sendMessage(actor, tokenDoc, `<div><p>${msgAuto} ${tag}</p></div>`, whisper);
+  await sendMessage(actor, tokenDoc, `<div><p>${msg} ${tag}</p></div>`, whisper);
 }
 
 /* --------------------------------------------- */
@@ -452,7 +452,8 @@ async function onDeathThreshold(actor, tokenDoc, tb) {
 
   const whisper = getGMRecipients();
   const name = getDisplayName(actor, tokenDoc);
-  const msg = game.i18n.format(`${LOCAL}.chat.death`, { actorName: name, tb });
+  const msgKey = (mode === "auto") ? "deathAuto" : "death";
+  const msg = game.i18n.format(`${LOCAL}.chat.${msgKey}`, { actorName: name, tb });
   const tag = await makeConditionTagHTML("dead");
 
   if (mode === "auto") {
@@ -461,12 +462,12 @@ async function onDeathThreshold(actor, tokenDoc, tb) {
     await sendPublicPCDeathAnnouncement(actor, tokenDoc, "applied");
 
     if (notify) {
-      await sendMessage(actor, tokenDoc, `<div><p>${msgAuto} ${tag}</p></div>`, whisper);
+      await sendMessage(actor, tokenDoc, `<div><p>${msg} ${tag}</p></div>`, whisper);
     }
     return;
   }
 
-  await sendDeathPrompt(actor, tokenDoc, whisper, msgPrompt, tag, allowMayWait);
+  await sendDeathPrompt(actor, tokenDoc, whisper, msg, tag, allowMayWait);
 }
 
 async function onDeathCritThreshold(actor, tokenDoc, tb, critCount) {
@@ -475,8 +476,8 @@ async function onDeathCritThreshold(actor, tokenDoc, tb, critCount) {
 
   const whisper = getGMRecipients();
   const name = getDisplayName(actor, tokenDoc);
-  const msgPrompt = game.i18n.format(`${LOCAL}.chat.deathCrit`, { actorName: name, critCount, tb });
-  const msgAuto = game.i18n.format(`${LOCAL}.chat.deathCritAuto`, { actorName: name, critCount, tb });
+  const msgKey = (mode === "auto") ? "deathCritAuto" : "deathCrit";
+  const msg = game.i18n.format(`${LOCAL}.chat.${msgKey}`, { actorName: name, critCount, tb });
   const tag = await makeConditionTagHTML("dead");
 
   if (mode === "auto") {
@@ -484,12 +485,12 @@ async function onDeathCritThreshold(actor, tokenDoc, tb, critCount) {
     await updateZeroWTimer(tokenDoc, { deathResolved: true, deathPaused: true, deathDelay: 0 });
     await sendPublicPCDeathAnnouncement(actor, tokenDoc, "applied");
     if (notify) {
-      await sendMessage(actor, tokenDoc, `<div><p>${msgAuto} ${tag}</p></div>`, whisper);
+      await sendMessage(actor, tokenDoc, `<div><p>${msg} ${tag}</p></div>`, whisper);
     }
     return;
   }
 
-  await sendDeathPrompt(actor, tokenDoc, whisper, msgPrompt, tag, allowMayWait);
+  await sendDeathPrompt(actor, tokenDoc, whisper, msg, tag, allowMayWait);
 }
 
 async function sendDeathPrompt(actor, tokenDoc, whisper, msg, tag, allowMayWait) {
