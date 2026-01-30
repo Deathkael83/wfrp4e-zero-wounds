@@ -95,5 +95,6 @@
   "wfrp4e-zero-wounds-prone.chat.wakeAuto": "{actorName} ya no está a 0 Heridas y retirar ",
   "wfrp4e-zero-wounds-prone.chat.unconsciousAuto": "{actorName} ha permanecido demasiado tiempo a 0 Heridas (TB {tb}) y ahora queda ",
   "wfrp4e-zero-wounds-prone.chat.unconsciousPrompt": "{actorName} ha permanecido demasiado tiempo a 0 Heridas (TB {tb}) y ahora queda ",
+  "wfrp4e-zero-wounds-prone.chat.deathAuto": "{actorName} ha alcanzado el umbral de muerte (BR {tb}) y **muere** ",
   "wfrp4e-zero-wounds-prone.chat.deathCritAuto": "{actorName} ha sufrido demasiadas Heridas Críticas ({critCount} > BR {tb}). Fin de la ronda: **Muere**"
 }

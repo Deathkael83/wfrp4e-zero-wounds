@@ -97,5 +97,6 @@
   "wfrp4e-zero-wounds-prone.chat.wakeAuto": "{actorName} is no longer at 0 Wounds and remove ",
   "wfrp4e-zero-wounds-prone.chat.unconsciousAuto": "{actorName} has remained at 0 Wounds for too long (TB {tb}) and now falls ",
   "wfrp4e-zero-wounds-prone.chat.unconsciousPrompt": "{actorName} has remained at 0 Wounds for too long (TB {tb}) and now may fall ",
+  "wfrp4e-zero-wounds-prone.chat.deathAuto": "{actorName} has reached the death threshold (TB {tb}) and **dies** ",
   "wfrp4e-zero-wounds-prone.chat.deathCritAuto": "{actorName} has suffered too many Critical Wounds ({critCount} > TB {tb}). End of Round: **Dies**"
 }

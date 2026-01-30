@@ -95,5 +95,6 @@
   "wfrp4e-zero-wounds-prone.chat.wakeAuto": "{actorName} não está mais com 0 Ferimentos e remover ",
   "wfrp4e-zero-wounds-prone.chat.unconsciousAuto": "{actorName} permaneceu tempo demais com 0 Ferimentos (TB {tb}) e agora fica ",
   "wfrp4e-zero-wounds-prone.chat.unconsciousPrompt": "{actorName} permaneceu tempo demais com 0 Ferimentos (TB {tb}) e agora fica ",
-  "wfrp4e-zero-wounds-prone.chat.deathCritAuto": "{actorName} sofreu Ferimentos Críticos demais ({critCount} > BR {tb}). Fim do turno: **Morre**"
+  "wfrp4e-zero-wounds-prone.chat.deathAuto": "{actorName} atingiu o limite de morte (BR {tb}) e **morre** ",
+  "wfrp4e-zero-wounds-prone.chat.deathCritAuto": "{actorName} sofreu Feridas Críticas demais ({critCount} > BR {tb}). Fim do Round: **Morre**"
 }

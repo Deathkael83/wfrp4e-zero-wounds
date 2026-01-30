@@ -97,5 +97,6 @@
   "wfrp4e-zero-wounds-prone.chat.wakeAuto": "{actorName} non è più a 0 Ferite e perde",
   "wfrp4e-zero-wounds-prone.chat.unconsciousAuto": "{actorName} è rimasto a 0 Ferite per troppo tempo (BR {tb}) e cade",
   "wfrp4e-zero-wounds-prone.chat.unconsciousPrompt": "{actorName} è rimasto a 0 Ferite per troppo tempo (BR {tb}) e può cadere",
+  "wfrp4e-zero-wounds-prone.chat.deathAuto": "{actorName} ha raggiunto la soglia di morte (BR {tb}) e **muore** ",
   "wfrp4e-zero-wounds-prone.chat.deathCritAuto": "{actorName} ha subito troppe Ferite Critiche ({critCount} > BR {tb}). Fine Round: **Muore**"
 }
