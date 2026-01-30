@@ -12,8 +12,8 @@
   "wfrp4e-zero-wounds-prone.chat.deathWaitNextRound": "or wait until the next round.",
   "wfrp4e-zero-wounds-prone.chat.message": "{actorName} est tombé à 0 Blessures. Tombe ",
   "wfrp4e-zero-wounds-prone.chat.prone": "{actorName} is at 0 Wounds and may gain",
-  "wfrp4e-zero-wounds-prone.chat.proneAuto": "{actorName} tombe",
-  "wfrp4e-zero-wounds-prone.chat.pronePrompt": "{actorName} pourrait tomber",
+  "wfrp4e-zero-wounds-prone.chat.proneAuto": "{actorName} est à 0 Blessures et tombe",
+  "wfrp4e-zero-wounds-prone.chat.pronePrompt": "{actorName} est à 0 Blessures et peut tomber",
   "wfrp4e-zero-wounds-prone.chat.publicDeathApplied": "<b>{actorName}</b> meurt.",
   "wfrp4e-zero-wounds-prone.chat.publicDeathMayWait": "<b>{actorName}</b> défie la mort. «La Mort Peut Attendre».",
   "wfrp4e-zero-wounds-prone.chat.removeUnconscious": "Remove Unconscious",
@@ -96,5 +96,5 @@
   "wfrp4e-zero-wounds-prone.chat.unconsciousAuto": "{actorName} est resté trop longtemps à 0 Blessures (TB {tb}) et devient ",
   "wfrp4e-zero-wounds-prone.chat.unconsciousPrompt": "{actorName} est resté trop longtemps à 0 Blessures (TB {tb}) et devient ",
   "wfrp4e-zero-wounds-prone.chat.deathAuto": "{actorName} a atteint le seuil de mort (BF {tb}) et **meurt** ",
-  "wfrp4e-zero-wounds-prone.chat.deathCritAuto": "{actorName} a subi trop de Blessures Critiques ({critCount} > BF {tb}). Fin du round : **Meurt**"
+  "wfrp4e-zero-wounds-prone.chat.deathCritAuto": "{actorName} a subi trop de Blessures Critiques ({critCount} > BF {tb}). Fin du round : <b>Meurt</b>"
 }
