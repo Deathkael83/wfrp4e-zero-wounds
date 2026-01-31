@@ -1,11 +1,12 @@
 # Changelog
 
 ## 1.3.0 – Death Handling, GM-Only Logic & Message Coherence
+
 ### Changed
 - Refined Prone / Unconscious / Wake-Up messaging to clearly distinguish:
-  - Automatic mode = factual wording (falls, loses, <b>Dies</b>)
+  - Automatic mode = factual wording (falls, loses, dies)
   - Chat Prompt mode = conditional wording (may fall, may lose)
-- Death handling is now tied to Critical Wounds compared to Toughness Bonus, with GM-controlled outcomes when enabled.
+- Death handling is now based on Critical Wounds exceeding Toughness Bonus, with GM-controlled outcomes when enabled.
 
 ### Added
 - Configurable Death mode for PCs and NPCs: Disabled / Chat Prompt / Automatic.
@@ -13,9 +14,8 @@
 - Optional public announcement (PC only) when the GM applies Death or uses “Death Can Wait”.
 
 ### Fixed
-- Fixed GM-only chat events being authored by players (and therefore visible to them).
-- Fixed death/warning spam after Death was already applied.
-- Improved stability of combat/round-based checks and token resolution in edge cases.
+- Fixed GM-only chat events being authored by players and therefore visible to them.
+- Improved stability of round-based checks and token resolution during combat.
 - Restored and preserved settings UI headers and overall settings clarity.
 
 ## 1.2.0 – Full Overhaul, Multi-Language & UI Improvements
