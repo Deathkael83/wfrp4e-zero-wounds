@@ -9,7 +9,7 @@
 ![Downloads](https://img.shields.io/github/downloads/Deathkael83/wfrp4e-zero-wounds-prone/total)
 ![GitHub Stars](https://img.shields.io/github/stars/Deathkael83/wfrp4e-zero-wounds-prone?style=social)
 
-This module automates and enhances how WFRP4e handles characters and creatures reaching **0 Wounds**, falling **Prone**, becoming **Unconscious**, and waking up again after recovering Wounds.
+This module automates and enhances how WFRP4e handles characters and creatures reaching **0 Wounds**, falling **Prone**, becoming **Unconscious**, waking up again after recovering Wounds, and (from v1.3.0) handling **Death**.
 
 It is designed to be configurable, non-intrusive, system-friendly, and fully compatible with both PC and NPC workflows.
 
@@ -26,86 +26,102 @@ When a character reaches **0 Wounds**, the module can:
 
 The same logic applies to:
 
-• Becoming **Unconscious** after TB Rounds at 0 Wounds  
+• Becoming **Unconscious** after a number of Rounds equal to Toughness Bonus  
 • **Waking up** when Wounds rise above 0  
 
-Each effect (Prone, Unconscious, Wake Up) can be configured **independently** for PCs and NPCs.
+Each effect (**Prone**, **Unconscious**, **Wake Up**) can be configured **independently** for PCs and NPCs.
+
+Automatic modes always use **factual wording** (falls, loses, **Dies**).  
+Chat prompts always use **conditional wording** (may fall, may lose).
+
+---
+
+### **Death Handling (v1.3.0)**
+When a character is **Unconscious** at **0 Wounds** and has **Critical Wounds greater than their Toughness Bonus**, the module can handle death separately for PCs and NPCs:
+
+• **Disabled**: the module never applies Death  
+• **Chat Prompt**: the GM receives a decision prompt  
+  *(Apply Death / Avoid Death; PCs also: “Death May Wait”)*  
+• **Automatic**: Death is applied automatically
+
+Optional **warning messages** can be enabled when a character becomes Unconscious while already exceeding the Critical Wounds threshold.
+
+Death-related prompts are **always GM-only**.
 
 ---
 
 ## ✦ Separate Settings for PCs and NPCs
 
-Players and NPCs/Creatures each have:
+Player Characters and NPCs/Creatures have **independent settings**, including:
 
-• Independent enable/disable toggles  
+• Enable / Disable toggles  
 • Independent modes for Prone / Unconscious / Wake Up  
-• Independent “auto-apply notification” toggles  
-• Independent recipient settings  
+• Independent Death handling modes  
+• Independent notification options  
 
-NPCs use simplified controls while still supporting all effects.
+NPCs support the same effects with their own independent configuration.
 
 ---
 
 ## ✦ Recipient Control
 
-Choose who receives chat messages:
+Chat message recipients can be configured as:
 
 • **GM only**  
 • **Owners + GM**  
-• **Everyone**  
+• **Everyone**
 
-PCs have separate recipient control for:
+Recipient options are configurable per feature where applicable.
 
-• Prone / Unconscious  
-• Wake Up  
-
-NPCs use a single recipient option.
+GM-only messages are always created by the **GM client**, ensuring players never see GM-only prompts.
 
 ---
 
 ## ✦ Clean, Localized Condition Tags
 
-The module inserts non-interactive, localized condition tags (e.g. *Prone*, *Prono*, *À Terre*) without triggering the WFRP4e system’s default “Apply Condition” chat button.
+The module inserts non-interactive, localized condition tags  
+(e.g. *Prone*, *Prono*, *À Terre*) without triggering the WFRP4e system’s default  
+“Apply Condition” chat buttons.
 
 ---
 
 ## ✦ Combat-Safe Token Handling
 
-Handles non-linked and duplicated NPC names such as:
+Correctly handles non-linked tokens and duplicated NPC names such as:
 
 • *Citizen 1*  
 • *Citizen 2*  
 
-Token resolution is based on **document identity**, preventing cross-target bugs even during combat.
+Token resolution is based on **document identity**, preventing cross-target issues during combat.
 
 ---
 
 ## ✦ Settings Overview
 
-The module creates three clean configuration blocks:
+The module provides three clear configuration sections:
 
 1. **Player Characters (PCs)**  
 2. **NPCs / Creatures**  
-3. **Recipients**  
+3. **Recipients**
 
-Each mode (Prone / Unconscious / Wake) has separate behaviour, separate auto notifications, and separate recipients where applicable.
+Each feature has its own behaviour mode, notification settings, and recipient options where applicable.
 
 ---
 
 ## ✦ Compatibility
 
-• **WFRP4e system v7.1.1+**  
-• Fully compatible with Foundry VTT **v13**  
+• **Foundry VTT v13**  
+• **WFRP4e system v7+** (verified up to v9.x)  
 • No prototype overrides  
 • No core patches  
-• Designed to coexist with other automation modules  
+• Designed to coexist with other automation modules
 
 ---
 
 ## ✦ Installation
 
 ### **Foundry VTT**
-Use the manifest URL from the latest release.
+Install using the manifest URL from the latest GitHub release.
 
 ### **The Forge**
 Upload the module or link your GitHub repository. The manifest is detected automatically.
@@ -114,8 +130,9 @@ Upload the module or link your GitHub repository. The manifest is detected autom
 
 ## ✦ Known Limitations
 
-• Condition tags do not include the default “Apply Condition” button by design  
-• Requires the WFRP4e system to load before the module initializes  
+• Condition tags intentionally omit the default “Apply Condition” button  
+• Requires the WFRP4e system to load before module initialization  
+• Round-based checks require Combat to be active (Combat Tracker running)
 
 ---
 
@@ -128,7 +145,6 @@ See `LICENSE` for details.
 
 ## ✦ Credits
 
-Created for tables wanting cleaner automation of 0-Wound behaviour in WFRP4e.
+Created for tables seeking clear, controlled automation of 0-Wound behaviour in **WFRP4e**.
 
-Feedback, suggestions and pull requests are welcome.
-
+Feedback, suggestions, and pull requests are welcome.
