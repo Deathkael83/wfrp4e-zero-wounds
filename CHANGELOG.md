@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.3.1 – 2026-02-06
+
+### Changed
+- Updated repository URLs after GitHub repository rename.
+
 ## 1.3.0 – Death Handling, GM-Only Logic & Message Coherence
 
 ### Changed
