@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+### Fixed
+- Chat messages failed on Foundry v14 because `CONST.CHAT_MESSAGE_TYPES` was removed; they now use `CONST.CHAT_MESSAGE_STYLES`, available since v12.
+- No Prone prompt or automatic Prone when the actor is already Prone, e.g. knocked down by the same attack that dropped it to 0 Wounds.
+- Use the namespaced `TextEditor` (deprecated global since v13).
+
 ## 1.3.1 – 2026-02-06
 
 ### Changed
