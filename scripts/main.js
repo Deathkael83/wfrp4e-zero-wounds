@@ -35,7 +35,7 @@ async function makeConditionTagHTML(condKey) {
   let name = game.i18n.localize(i18nKey);
   if (!name || name === i18nKey) name = cap;
 
-  const enriched = await TextEditor.enrichHTML(`@Condition[${name}]`, {
+  const enriched = await foundry.applications.ux.TextEditor.implementation.enrichHTML(`@Condition[${name}]`, {
     async: true,
     secrets: false
   });
@@ -130,7 +130,9 @@ async function onZeroWounds(actor) {
     ? game.settings.get(MODULE_ID, "pcProneAutoNotify")
     : game.settings.get(MODULE_ID, "npcProneAutoNotify");
 
-  if (proneMode === "chat") {
+  if (actor.hasCondition?.("prone")) {
+    // Already knocked down, e.g. by the same attack: nothing to prompt or apply.
+  } else if (proneMode === "chat") {
     await sendPronePrompt(actor, tokenDoc, whisper);
   } else if (proneMode === "auto") {
     await applyProne(actor);
@@ -675,7 +677,7 @@ async function sendMessage(actor, tokenDoc, content, whisper) {
     user: game.user.id,
     speaker,
     content,
-    type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+    style: CONST.CHAT_MESSAGE_STYLES.OTHER,
     flags: {
       [MODULE_ID]: {
         actorUuid: actor.uuid,
@@ -705,7 +707,7 @@ async function sendPublicPCDeathAnnouncement(actor, tokenDoc, kind) {
       user: game.user.id,
       speaker,
       content: `<div class="zwp-public"><p>${msg}</p></div>`,
-      type: CONST.CHAT_MESSAGE_TYPES.OTHER
+      style: CONST.CHAT_MESSAGE_STYLES.OTHER
     });
   } catch (err) {
     console.error(`[${MODULE_ID}] sendPublicPCDeathAnnouncement`, err);
